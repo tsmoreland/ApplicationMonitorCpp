@@ -13,36 +13,37 @@
 
 #pragma once
 
-#include "NullHandle.h"
+#include <iterator>
 #include <memory>
-#include <optional>
-#include <string>
 
-namespace Win32
+namespace  Win32
 {
-    namespace Implementation
-    {
-        class ProcessImpl;
-    }
+    class Process;
 
-    class Process final
+
+    class ProcessIterable final
     {
     public:
-        static std::unique_ptr<Process> Start(std::string const& filename, std::string const& arguments);
-        [[nodiscard]] std::optional<DWORD> GetId() const noexcept;
-        [[nodiscard]] bool IsRunning() const noexcept;
-        [[nodiscard]] std::optional<DWORD> ExitCode() const noexcept;
-        void WaitForExit() const noexcept;
+        class ProcessIterator final
+        {
+            using iterator_category = std::forward_iterator_tag;
+            using value_type = std::shared_ptr<Process>;
+            using difference_type = std::allocator_traits<std::shared_ptr<Process>>::difference_type;
+            using pointer = std::allocator_traits<std::shared_ptr<Process>>::pointer;
+            using reference = std::shared_ptr<Process>&;
 
-        ~Process();
-        Process(const Process&) = delete;
-        Process& operator=(const Process&) = delete;
-        Process(Process&&) noexcept = default;
-        Process& operator=(Process&&) noexcept;
+            [[nodiscard]] reference operator*() const;
+            [[nodiscard]] reference operator->() const;
+            [[nodiscard]] ProcessIterator operator++() const;
+        };
 
-    private:
-        std::unique_ptr<Implementation::ProcessImpl> _pImpl{};
-        explicit Process(Implementation::ProcessImpl* pImpl);
+        using value_type = std::shared_ptr<Process>;
+        using iterator = ProcessIterator;
+        using const_iterator = const ProcessIterator;
+
+        [[nodiscard]] iterator begin() const noexcept;
+        [[nodiscard]] iterator end() const noexcept;
     };
 
-};
+
+}

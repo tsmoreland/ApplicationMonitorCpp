@@ -21,3 +21,4 @@
 #include <processthreadsapi.h>
 #include <filesystem>
 
+#include "NullHandle.h"

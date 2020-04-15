@@ -13,12 +13,17 @@
 
 #pragma once
 
-namespace System::Implementation
+namespace Win32::Implementation
 {
     class ProcessImpl final
     {
     public:
         ProcessImpl(std::string const& filename, std::string const& arguments);
+        ProcessImpl(const ProcessImpl&) = delete;
+        ProcessImpl& operator=(const ProcessImpl&) = delete;
+        ProcessImpl(ProcessImpl&& other) noexcept;
+        ProcessImpl& operator=(ProcessImpl&& other) noexcept;
+        ~ProcessImpl() = default;
 
         [[nodiscard]] std::optional<DWORD> GetId() const noexcept;
         [[nodiscard]] bool IsRunning() const noexcept;
@@ -26,11 +31,14 @@ namespace System::Implementation
         void WaitForExit() const;
 
     private:
-        STARTUPINFOA _startupInfo{};
-        PROCESS_INFORMATION _processInformation{};
+        DWORD _processId;
+        DWORD _processThreadId;
+        Shared::NullHandle _processHandle;
+        Shared::NullHandle _processThreadHandle;
 
         static bool CreateProcessAdapter(std::string const& filename, std::string const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
         static std::tuple<bool, DWORD> GetRunningDetails(HANDLE processHandle);
+        void LoadProcessInformation(const PROCESS_INFORMATION& processInformation);
     };
 
 }

@@ -17,38 +17,70 @@
 
 namespace Filesystem = std::filesystem;
 
-using std::string;
-using std::optional;
-using std::nullopt;
 using std::make_unique;
 using std::min;
+using std::move;
+using std::nullopt;
+using std::optional;
+using std::string;
 using std::tuple;
 
-namespace System::Implementation
+namespace Win32::Implementation
 {
     ProcessImpl::ProcessImpl(string const& filename, string const& arguments)
+        : _processId{}
+        , _processThreadId{}
     {
-        if (!Filesystem::exists(filename) || !Filesystem::is_regular_file(filename))
+        const auto absolutePath = Filesystem::absolute(filename).string();
+
+        if (!Filesystem::exists(absolutePath) || !Filesystem::is_regular_file(absolutePath))
             throw std::invalid_argument("file not found");
 
-        if (!CreateProcessAdapter(filename, arguments, &_startupInfo, &_processInformation))
+        STARTUPINFOA startupInfo{};
+        startupInfo.cb = sizeof(startupInfo);
+        PROCESS_INFORMATION processInformation{};
+
+        if (!CreateProcessAdapter(absolutePath, arguments, &startupInfo, &processInformation))
             throw std::bad_exception();
+
+        LoadProcessInformation(processInformation);
+    }
+    ProcessImpl::ProcessImpl(ProcessImpl&& other) noexcept
+        : _processId{other._processId}
+        , _processThreadId{other._processThreadId}
+    {
+        _processHandle = move(other._processHandle);
+        _processThreadHandle = move(other._processThreadHandle);
+
+        other._processThreadId = 0UL;
+        other._processId = 0UL;
+    }
+    ProcessImpl& ProcessImpl::operator=(ProcessImpl&& other) noexcept
+    {
+        _processHandle = move(other._processHandle);
+        _processThreadHandle = move(other._processThreadHandle);
+        _processId = other._processId;
+        _processThreadId = other._processThreadId;
+
+        other._processThreadId = 0UL;
+        other._processId = 0UL;
+        return *this;
     }
 
     optional<DWORD> ProcessImpl::GetId() const noexcept
     {
-        return _processInformation.dwProcessId != 0L
-            ? optional<DWORD>(_processInformation.dwProcessId)
+        return _processId != 0L
+            ? optional<DWORD>(_processId)
             : nullopt;
     }
     bool ProcessImpl::IsRunning() const noexcept
     {
-        const auto details = GetRunningDetails(_processInformation.hProcess);
+        const auto details = GetRunningDetails(_processHandle.Get());
         return std::get<bool>(details);
     }
     std::optional<DWORD> ProcessImpl::ExitCode() const noexcept
     {
-        const auto details = GetRunningDetails(_processInformation.hProcess);
+        const auto details = GetRunningDetails(_processHandle.Get());
         return std::get<bool>(details)
             ? optional<DWORD>(std::get<DWORD>(details))
             : nullopt;
@@ -57,7 +89,7 @@ namespace System::Implementation
     {
         if (!IsRunning())
             return;
-        WaitForSingleObject(_processInformation.hProcess, INFINITE);
+        WaitForSingleObject(_processHandle.Get(), INFINITE);
     }
 
     std::tuple<bool, DWORD> ProcessImpl::GetRunningDetails(HANDLE processHandle)
@@ -78,5 +110,13 @@ namespace System::Implementation
         return CreateProcessA(filename.c_str(), commandLine.get(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, 
             nullptr, nullptr, startupInfo, processInfo) == TRUE;
     }
+    void ProcessImpl::LoadProcessInformation(const PROCESS_INFORMATION& processInformation)
+    {
+        _processHandle.Reset(processInformation.hProcess);
+        _processThreadHandle.Reset(processInformation.hThread);
+        _processId = processInformation.dwProcessId;
+        _processThreadId = processInformation.dwThreadId;
+    }
+
 
 }

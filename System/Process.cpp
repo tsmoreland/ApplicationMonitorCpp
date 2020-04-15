@@ -15,13 +15,15 @@
 #include "Process.h"
 #include "ProcessImpl.h"
 
-using ProcessImpl = System::Implementation::ProcessImpl;
+using ProcessImpl = Win32::Implementation::ProcessImpl;
 using std::unique_ptr;
 using std::make_unique;
+using std::move;
 using std::optional;
 using std::nullopt;
 
-namespace System
+#include <vector>
+namespace Win32
 {
 
     std::unique_ptr<Process> Process::Start(std::string const& filename, std::string const& arguments)
@@ -30,8 +32,12 @@ namespace System
         auto pImpl = make_unique<ProcessImpl>(filename, arguments);
         process.reset(new Process(pImpl.release()));
 
+        std::vector<std::shared_ptr<Process>> v;
+        auto x = v.begin();
+
         return process;
     }
+    Process::~Process() = default;
 
     optional<DWORD> Process::GetId() const noexcept
     {
@@ -40,23 +46,29 @@ namespace System
 
     bool Process::IsRunning() const noexcept
     {
-        return _pImpl->IsRunning();
+        return _pImpl ? _pImpl->IsRunning() : false;
     }
 
     optional<DWORD> Process::ExitCode() const noexcept
     {
-        return _pImpl->ExitCode();
+        return _pImpl ? _pImpl->ExitCode() : nullopt;
     }
 
     void Process::WaitForExit() const noexcept
     {
-        _pImpl-> WaitForExit();
+        if (_pImpl)
+            _pImpl-> WaitForExit();
     }
 
     Process::Process(ProcessImpl* pImpl)
         : _pImpl{pImpl}
     {
         
+    }
+    Process& Process::operator=(Process&& other) noexcept
+    {
+        _pImpl = move(other._pImpl);
+        return *this;
     }
 
 

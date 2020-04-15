@@ -15,7 +15,7 @@
 
 #include <new>
 
-namespace Shared::Win32
+namespace Shared
 {
     template <typename Traits>
     class UniqueHandle final

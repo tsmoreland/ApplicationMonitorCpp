@@ -16,7 +16,7 @@
  #include "UniqueHandle.h" 
 #include <windows.h>
 
-namespace Shared::Win32
+namespace Shared
 {
     struct NullHandleTraits
     {
