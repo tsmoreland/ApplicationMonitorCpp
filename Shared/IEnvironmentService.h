@@ -13,38 +13,24 @@
 
 #pragma once
 
-#include <memory>
 #include <optional>
-#include <string>
+#include <memory>
+#include <string_view>
+#include <vector>
 #include "IProcess.h"
 
-namespace Shared::Infrastructure
+namespace Shared::Services
 {
-    class ProcessImpl;
+    struct IEnvironmentService
+    {
+        IEnvironmentService(IEnvironmentService const&) = delete;
+        IEnvironmentService& operator=(IEnvironmentService const&) = delete;
+        IEnvironmentService(IEnvironmentService&&) noexcept = default;
+        IEnvironmentService& operator=(IEnvironmentService&& other) noexcept = default;
+        virtual ~IEnvironmentService() = default;
+
+        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) = 0;
+    };
 }
 
-namespace Shared::Model
-{
-    class Process final : public IProcess
-    {
-    public:
-        static std::unique_ptr<Process> Start(std::string_view const& filename, std::string_view const& arguments);
-        static std::vector<std::unique_ptr<Process>> GetProcessesByName(std::string_view const& processName);
-
-        [[nodiscard]] unsigned long GetId() const noexcept override;
-        [[nodiscard]] bool IsRunning() const noexcept override;
-        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept override;
-        void WaitForExit() const noexcept override;
-
-        ~Process() override;
-        Process(const Process&) = delete;
-        Process& operator=(const Process&) = delete;
-        Process(Process&&) noexcept = default;
-        Process& operator=(Process&&) noexcept;
-
-    private:
-        std::unique_ptr<Shared::Infrastructure::ProcessImpl> _pImpl{};
-        explicit Process(Shared::Infrastructure::ProcessImpl* pImpl);
-    };
-
-};
