@@ -15,55 +15,60 @@
 #include "Process.h"
 #include "ProcessImpl.h"
 
-using ProcessImpl = Win32::Implementation::ProcessImpl;
-using std::unique_ptr;
-using std::make_unique;
+using ProcessImpl = Shared::Infrastructure::ProcessImpl;
 using std::move;
 using std::optional;
-using std::nullopt;
+using std::string;
+using std::string_view;
+using std::unique_ptr;
+using std::vector;
 
-#include <vector>
-namespace Win32
+namespace Shared::Model
 {
-
-    std::unique_ptr<Process> Process::Start(std::string const& filename, std::string const& arguments)
+    unique_ptr<Process> Process::Start(string_view const& filename, string_view const& arguments)
     {
         unique_ptr<Process> process{};
-        auto pImpl = make_unique<ProcessImpl>(filename, arguments);
-        process.reset(new Process(pImpl.release()));
-
-        std::vector<std::shared_ptr<Process>> v;
-        auto x = v.begin();
-
+        process.reset(new Process(ProcessImpl::Start(filename, arguments).release()));
         return process;
     }
+    vector<unique_ptr<Process>> Process::GetProcessesByName(std::string_view const& filename)
+    {
+        const size_t minimumSize = 5;
+        auto processImplementations = ProcessImpl::GetProcessesByName(filename);
+        vector<unique_ptr<Process>> processes(std::min<>(processImplementations.size(), minimumSize));
+
+        // make_unique can't be used without some trickery to make it a friend function
+        for (auto& pImpl : processImplementations)
+            processes.push_back(move(unique_ptr<Process>(new Process(pImpl.get()))));
+        return processes;
+    }
+
     Process::~Process() = default;
 
-    optional<DWORD> Process::GetId() const noexcept
+    unsigned long Process::GetId() const noexcept
     {
-        return _pImpl ? _pImpl->GetId() : nullopt;
+        return _pImpl->GetId();
     }
 
     bool Process::IsRunning() const noexcept
     {
-        return _pImpl ? _pImpl->IsRunning() : false;
+        return _pImpl->IsRunning();
     }
 
     optional<DWORD> Process::ExitCode() const noexcept
     {
-        return _pImpl ? _pImpl->ExitCode() : nullopt;
+        return _pImpl->ExitCode();
     }
 
     void Process::WaitForExit() const noexcept
     {
-        if (_pImpl)
-            _pImpl-> WaitForExit();
+        _pImpl-> WaitForExit();
     }
 
     Process::Process(ProcessImpl* pImpl)
-        : _pImpl{pImpl}
+        : IProcess()
+        , _pImpl{pImpl}
     {
-        
     }
     Process& Process::operator=(Process&& other) noexcept
     {

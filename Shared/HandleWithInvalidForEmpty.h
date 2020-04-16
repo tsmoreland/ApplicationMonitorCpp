@@ -13,26 +13,25 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include "UniqueHandle.h"
 
-namespace Shared
+namespace Shared::Infrastructure
 {
-    struct NullHandleTraits
+    struct HandleWithInvalidForEmptyTraits
     {
         using Pointer = HANDLE;
 
         static Pointer Invalid() noexcept
         {
-            return nullptr;
+            return INVALID_HANDLE_VALUE;
         }
-        static void Close(const Pointer value) noexcept
+        static void Close(Pointer const value) noexcept
         {
             CloseHandle(value);
         }
-
     };
 
-    using NullHandle = UniqueHandle<NullHandleTraits>;
+    using HandleWithInvalidForEmpty = UniqueHandle<HandleWithInvalidForEmptyTraits>;
 
 }
+

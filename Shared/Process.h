@@ -13,37 +13,38 @@
 
 #pragma once
 
-#include <iterator>
 #include <memory>
+#include <optional>
+#include <string>
+#include "IProcess.h"
 
-namespace  Win32
+namespace Shared::Infrastructure
 {
-    class Process;
+    class ProcessImpl;
+}
 
-
-    class ProcessIterable final
+namespace Shared::Model
+{
+    class Process final : public IProcess
     {
     public:
-        class ProcessIterator final
-        {
-            using iterator_category = std::forward_iterator_tag;
-            using value_type = std::shared_ptr<Process>;
-            using difference_type = std::allocator_traits<std::shared_ptr<Process>>::difference_type;
-            using pointer = std::allocator_traits<std::shared_ptr<Process>>::pointer;
-            using reference = std::shared_ptr<Process>&;
+        static std::unique_ptr<Process> Start(std::string_view const& filename, std::string_view const& arguments);
+        static std::vector<std::unique_ptr<Process>> GetProcessesByName(std::string_view const& filename);
 
-            [[nodiscard]] reference operator*() const;
-            [[nodiscard]] reference operator->() const;
-            [[nodiscard]] ProcessIterator operator++() const;
-        };
+        [[nodiscard]] unsigned long GetId() const noexcept override;
+        [[nodiscard]] bool IsRunning() const noexcept override;
+        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept override;
+        void WaitForExit() const noexcept override;
 
-        using value_type = std::shared_ptr<Process>;
-        using iterator = ProcessIterator;
-        using const_iterator = const ProcessIterator;
+        ~Process() override;
+        Process(const Process&) = delete;
+        Process& operator=(const Process&) = delete;
+        Process(Process&&) noexcept = default;
+        Process& operator=(Process&&) noexcept;
 
-        [[nodiscard]] iterator begin() const noexcept;
-        [[nodiscard]] iterator end() const noexcept;
+    private:
+        std::unique_ptr<Shared::Infrastructure::ProcessImpl> _pImpl{};
+        explicit Process(Shared::Infrastructure::ProcessImpl* pImpl);
     };
 
-
-}
+};

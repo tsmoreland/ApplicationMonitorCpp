@@ -156,11 +156,6 @@
     <ClCompile Include="Console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\System\System.vcxproj">
-      <Project>{6f2be65e-22ae-4ff9-8ca3-1cb5327d886c}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <CopyFileToFolders Include="..\3rdParty\bin\Debuggers\gflags.exe">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>

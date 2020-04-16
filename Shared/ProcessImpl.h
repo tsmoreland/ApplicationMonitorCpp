@@ -13,33 +13,39 @@
 
 #pragma once
 
-namespace Win32::Implementation
+namespace Shared::Infrastructure
 {
     class ProcessImpl final
     {
     public:
-        ProcessImpl(std::string const& filename, std::string const& arguments);
+        static std::unique_ptr<ProcessImpl> Start(std::string_view const& filename, std::string_view const& arguments);
+        static std::vector<std::unique_ptr<ProcessImpl>> GetProcessesByName(std::string_view const& filename);
+
         ProcessImpl(const ProcessImpl&) = delete;
         ProcessImpl& operator=(const ProcessImpl&) = delete;
         ProcessImpl(ProcessImpl&& other) noexcept;
         ProcessImpl& operator=(ProcessImpl&& other) noexcept;
         ~ProcessImpl() = default;
 
-        [[nodiscard]] std::optional<DWORD> GetId() const noexcept;
+        [[nodiscard]] unsigned long GetId() const noexcept;
         [[nodiscard]] bool IsRunning() const noexcept;
-        [[nodiscard]] std::optional<DWORD> ExitCode() const noexcept;
-        void WaitForExit() const;
+        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept;
+        void WaitForExit() const noexcept;
 
+        [[nodiscard]] bool Equals(ProcessImpl const& other) const noexcept;
     private:
-        DWORD _processId;
-        DWORD _processThreadId;
-        Shared::NullHandle _processHandle;
-        Shared::NullHandle _processThreadHandle;
+        unsigned long _processId;
+        unsigned long _processThreadId;
+        Shared::Infrastructure::HandleWithNullForEmpty _processHandle;
+        Shared::Infrastructure::HandleWithNullForEmpty _processThreadHandle;
 
-        static bool CreateProcessAdapter(std::string const& filename, std::string const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
-        static std::tuple<bool, DWORD> GetRunningDetails(HANDLE processHandle);
-        void LoadProcessInformation(const PROCESS_INFORMATION& processInformation);
+        explicit ProcessImpl();
+        explicit ProcessImpl(PROCESS_INFORMATION const& processInformation);
+        static bool CreateProcessAdapter(std::string const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
+        static std::tuple<bool, unsigned long> GetRunningDetails(HANDLE processHandle);
     };
+
+    bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide);
 
 }
 
