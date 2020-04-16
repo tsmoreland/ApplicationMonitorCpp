@@ -154,7 +154,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="EnvironmentService.h" />
     <ClInclude Include="HandleWithInvalidForEmpty.h" />
+    <ClInclude Include="IEnvironmentService.h" />
     <ClInclude Include="IProcess.h" />
     <ClInclude Include="HandleWithNullForEmpty.h" />
     <ClInclude Include="pch.h" />

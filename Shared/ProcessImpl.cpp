@@ -53,7 +53,7 @@ namespace Shared::Infrastructure
         return unique_ptr<ProcessImpl>(new ProcessImpl(processInformation)); 
 
     }
-    vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& filename)
+    vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& processName)
     {
         vector<unique_ptr<ProcessImpl>> processes;
 

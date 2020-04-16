@@ -57,6 +57,12 @@
     <ClInclude Include="UniqueHandle.h">
       <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
+    <ClInclude Include="IEnvironmentService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
