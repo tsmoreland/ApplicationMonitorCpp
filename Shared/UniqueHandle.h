@@ -15,7 +15,7 @@
 
 #include <new>
 
-namespace Shared
+namespace Shared::Infrastructure
 {
     template <typename Traits>
     class UniqueHandle final
@@ -59,7 +59,7 @@ namespace Shared
         UniqueHandle& operator=(UniqueHandle&& other) noexcept
         {
             if (this != &other)
-                reset(other.Release());
+                Reset(other.Release());
             return *this;
         }
         ~UniqueHandle()

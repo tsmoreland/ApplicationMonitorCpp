@@ -14,6 +14,7 @@
 #include "pch.h"
 #include "ProcessImpl.h"
 #include <tuple>
+#include <tlhelp32.h>
 
 namespace Filesystem = std::filesystem;
 
@@ -23,13 +24,17 @@ using std::move;
 using std::nullopt;
 using std::optional;
 using std::string;
+using std::string_view;
 using std::tuple;
+using std::unique_ptr;
+using std::vector;
 
-namespace Win32::Implementation
+using Shared::Infrastructure::HandleWithNullForEmpty;
+using Shared::Infrastructure::HandleWithInvalidForEmpty;
+
+namespace Shared::Infrastructure
 {
-    ProcessImpl::ProcessImpl(string const& filename, string const& arguments)
-        : _processId{}
-        , _processThreadId{}
+    unique_ptr<ProcessImpl> ProcessImpl::Start(string_view const& filename, string_view const& arguments)
     {
         const auto absolutePath = Filesystem::absolute(filename).string();
 
@@ -40,10 +45,37 @@ namespace Win32::Implementation
         startupInfo.cb = sizeof(startupInfo);
         PROCESS_INFORMATION processInformation{};
 
+        unique_ptr<ProcessImpl> process{};
         if (!CreateProcessAdapter(absolutePath, arguments, &startupInfo, &processInformation))
-            throw std::bad_exception();
+            return process;
 
-        LoadProcessInformation(processInformation);
+        // make_unique won't work unless we do some trickery to make it a friend function
+        return unique_ptr<ProcessImpl>(new ProcessImpl(processInformation)); 
+
+    }
+    vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& filename)
+    {
+        vector<unique_ptr<ProcessImpl>> processes;
+
+        PROCESSENTRY32 entry;
+        entry.dwSize = sizeof(PROCESSENTRY32);
+
+        HandleWithInvalidForEmpty handle(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0UL));
+
+        return processes;
+    }
+
+    ProcessImpl::ProcessImpl()
+        : _processId(0UL)
+        , _processThreadId(0UL)
+    {
+    }
+    ProcessImpl::ProcessImpl(PROCESS_INFORMATION const& processInformation)
+    {
+        _processHandle.Reset(processInformation.hProcess);
+        _processThreadHandle.Reset(processInformation.hThread);
+        _processId = processInformation.dwProcessId;
+        _processThreadId = processInformation.dwThreadId;
     }
     ProcessImpl::ProcessImpl(ProcessImpl&& other) noexcept
         : _processId{other._processId}
@@ -67,32 +99,39 @@ namespace Win32::Implementation
         return *this;
     }
 
-    optional<DWORD> ProcessImpl::GetId() const noexcept
+    unsigned long ProcessImpl::GetId() const noexcept
     {
-        return _processId != 0L
-            ? optional<DWORD>(_processId)
-            : nullopt;
+        return _processId;
     }
     bool ProcessImpl::IsRunning() const noexcept
     {
         const auto details = GetRunningDetails(_processHandle.Get());
         return std::get<bool>(details);
     }
-    std::optional<DWORD> ProcessImpl::ExitCode() const noexcept
+    std::optional<unsigned long> ProcessImpl::ExitCode() const noexcept
     {
         const auto details = GetRunningDetails(_processHandle.Get());
         return std::get<bool>(details)
-            ? optional<DWORD>(std::get<DWORD>(details))
+            ? optional<unsigned long>(std::get<DWORD>(details))
             : nullopt;
     }
-    void ProcessImpl::WaitForExit() const
+    void ProcessImpl::WaitForExit() const noexcept
     {
-        if (!IsRunning())
-            return;
-        WaitForSingleObject(_processHandle.Get(), INFINITE);
+        if (IsRunning())
+            WaitForSingleObject(_processHandle.Get(), INFINITE);
     }
 
-    std::tuple<bool, DWORD> ProcessImpl::GetRunningDetails(HANDLE processHandle)
+    bool ProcessImpl::Equals(ProcessImpl const& other) const noexcept
+    { 
+        if (&other == nullptr)
+            return false;
+
+        return _processId == other._processId &&
+            _processId == other._processThreadId &&
+            _processHandle.Get() == other._processHandle.Get() &&
+            _processThreadHandle.Get() == other._processThreadHandle.Get();
+    }
+    tuple<bool, unsigned long> ProcessImpl::GetRunningDetails(HANDLE processHandle)
     {
         DWORD exitCode{};
         if (GetExitCodeProcess(processHandle, &exitCode) || GetLastError() != STILL_ACTIVE)
@@ -102,7 +141,7 @@ namespace Win32::Implementation
             ? tuple(true, exitCode)
             : tuple(false, exitCode);
     }
-    bool ProcessImpl::CreateProcessAdapter(string const& filename, string const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo)
+    bool ProcessImpl::CreateProcessAdapter(string const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo)
     {
         const auto commandLine = make_unique<char[]>(32768); // max size of command line which cannot be readonly
         arguments.copy(commandLine.get(), std::min<size_t>(arguments.size(), 32768L));
@@ -110,13 +149,10 @@ namespace Win32::Implementation
         return CreateProcessA(filename.c_str(), commandLine.get(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, 
             nullptr, nullptr, startupInfo, processInfo) == TRUE;
     }
-    void ProcessImpl::LoadProcessInformation(const PROCESS_INFORMATION& processInformation)
+    bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide)
     {
-        _processHandle.Reset(processInformation.hProcess);
-        _processThreadHandle.Reset(processInformation.hThread);
-        _processId = processInformation.dwProcessId;
-        _processThreadId = processInformation.dwThreadId;
+        return &leftHandSide == &rightHandSide ||
+            &leftHandSide != nullptr && leftHandSide.Equals(rightHandSide);
     }
-
 
 }

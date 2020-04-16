@@ -13,36 +13,17 @@
 
 #pragma once
 
-#include "NullHandle.h"
+#include "boolinq/boolinq.h"
+#include <string>
+#include <string_view>
 #include <memory>
 #include <optional>
-#include <string>
+#include <filesystem>
+#include <vector>
 
-namespace Win32
-{
-    namespace Implementation
-    {
-        class ProcessImpl;
-    }
+#include <windows.h>
+#include <sdkddkver.h>
+#include <processthreadsapi.h>
 
-    class Process final
-    {
-    public:
-        static std::unique_ptr<Process> Start(std::string const& filename, std::string const& arguments);
-        [[nodiscard]] std::optional<DWORD> GetId() const noexcept;
-        [[nodiscard]] bool IsRunning() const noexcept;
-        [[nodiscard]] std::optional<DWORD> ExitCode() const noexcept;
-        void WaitForExit() const noexcept;
-
-        ~Process();
-        Process(const Process&) = delete;
-        Process& operator=(const Process&) = delete;
-        Process(Process&&) noexcept = default;
-        Process& operator=(Process&&) noexcept;
-
-    private:
-        std::unique_ptr<Implementation::ProcessImpl> _pImpl{};
-        explicit Process(Implementation::ProcessImpl* pImpl);
-    };
-
-};
+#include "HandleWithInvalidForEmpty.h"
+#include "HandleWithNullForEmpty.h"

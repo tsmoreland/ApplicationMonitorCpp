@@ -13,12 +13,26 @@
 
 #pragma once
 
-#include <sdkddkver.h>
+ #include "UniqueHandle.h" 
 #include <windows.h>
-#include <string>
-#include <memory>
-#include <optional>
-#include <processthreadsapi.h>
-#include <filesystem>
 
-#include "NullHandle.h"
+namespace Shared::Infrastructure
+{
+    struct HandleWithNullForEmptyTraits
+    {
+        using Pointer = HANDLE;
+
+        static Pointer Invalid() noexcept
+        {
+            return nullptr;
+        }
+        static void Close(Pointer const value) noexcept
+        {
+            CloseHandle(value);
+        }
+
+    };
+
+    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
+
+}

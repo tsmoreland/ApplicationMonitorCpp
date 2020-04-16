@@ -20,11 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\3rdParty\bin\Debuggers\gflags.exe">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\3rdParty\bin\Debuggers\umdh.exe">
-      <Filter>Resource Files</Filter>
-    </None>
+    <CopyFileToFolders Include="..\3rdParty\bin\Debuggers\gflags.exe" />
+    <CopyFileToFolders Include="..\3rdParty\bin\Debuggers\umdh.exe" />
   </ItemGroup>
 </Project>
