@@ -13,6 +13,7 @@
 
 #include "pch.h"
 #include "ProcessImpl.h"
+#include "ProcessIterable.h"
 #include <tuple>
 #include <tlhelp32.h>
 
@@ -24,11 +25,14 @@ using std::move;
 using std::nullopt;
 using std::optional;
 using std::string;
+using std::string_equal;
 using std::string_view;
 using std::tuple;
 using std::unique_ptr;
 using std::vector;
+using std::wstring_view;
 
+using boolinq::from;
 using Shared::Infrastructure::HandleWithNullForEmpty;
 using Shared::Infrastructure::HandleWithInvalidForEmpty;
 
@@ -55,14 +59,24 @@ namespace Shared::Infrastructure
     }
     vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& processName)
     {
-        vector<unique_ptr<ProcessImpl>> processes;
 
-        PROCESSENTRY32 entry;
-        entry.dwSize = sizeof(PROCESSENTRY32);
+        const auto processIterable = ProcessIterable::GetProcesses();
+        if (!processIterable.has_value())
+            return vector<unique_ptr<ProcessImpl>>();
 
-        HandleWithInvalidForEmpty handle(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0UL));
+        auto& processes = processIterable.value();
+        for (auto& process : processes)
+        {
+            if (!process.has_value())
+                continue;
+            
+            if (auto const exeView = wstring_view(process.value().szExeFile, wcslen(process.value().szExeFile));
+                string_equal(processName, exeView, true))
+            {
+            }
+        }
 
-        return processes;
+        return vector<unique_ptr<ProcessImpl>>();
     }
 
     ProcessImpl::ProcessImpl()

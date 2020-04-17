@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Services">
       <UniqueIdentifier>{cd3867cc-2de6-4139-b697-54fb2790485e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Extensions">
+      <UniqueIdentifier>{69eac279-0c65-4877-a1cb-30c48b7b187b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -41,9 +44,6 @@
     </ClInclude>
     <ClInclude Include="IProcess.h">
       <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessIteratable.h">
-      <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="ProcessImpl.h">
       <Filter>Header Files\Infrastructure</Filter>
@@ -63,6 +63,12 @@
     <ClInclude Include="EnvironmentService.h">
       <Filter>Header Files\Services</Filter>
     </ClInclude>
+    <ClInclude Include="ProcessIterable.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="string_extensions.h">
+      <Filter>Header Files\Extensions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -72,6 +78,9 @@
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="ProcessImpl.cpp">
+      <Filter>Source Files\Infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessIterable.cpp">
       <Filter>Source Files\Infrastructure</Filter>
     </ClCompile>
   </ItemGroup>
