@@ -20,6 +20,9 @@
 #include <optional>
 #include <filesystem>
 #include <vector>
+#include <algorithm>
+
+#include "string_extensions.h"
 
 #include <windows.h>
 #include <sdkddkver.h>

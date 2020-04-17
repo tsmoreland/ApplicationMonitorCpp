@@ -12,10 +12,10 @@
 // 
 
 #pragma once
+#include <tlhelp32.h>
 
 namespace Shared::Infrastructure
 {
-    /*
     class Process;
 
     class ProcessIterable final
@@ -23,25 +23,52 @@ namespace Shared::Infrastructure
     public:
         class ProcessIterator final
         {
+        public:
             using iterator_category = std::forward_iterator_tag;
-            using value_type = std::shared_ptr<Process>;
-            using difference_type = std::allocator_traits<std::shared_ptr<Process>>::difference_type;
-            using pointer = std::allocator_traits<std::shared_ptr<Process>>::pointer;
-            using reference = std::shared_ptr<Process>&;
+            using value_type = std::optional<PROCESSENTRY32>;
+            using difference_type = std::allocator_traits<std::optional<PROCESSENTRY32>>::difference_type;
+            using pointer = std::allocator_traits<std::optional<PROCESSENTRY32>>::pointer;
+            using reference = std::optional<PROCESSENTRY32>&;
+            using const_reference = std::optional<PROCESSENTRY32> const&;
 
-            [[nodiscard]] reference operator*() const;
-            [[nodiscard]] reference operator->() const;
+            [[nodiscard]] reference operator*();
+            [[nodiscard]] reference operator->();
+            [[nodiscard]] const_reference operator*() const;
+            [[nodiscard]] const_reference operator->() const;
             [[nodiscard]] ProcessIterator operator++() const;
+
+            static ProcessIterator& end();
+            [[nodiscard]] bool IsEqual(ProcessIterator const& other) const;
+
+            friend class ProcessIterable;
+        private:
+            explicit ProcessIterator(HANDLE snapshot);
+            explicit ProcessIterator();
+
+            std::optional<PROCESSENTRY32> _entry{};
+            HANDLE _snapshot;
         };
 
-        using value_type = std::shared_ptr<Process>;
+        using value_type = std::optional<PROCESSENTRY32>;
         using iterator = ProcessIterator;
-        using const_iterator = const ProcessIterator;
+        using const_iterator = ProcessIterator const;
 
         [[nodiscard]] iterator begin() const noexcept;
         [[nodiscard]] iterator end() const noexcept;
+        [[nodiscard]] const_iterator cbegin() const noexcept;
+        [[nodiscard]] const_iterator cend() const noexcept;
+
+        [[nodiscard]] static std::optional<ProcessIterable> GetProcesses();
+
+    private:
+        explicit ProcessIterable();
+
+        Shared::Infrastructure::HandleWithInvalidForEmpty _snapshotHandle;
+
     };
-    */
+
+    [[nodiscard]] bool operator==(ProcessIterable::ProcessIterator const& leftHandSide, ProcessIterable::ProcessIterator const& rightHandSide);
+
 
     /* eventual goal:
 
