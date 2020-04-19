@@ -23,7 +23,7 @@ using std::string_view;
 using std::unique_ptr;
 using std::vector;
 
-namespace Shared::Model
+namespace Shared::Domain
 {
     unique_ptr<Process> Process::Start(string_view const& filename, string_view const& arguments)
     {

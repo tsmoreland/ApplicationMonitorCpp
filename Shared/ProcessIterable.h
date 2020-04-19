@@ -35,7 +35,7 @@ namespace Shared::Infrastructure
             [[nodiscard]] reference operator->();
             [[nodiscard]] const_reference operator*() const;
             [[nodiscard]] const_reference operator->() const;
-            [[nodiscard]] ProcessIterator operator++() const;
+            [[maybe_unused]] ProcessIterator operator++() const;
 
             static ProcessIterator& end();
             [[nodiscard]] bool IsEqual(ProcessIterator const& other) const;
