@@ -13,21 +13,20 @@
 
 #pragma once
 
-#include "boolinq/boolinq.h"
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
+namespace Shared::Infrastructure
+{
+    class not_found_exception : public std::exception
+    {
+    public:
+        explicit not_found_exception(char const * const what)
+            : exception(what) 
+        {
+        }
+        not_found_exception(not_found_exception const&) = default;
+        not_found_exception& operator=(not_found_exception const&) = default;
+        not_found_exception(not_found_exception&&) noexcept = default;
+        not_found_exception& operator=(not_found_exception&&) noexcept = default;
+        virtual ~not_found_exception() = default;
+    };
 
-#include "string_extensions.h"
-
-#include <windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
-
-#include "HandleWithInvalidForEmpty.h"
-#include "HandleWithNullForEmpty.h"
-#include "not_found_exception.h"
+}

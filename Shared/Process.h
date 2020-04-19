@@ -23,7 +23,7 @@ namespace Shared::Infrastructure
     class ProcessImpl;
 }
 
-namespace Shared::Model
+namespace Shared::Domain
 {
     class Process final : public IProcess
     {

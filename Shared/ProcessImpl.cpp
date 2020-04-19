@@ -15,7 +15,6 @@
 #include "ProcessImpl.h"
 #include "ProcessIterable.h"
 #include <tuple>
-#include <tlhelp32.h>
 
 namespace Filesystem = std::filesystem;
 
@@ -27,10 +26,12 @@ using std::optional;
 using std::string;
 using std::string_equal;
 using std::string_view;
+using std::to_string;
 using std::tuple;
 using std::unique_ptr;
 using std::vector;
 using std::wstring_view;
+using std::literals::string_literals::operator""s;
 
 using boolinq::from;
 using Shared::Infrastructure::HandleWithNullForEmpty;
@@ -47,6 +48,8 @@ namespace Shared::Infrastructure
 
         STARTUPINFOA startupInfo{};
         startupInfo.cb = sizeof(startupInfo);
+        startupInfo.dwFlags = STARTF_USESTDHANDLES;
+        //startupInfo.wShowWindow = SW_HIDE;
         PROCESS_INFORMATION processInformation{};
 
         unique_ptr<ProcessImpl> process{};
@@ -59,12 +62,12 @@ namespace Shared::Infrastructure
     }
     vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& processName)
     {
-
         const auto processIterable = ProcessIterable::GetProcesses();
         if (!processIterable.has_value())
             return vector<unique_ptr<ProcessImpl>>();
 
-        auto& processes = processIterable.value();
+        auto const& processes = processIterable.value();
+        vector<unique_ptr<ProcessImpl>> filtered{};
         for (auto& process : processes)
         {
             if (!process.has_value())
@@ -73,16 +76,18 @@ namespace Shared::Infrastructure
             if (auto const exeView = wstring_view(process.value().szExeFile, wcslen(process.value().szExeFile));
                 string_equal(processName, exeView, true))
             {
+                filtered.emplace_back(new ProcessImpl(process.value().th32ProcessID));
             }
         }
 
-        return vector<unique_ptr<ProcessImpl>>();
+        return filtered;
     }
 
-    ProcessImpl::ProcessImpl()
-        : _processId(0UL)
+    ProcessImpl::ProcessImpl(unsigned long const processId)
+        : _processId(processId)
         , _processThreadId(0UL)
     {
+        _processHandle.Reset( OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId));
     }
     ProcessImpl::ProcessImpl(PROCESS_INFORMATION const& processInformation)
     {
@@ -117,19 +122,26 @@ namespace Shared::Infrastructure
     {
         return _processId;
     }
-    bool ProcessImpl::IsRunning() const noexcept
+    bool ProcessImpl::IsRunning() const 
     {
         const auto details = GetRunningDetails(_processHandle.Get());
         return std::get<bool>(details);
     }
     std::optional<unsigned long> ProcessImpl::ExitCode() const noexcept
     {
-        const auto details = GetRunningDetails(_processHandle.Get());
-        return std::get<bool>(details)
-            ? optional<unsigned long>(std::get<DWORD>(details))
-            : nullopt;
+        try
+        {
+            const auto details = GetRunningDetails(_processHandle.Get());
+            return std::get<bool>(details)
+                ? optional<unsigned long>(std::get<DWORD>(details))
+                : nullopt;
+        }
+        catch (std::runtime_error&)
+        {
+            return nullopt;
+        }
     }
-    void ProcessImpl::WaitForExit() const noexcept
+    void ProcessImpl::WaitForExit() const 
     {
         if (IsRunning())
             WaitForSingleObject(_processHandle.Get(), INFINITE);
@@ -148,19 +160,28 @@ namespace Shared::Infrastructure
     tuple<bool, unsigned long> ProcessImpl::GetRunningDetails(HANDLE processHandle)
     {
         DWORD exitCode{};
-        if (GetExitCodeProcess(processHandle, &exitCode) || GetLastError() != STILL_ACTIVE)
-            return tuple(false, exitCode);
 
-        return WaitForSingleObject(processHandle, 0) == WAIT_TIMEOUT
-            ? tuple(true, exitCode)
+        auto const getExitProcessSuccess = GetExitCodeProcess(processHandle, &exitCode);
+        if (!getExitProcessSuccess)
+            throw std::runtime_error(("GetExitCodeProcess failed with "s + to_string(GetLastError())).c_str());
+
+        return exitCode == STILL_ACTIVE
+            ? tuple(true, 0UL)
             : tuple(false, exitCode);
     }
     bool ProcessImpl::CreateProcessAdapter(string const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo)
     {
-        const auto commandLine = make_unique<char[]>(32768); // max size of command line which cannot be readonly
-        arguments.copy(commandLine.get(), std::min<size_t>(arguments.size(), 32768L));
+        auto const maxPath = 256UL;
+        auto const commandLine = make_unique<char[]>(32768); // max size of command line which cannot be readonly
+        auto const filenameLength = std::min<size_t>(filename.size(), maxPath);
 
-        return CreateProcessA(filename.c_str(), commandLine.get(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW, 
+        filename.copy(commandLine.get(), filenameLength);
+        commandLine[filenameLength] = ' ';
+        arguments.copy(&commandLine.get()[filenameLength+1], std::min<size_t>(arguments.size(), 32768L - maxPath - 1UL));
+
+        auto *const commandLineString = commandLine.get();
+
+        return CreateProcessA(nullptr, commandLineString, nullptr, nullptr, TRUE, 0UL, 
             nullptr, nullptr, startupInfo, processInfo) == TRUE;
     }
     bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide)
