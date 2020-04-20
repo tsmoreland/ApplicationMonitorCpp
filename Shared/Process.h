@@ -28,8 +28,8 @@ namespace Shared::Domain
     class Process final : public IProcess
     {
     public:
-        static std::unique_ptr<Process> Start(std::string_view const& filename, std::string_view const& arguments);
-        static std::vector<std::unique_ptr<Process>> GetProcessesByName(std::string_view const& processName);
+        static std::unique_ptr<IProcess> Start(std::string_view const& filename, std::string_view const& arguments);
+        static std::vector<std::unique_ptr<IProcess>> GetProcessesByName(std::string_view const& processName);
 
         [[nodiscard]] unsigned long GetId() const noexcept override;
         [[nodiscard]] bool IsRunning() const noexcept override;

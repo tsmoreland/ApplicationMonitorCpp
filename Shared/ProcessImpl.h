@@ -42,7 +42,7 @@ namespace Shared::Infrastructure
         HandleWithNullForEmpty _processThreadHandle;
 
         explicit ProcessImpl(PROCESS_INFORMATION const& processInformation);
-        static bool CreateProcessAdapter(std::string const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
+        static bool CreateProcessAdapter(std::string_view const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
         static std::tuple<bool, unsigned long> GetRunningDetails(HANDLE processHandle);
     };
 

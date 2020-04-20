@@ -168,6 +168,7 @@
     <ClInclude Include="UniqueHandle.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EnvironmentService.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="ProcessImpl.cpp" />

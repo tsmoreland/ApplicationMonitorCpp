@@ -31,7 +31,11 @@ using std::tuple;
 using std::unique_ptr;
 using std::vector;
 using std::wstring_view;
+
+#pragma warning(push)
+#pragma warning(disable:4455)
 using std::literals::string_literals::operator""s;
+#pragma warning(pop)
 
 using boolinq::from;
 using Shared::Infrastructure::HandleWithNullForEmpty;
@@ -73,6 +77,9 @@ namespace Shared::Infrastructure
             if (!process.has_value())
                 continue;
             
+            auto const procName = process.value().szExeFile;
+            std::wcout << procName << std::endl;
+
             if (auto const exeView = wstring_view(process.value().szExeFile, wcslen(process.value().szExeFile));
                 string_equal(processName, exeView, true))
             {
@@ -169,7 +176,7 @@ namespace Shared::Infrastructure
             ? tuple(true, 0UL)
             : tuple(false, exitCode);
     }
-    bool ProcessImpl::CreateProcessAdapter(string const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo)
+    bool ProcessImpl::CreateProcessAdapter(string_view const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo)
     {
         auto const maxPath = 256UL;
         auto const commandLine = make_unique<char[]>(32768); // max size of command line which cannot be readonly
@@ -181,7 +188,7 @@ namespace Shared::Infrastructure
 
         auto *const commandLineString = commandLine.get();
 
-        return CreateProcessA(nullptr, commandLineString, nullptr, nullptr, TRUE, 0UL, 
+        return CreateProcessA(nullptr, commandLineString, nullptr, nullptr, TRUE, CREATE_NO_WINDOW, 
             nullptr, nullptr, startupInfo, processInfo) == TRUE;
     }
     bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide)
