@@ -13,7 +13,7 @@
 
 #pragma once
 
-namespace Shared::Domain
+namespace Shared::Model
 {
     struct IProcess
     {
