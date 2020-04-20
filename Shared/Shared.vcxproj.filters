@@ -16,9 +16,6 @@
     <Filter Include="Header Files\Infrastructure">
       <UniqueIdentifier>{555ef3bc-8d2d-4258-a8db-78af7b2071a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Model">
-      <UniqueIdentifier>{a93efb25-6e6c-4963-a8d0-f6c4f3f60eb7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Services">
       <UniqueIdentifier>{a7ab1828-881f-4ab9-ba8d-acef1f32060a}</UniqueIdentifier>
     </Filter>
@@ -33,6 +30,9 @@
     </Filter>
     <Filter Include="Header Files\Extensions">
       <UniqueIdentifier>{69eac279-0c65-4877-a1cb-30c48b7b187b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model">
+      <UniqueIdentifier>{a93efb25-6e6c-4963-a8d0-f6c4f3f60eb7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

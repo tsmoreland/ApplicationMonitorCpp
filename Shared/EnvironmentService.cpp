@@ -18,16 +18,17 @@
 
 using std::nullopt;
 using std::optional;
+using std::string;
 using std::string_view;
 using std::unique_ptr;
 using std::vector;
 
-using Shared::Domain::IProcess;
-using Shared::Domain::Process;
+using Shared::Model::IProcess;
+using Shared::Model::Process;
 
 namespace Shared::Services
 {
-    optional<std::unique_ptr<Shared::Domain::IProcess>> EnvironmentService::StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept
+    optional<unique_ptr<IProcess>> EnvironmentService::StartProcess(string_view const& filename, string_view const& arguments) const noexcept
     {
         try
         {
@@ -39,7 +40,7 @@ namespace Shared::Services
         }
     }
 
-    vector<std::unique_ptr<Shared::Domain::IProcess>> EnvironmentService::GetProcessesByName(std::string_view const& processName) const noexcept
+    vector<unique_ptr<IProcess>> EnvironmentService::GetProcessesByName(string_view const& processName) const noexcept
     {
         try
         {
@@ -49,5 +50,16 @@ namespace Shared::Services
         {
             return vector<unique_ptr<IProcess>>();
         }
+    }
+    std::optional<std::string> EnvironmentService::GetVariable(std::string const& key) const noexcept
+    {
+        char value[4096]{};
+        if (GetEnvironmentVariableA(key.c_str(), value, 16384) == FALSE)
+            return nullopt;
+        return optional(string(value));
+    }
+    bool EnvironmentService::SetVariable(std::string const& key, std::string const& value) const noexcept
+    {
+        return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
     }
 }
