@@ -25,21 +25,21 @@ using std::vector;
 
 namespace Shared::Domain
 {
-    unique_ptr<Process> Process::Start(string_view const& filename, string_view const& arguments)
+    unique_ptr<IProcess> Process::Start(string_view const& filename, string_view const& arguments)
     {
         unique_ptr<Process> process{};
         process.reset(new Process(ProcessImpl::Start(filename, arguments).release()));
         return process;
     }
-    vector<unique_ptr<Process>> Process::GetProcessesByName(std::string_view const& filename)
+    vector<unique_ptr<IProcess>> Process::GetProcessesByName(std::string_view const& processName)
     {
         const size_t minimumSize = 5;
-        auto processImplementations = ProcessImpl::GetProcessesByName(filename);
-        vector<unique_ptr<Process>> processes(std::min<>(processImplementations.size(), minimumSize));
+        auto processImplementations = ProcessImpl::GetProcessesByName(processName);
+        vector<unique_ptr<IProcess>> processes(std::min<>(processImplementations.size(), minimumSize));
 
         // make_unique can't be used without some trickery to make it a friend function
         for (auto& pImpl : processImplementations)
-            processes.push_back(move(unique_ptr<Process>(new Process(pImpl.get()))));
+            processes.emplace_back(new Process(pImpl.get()));
         return processes;
     }
 

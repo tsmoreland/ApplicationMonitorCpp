@@ -10,28 +10,19 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
-
+    
 #pragma once
 
-#include <optional>
-#include <memory>
-#include <string_view>
-#include <vector>
 #include "IProcess.h"
 
 namespace Shared::Services
 {
-    struct IEnvironmentService
+    class EnvironmentServices
     {
-        IEnvironmentService() = default;
-        IEnvironmentService(IEnvironmentService const&) = default;
-        IEnvironmentService& operator=(IEnvironmentService const&) = default;
-        IEnvironmentService(IEnvironmentService&&) noexcept = default;
-        IEnvironmentService& operator=(IEnvironmentService&& other) noexcept = default;
-        virtual ~IEnvironmentService() = default;
+    public:
+        explicit EnvironmentServices() = default();
 
-        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Domain::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
-        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Domain::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
+        std::unique_ptr<Shared::Domain::IProcess> StartProcess(std::string_view const& filename, std::string_view const& arguments);
     };
-}
 
+}

@@ -11,27 +11,43 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "IEnvironmentService.h"
+#include "EnvironmentService.h"
+#include "Process.h"
 
-#include <optional>
-#include <memory>
-#include <string_view>
-#include <vector>
-#include "IProcess.h"
+using std::nullopt;
+using std::optional;
+using std::string_view;
+using std::unique_ptr;
+using std::vector;
+
+using Shared::Domain::IProcess;
+using Shared::Domain::Process;
 
 namespace Shared::Services
 {
-    struct IEnvironmentService
+    optional<std::unique_ptr<Shared::Domain::IProcess>> EnvironmentService::StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept
     {
-        IEnvironmentService() = default;
-        IEnvironmentService(IEnvironmentService const&) = default;
-        IEnvironmentService& operator=(IEnvironmentService const&) = default;
-        IEnvironmentService(IEnvironmentService&&) noexcept = default;
-        IEnvironmentService& operator=(IEnvironmentService&& other) noexcept = default;
-        virtual ~IEnvironmentService() = default;
+        try
+        {
+            return optional<unique_ptr<IProcess>>(Process::Start(filename, arguments));
+        }
+        catch (const std::exception&)
+        {
+            return nullopt;
+        }
+    }
 
-        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Domain::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
-        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Domain::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
-    };
+    vector<std::unique_ptr<Shared::Domain::IProcess>> EnvironmentService::GetProcessesByName(std::string_view const& processName) const noexcept
+    {
+        try
+        {
+            return Process::GetProcessesByName(processName);
+        }
+        catch (const std::exception&)
+        {
+            return vector<unique_ptr<IProcess>>();
+        }
+    }
 }
-

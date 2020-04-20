@@ -12,3 +12,23 @@
 // 
 
 #pragma once
+
+#include "IEnvironmentService.h"
+
+namespace Shared::Services
+{
+    class EnvironmentService final : public IEnvironmentService
+    {
+    public:
+        EnvironmentService() = default;
+        EnvironmentService(const EnvironmentService&) = default;
+        EnvironmentService(EnvironmentService&&) noexcept = default;
+        EnvironmentService& operator=(const EnvironmentService&) = default;
+        EnvironmentService& operator=(EnvironmentService&&) noexcept = default;
+        ~EnvironmentService() = default;
+
+        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Domain::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept final override;
+        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Domain::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept final override;
+    };
+
+}
