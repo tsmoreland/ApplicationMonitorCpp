@@ -13,7 +13,6 @@
 
 #include "pch.h"
 #include "ProcessImpl.h"
-#include "ProcessIterable.h"
 #include <tuple>
 
 namespace Filesystem = std::filesystem;
@@ -66,27 +65,16 @@ namespace Shared::Infrastructure
     }
     vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& processName)
     {
-        const auto processIterable = ProcessIterable::GetProcesses();
-        if (!processIterable.has_value())
-            return vector<unique_ptr<ProcessImpl>>();
-
-        auto const& processes = processIterable.value();
+        auto const entries = GetProcessEntries();
         vector<unique_ptr<ProcessImpl>> filtered{};
-        for (auto& process : processes)
+        for (auto const& processEntry : entries)
         {
-            if (!process.has_value())
-                continue;
-            
-            auto const procName = process.value().szExeFile;
-            std::wcout << procName << std::endl;
-
-            if (auto const exeView = wstring_view(process.value().szExeFile, wcslen(process.value().szExeFile));
+            if (auto const exeView = wstring_view(processEntry.szExeFile, wcslen(processEntry.szExeFile));
                 string_equal(processName, exeView, true))
             {
-                filtered.emplace_back(new ProcessImpl(process.value().th32ProcessID));
+                filtered.emplace_back(new ProcessImpl(processEntry.th32ProcessID));
             }
         }
-
         return filtered;
     }
 
@@ -123,6 +111,12 @@ namespace Shared::Infrastructure
         other._processThreadId = 0UL;
         other._processId = 0UL;
         return *this;
+    }
+
+    ProcessImpl::~ProcessImpl()
+    {
+        _processId = 0UL;
+        _processThreadId = 0UL;
     }
 
     unsigned long ProcessImpl::GetId() const noexcept
@@ -175,6 +169,26 @@ namespace Shared::Infrastructure
         return exitCode == STILL_ACTIVE
             ? tuple(true, 0UL)
             : tuple(false, exitCode);
+    }
+    vector<PROCESSENTRY32> ProcessImpl::GetProcessEntries()
+    {
+        HandleWithInvalidForEmpty processSnapshot{};
+        processSnapshot.Reset(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0));
+        if (!static_cast<bool>(processSnapshot))
+            return vector<PROCESSENTRY32>();
+
+        PROCESSENTRY32 entry{sizeof(PROCESSENTRY32)};
+        if (!Process32First(processSnapshot.Get(), &entry))
+            return vector<PROCESSENTRY32>();
+
+        vector<PROCESSENTRY32> processes;
+        do
+        {
+            processes.push_back(entry);
+
+        } while (Process32Next(processSnapshot.Get(), &entry));
+
+        return processes;
     }
     bool ProcessImpl::CreateProcessAdapter(string_view const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo)
     {

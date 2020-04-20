@@ -33,13 +33,13 @@ namespace Shared::Domain
     }
     vector<unique_ptr<IProcess>> Process::GetProcessesByName(std::string_view const& processName)
     {
-        const size_t minimumSize = 5;
+        const size_t minimumSize = 100;
         auto processImplementations = ProcessImpl::GetProcessesByName(processName);
-        vector<unique_ptr<IProcess>> processes(std::min<>(processImplementations.size(), minimumSize));
+        vector<unique_ptr<IProcess>> processes{};
+        processes.reserve(minimumSize);
 
-        // make_unique can't be used without some trickery to make it a friend function
         for (auto& pImpl : processImplementations)
-            processes.emplace_back(new Process(pImpl.get()));
+            processes.emplace_back(new Process(pImpl.release()));
         return processes;
     }
 

@@ -12,6 +12,7 @@
 // 
 
 #pragma once
+#include <tlhelp32.h>
 
 namespace Shared::Infrastructure
 {
@@ -27,7 +28,7 @@ namespace Shared::Infrastructure
         ProcessImpl& operator=(const ProcessImpl&) = delete;
         ProcessImpl(ProcessImpl&& other) noexcept;
         ProcessImpl& operator=(ProcessImpl&& other) noexcept;
-        ~ProcessImpl() = default;
+        ~ProcessImpl();
 
         [[nodiscard]] unsigned long GetId() const noexcept;
         [[nodiscard]] bool IsRunning() const;
@@ -44,6 +45,8 @@ namespace Shared::Infrastructure
         explicit ProcessImpl(PROCESS_INFORMATION const& processInformation);
         static bool CreateProcessAdapter(std::string_view const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
         static std::tuple<bool, unsigned long> GetRunningDetails(HANDLE processHandle);
+
+        static std::vector<PROCESSENTRY32> GetProcessEntries();
     };
 
     bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide);

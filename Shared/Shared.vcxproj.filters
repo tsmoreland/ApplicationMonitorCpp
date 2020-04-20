@@ -63,9 +63,6 @@
     <ClInclude Include="EnvironmentService.h">
       <Filter>Header Files\Services</Filter>
     </ClInclude>
-    <ClInclude Include="ProcessIterable.h">
-      <Filter>Header Files\Infrastructure</Filter>
-    </ClInclude>
     <ClInclude Include="string_extensions.h">
       <Filter>Header Files\Extensions</Filter>
     </ClInclude>
@@ -81,9 +78,6 @@
       <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="ProcessImpl.cpp">
-      <Filter>Source Files\Infrastructure</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcessIterable.cpp">
       <Filter>Source Files\Infrastructure</Filter>
     </ClCompile>
     <ClCompile Include="EnvironmentService.cpp">
