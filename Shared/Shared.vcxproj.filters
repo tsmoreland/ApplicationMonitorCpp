@@ -83,5 +83,8 @@
     <ClCompile Include="EnvironmentService.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
+    <ClCompile Include="EnvironmentService.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
