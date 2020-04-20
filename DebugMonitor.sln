@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shared", "Shared\Shared.vcxproj", "{DF70D038-5DEC-4957-B2B8-289F083C5294}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedTests", "Tests\SharedTests\SharedTests.vcxproj", "{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKernel", "{4E0D613F-A5A6-44EE-B45D-6970E17D59DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,9 +35,21 @@ Global
 		{DF70D038-5DEC-4957-B2B8-289F083C5294}.Release|x64.Build.0 = Release|x64
 		{DF70D038-5DEC-4957-B2B8-289F083C5294}.Release|x86.ActiveCfg = Release|Win32
 		{DF70D038-5DEC-4957-B2B8-289F083C5294}.Release|x86.Build.0 = Release|Win32
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Debug|x64.ActiveCfg = Debug|x64
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Debug|x64.Build.0 = Debug|x64
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Debug|x86.ActiveCfg = Debug|Win32
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Debug|x86.Build.0 = Debug|Win32
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Release|x64.ActiveCfg = Release|x64
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Release|x64.Build.0 = Release|x64
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Release|x86.ActiveCfg = Release|Win32
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DF70D038-5DEC-4957-B2B8-289F083C5294} = {4E0D613F-A5A6-44EE-B45D-6970E17D59DF}
+		{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5} = {4E0D613F-A5A6-44EE-B45D-6970E17D59DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {784C4542-C7C6-47D9-893D-9FA91F2470CE}
