@@ -16,6 +16,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 #include "IProcess.h"
 
 namespace Shared::Infrastructure
@@ -35,6 +36,7 @@ namespace Shared::Model
         [[nodiscard]] bool IsRunning() const noexcept override;
         [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept override;
         void WaitForExit() const noexcept override;
+        [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
 
         ~Process() override;
         Process(const Process&) = delete;

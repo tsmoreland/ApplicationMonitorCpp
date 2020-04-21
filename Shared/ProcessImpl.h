@@ -12,7 +12,7 @@
 // 
 
 #pragma once
-#include <tlhelp32.h>
+#include <TlHelp32.h>
 
 namespace Shared::Infrastructure
 {
@@ -22,6 +22,12 @@ namespace Shared::Infrastructure
         static std::unique_ptr<ProcessImpl> Start(std::string_view const& filename, std::string_view const& arguments);
         static std::vector<std::unique_ptr<ProcessImpl>> GetProcessesByName(std::string_view const& processName);
 
+        [[nodiscard]] unsigned long GetId() const noexcept;
+        [[nodiscard]] bool IsRunning() const;
+        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept;
+        void WaitForExit() const; 
+        static [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName);
+
         ProcessImpl() = delete;
         explicit ProcessImpl(unsigned long const processId);
         ProcessImpl(const ProcessImpl&) = delete;
@@ -29,11 +35,6 @@ namespace Shared::Infrastructure
         ProcessImpl(ProcessImpl&& other) noexcept;
         ProcessImpl& operator=(ProcessImpl&& other) noexcept;
         ~ProcessImpl();
-
-        [[nodiscard]] unsigned long GetId() const noexcept;
-        [[nodiscard]] bool IsRunning() const;
-        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept;
-        void WaitForExit() const; 
 
         [[nodiscard]] bool Equals(ProcessImpl const& other) const noexcept;
     private:
@@ -46,7 +47,10 @@ namespace Shared::Infrastructure
         static bool CreateProcessAdapter(std::string_view const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
         static std::tuple<bool, unsigned long> GetRunningDetails(HANDLE processHandle);
 
-        static std::vector<PROCESSENTRY32> GetProcessEntries();
+        static std::optional<PROCESSENTRY32> GetProcessByName(std::string_view const& processName) noexcept;
+        static std::vector<PROCESSENTRY32> GetProcessEntries() noexcept;
+        static std::optional<MODULEENTRY32> GetModuleById(unsigned long const moduleId) noexcept;
+        static std::vector<MODULEENTRY32> GetModuleEntries(unsigned long const processId) noexcept;
     };
 
     bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide);
