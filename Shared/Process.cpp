@@ -16,7 +16,10 @@
 #include "ProcessImpl.h"
 
 using ProcessImpl = Shared::Infrastructure::ProcessImpl;
+
+using std::filesystem::path;
 using std::move;
+using std::nullopt;
 using std::optional;
 using std::string;
 using std::string_view;
@@ -63,6 +66,18 @@ namespace Shared::Model
     void Process::WaitForExit() const noexcept
     {
         _pImpl-> WaitForExit();
+    }
+
+    optional<path> Process::GetPathToRunningProcess(string_view const& processName) const noexcept
+    {
+        try
+        {
+            return ProcessImpl::GetPathToRunningProcess(processName);
+        }
+        catch (std::exception&)
+        {
+            return nullopt;
+        }
     }
 
     Process::Process(ProcessImpl* pImpl)

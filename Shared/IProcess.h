@@ -17,17 +17,18 @@ namespace Shared::Model
 {
     struct IProcess
     {
+        [[nodiscard]] virtual unsigned long GetId() const noexcept = 0;
+        [[nodiscard]] virtual bool IsRunning() const noexcept = 0;
+        [[nodiscard]] virtual std::optional<unsigned long> ExitCode() const noexcept = 0;
+        virtual void WaitForExit() const noexcept = 0;
+        [[nodiscard]] virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
+
         IProcess() = default;
         IProcess(const IProcess&) = delete;
         IProcess& operator=(const IProcess&) = delete;
         IProcess(IProcess&&) = default;
         IProcess& operator=(IProcess&&) = default;
         virtual ~IProcess() = default;
-
-        [[nodiscard]] virtual unsigned long GetId() const noexcept = 0;
-        [[nodiscard]] virtual bool IsRunning() const noexcept = 0;
-        [[nodiscard]] virtual std::optional<unsigned long> ExitCode() const noexcept = 0;
-        virtual void WaitForExit() const noexcept = 0;
 
     };
 }

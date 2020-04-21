@@ -7,9 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shared", "Shared\Shared.vcxproj", "{DF70D038-5DEC-4957-B2B8-289F083C5294}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedTests", "Tests\SharedTests\SharedTests.vcxproj", "{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKernel", "{4E0D613F-A5A6-44EE-B45D-6970E17D59DF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedTests", "Tests\SharedTests\SharedTests.vcxproj", "{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
