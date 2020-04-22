@@ -18,6 +18,7 @@
 using ProcessImpl = Shared::Infrastructure::ProcessImpl;
 
 using std::filesystem::path;
+using std::make_unique;
 using std::move;
 using std::nullopt;
 using std::optional;
@@ -46,7 +47,16 @@ namespace Shared::Model
         return processes;
     }
 
-    Process::~Process() = default;
+    Process::Process()
+    {
+        _pImpl = make_unique<ProcessImpl>();
+    }
+
+    Process::~Process() 
+    {
+        if (IsRunning())
+            WaitForExit();
+    }
 
     unsigned long Process::GetId() const noexcept
     {

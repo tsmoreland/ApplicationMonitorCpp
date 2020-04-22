@@ -89,4 +89,34 @@ namespace Shared::Tests
         auto const matchingProcesses = Process::GetProcessesByName(""s);
         ASSERT_EQ(matchingProcesses.size(), 0);
     }
+
+    TEST(Process, GetPathFromRunningPathReturnsPath)
+    {
+        // Arrange
+        auto const runningProcess = Process::Start(CommandExe, R"(/c Sleep 1)"s);
+        Process const process{};
+
+        // Act
+        auto const path = process.GetPathToRunningProcess("cmd.exe");
+        runningProcess->WaitForExit();
+
+        // Assert
+        ASSERT_TRUE(path.has_value());
+
+    }
+
+    TEST(Process, GetPathFromRunningPathReturnsCorrectPath)
+    {
+        // Arrange
+        std::filesystem::path expected(CommandExe);
+        auto const runningProcess = Process::Start(CommandExe, R"(/c Sleep 1)"s);
+        Process const process{};
+
+        // Act
+        auto const path = process.GetPathToRunningProcess("cmd.exe");
+
+        // Assert
+        ASSERT_EQ(expected, path);
+    }
+
 }

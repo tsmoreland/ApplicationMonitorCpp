@@ -28,7 +28,7 @@ namespace Shared::Infrastructure
         void WaitForExit() const; 
         static [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName);
 
-        ProcessImpl() = delete;
+        ProcessImpl() = default;
         explicit ProcessImpl(unsigned long const processId);
         ProcessImpl(const ProcessImpl&) = delete;
         ProcessImpl& operator=(const ProcessImpl&) = delete;
@@ -38,10 +38,10 @@ namespace Shared::Infrastructure
 
         [[nodiscard]] bool Equals(ProcessImpl const& other) const noexcept;
     private:
-        unsigned long _processId;
-        unsigned long _processThreadId;
-        HandleWithNullForEmpty _processHandle;
-        HandleWithNullForEmpty _processThreadHandle;
+        unsigned long _processId{};
+        unsigned long _processThreadId{};
+        HandleWithNullForEmpty _processHandle{};
+        HandleWithNullForEmpty _processThreadHandle{};
 
         explicit ProcessImpl(PROCESS_INFORMATION const& processInformation);
         static bool CreateProcessAdapter(std::string_view const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
@@ -49,7 +49,7 @@ namespace Shared::Infrastructure
 
         static std::optional<PROCESSENTRY32> GetProcessByName(std::string_view const& processName) noexcept;
         static std::vector<PROCESSENTRY32> GetProcessEntries() noexcept;
-        static std::optional<MODULEENTRY32> GetModuleById(unsigned long const moduleId) noexcept;
+        static std::optional<MODULEENTRY32> GetModuleByIdAndName(unsigned long const processId, std::string_view const& processName) noexcept;
         static std::vector<MODULEENTRY32> GetModuleEntries(unsigned long const processId) noexcept;
     };
 
