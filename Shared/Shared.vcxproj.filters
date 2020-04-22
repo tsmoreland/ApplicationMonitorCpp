@@ -45,9 +45,6 @@
     <ClInclude Include="IProcess.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="ProcessImpl.h">
-      <Filter>Header Files\Infrastructure</Filter>
-    </ClInclude>
     <ClInclude Include="HandleWithInvalidForEmpty.h">
       <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
@@ -69,6 +66,9 @@
     <ClInclude Include="not_found_exception.h">
       <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
+    <ClInclude Include="ProcessImpl.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -77,14 +77,14 @@
     <ClCompile Include="Process.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="EnvironmentService.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentService.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
     <ClCompile Include="ProcessImpl.cpp">
-      <Filter>Source Files\Infrastructure</Filter>
-    </ClCompile>
-    <ClCompile Include="EnvironmentService.cpp">
-      <Filter>Source Files\Services</Filter>
-    </ClCompile>
-    <ClCompile Include="EnvironmentService.cpp">
-      <Filter>Source Files\Services</Filter>
+      <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
