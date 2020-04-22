@@ -42,7 +42,7 @@ namespace std
             begin(rightHandSide), end(rightHandSide), 
             pred);
     }
-    [[nodiscard]] inline bool string_equal(std::string_view const leftHandSide, std::wstring_view const rightHandSide, bool ignoreCase = false)
+    [[nodiscard]] inline bool string_equal(std::string_view const leftHandSide, std::wstring_view const rightHandSide, bool ignoreCase /*= false */)
     {
         if constexpr (&leftHandSide == nullptr && &rightHandSide == nullptr)
             return true;
@@ -78,9 +78,38 @@ namespace std
                 pred);
         }
     }
-    [[nodiscard]] inline bool string_equal(std::wstring_view const leftHandSide, std::string_view const rightHandSide, bool ignoreCase = false)
+    [[nodiscard]] inline bool string_equal(std::wstring_view const leftHandSide, std::string_view const rightHandSide, bool ignoreCase /*= false */)
     {
         return string_equal(rightHandSide, leftHandSide, ignoreCase);
+    }
+
+    template <typename TCHAR>
+    [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string_view<TCHAR> const& value, std::vector<TCHAR> const& seperators)
+    {
+        if (seperators.empty() || value.empty())
+            return std::vector<std::basic_string_view<TCHAR>>();
+
+        std::vector<std::basic_string_view<TCHAR>> parts{};
+
+        size_t currentIndex{};
+
+        for (size_t i = 0, length = value.size(), seperatorCount = seperators.size(); i < length; i++)
+        {
+            auto const& match = std::find_if(begin(seperators), end(seperators), [valueAtIndex = value[i]](auto const& seperator)
+            {
+                return seperator == valueAtIndex;
+            });
+            if (match == end(seperators))
+                continue;
+            if (auto const partLength = currentIndex + (i - currentIndex); partLength > 1)
+            {
+                parts.push_back(value.substr(currentIndex, partLength));
+                currentIndex = i + 1;
+                break;
+            }
+        }
+
+        return parts;
     }
 
 }

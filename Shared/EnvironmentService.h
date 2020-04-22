@@ -20,6 +20,14 @@ namespace Shared::Services
     class EnvironmentService final : public IEnvironmentService
     {
     public:
+        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
+        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept override;
+
+        [[nodiscard]] virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
+        [[nodiscard]] virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
+
+        [[nodiscard]] virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path& folder, std::string_view const& filter) const noexcept override;
+
         EnvironmentService() = default;
         EnvironmentService(const EnvironmentService&) = default;
         EnvironmentService(EnvironmentService&&) noexcept = default;
@@ -27,11 +35,6 @@ namespace Shared::Services
         EnvironmentService& operator=(EnvironmentService&&) noexcept = default;
         ~EnvironmentService() = default;
 
-        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
-        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept override;
-
-        [[nodiscard]] virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
-        [[nodiscard]] virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
     };
 
 }

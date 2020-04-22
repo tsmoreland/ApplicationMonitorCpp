@@ -16,6 +16,10 @@
 #include "EnvironmentService.h"
 #include "Process.h"
 
+namespace filesystem = std::filesystem;
+
+using std::back_inserter;
+using std::copy_if;
 using std::nullopt;
 using std::optional;
 using std::string;
@@ -61,5 +65,32 @@ namespace Shared::Services
     bool EnvironmentService::SetVariable(std::string const& key, std::string const& value) const noexcept
     {
         return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
+    }
+    vector<filesystem::path> EnvironmentService::GetFilesFromDirectory(filesystem::path& folder, string_view const& filter) const noexcept
+    {
+        try
+        {
+            if (!filesystem::exists(folder) || !filesystem::is_directory(folder))
+                return vector<filesystem::path>();
+
+            vector<filesystem::path> matches{};
+            auto const files = filesystem::directory_iterator(folder);
+            copy_if(begin(files), end(files), back_inserter(matches), [&matches](filesystem::directory_entry const& entry)
+            {
+                if (!entry.is_regular_file())
+                    return false;
+                auto const& filename = entry.path().filename().c_str();
+
+
+
+                return true;
+            });
+
+            return matches;
+        }
+        catch (std::exception const&)
+        {
+            return vector<filesystem::path>();
+        }
     }
 }
