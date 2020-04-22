@@ -78,6 +78,10 @@ namespace std
                 pred);
         }
     }
+    [[nodiscard]] inline bool string_equal(std::wstring_view const leftHandSide, std::string_view const rightHandSide, bool ignoreCase = false)
+    {
+        return string_equal(rightHandSide, leftHandSide, ignoreCase);
+    }
 
 }
 

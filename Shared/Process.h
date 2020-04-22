@@ -38,6 +38,7 @@ namespace Shared::Model
         void WaitForExit() const noexcept override;
         [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
 
+        Process();
         ~Process() override;
         Process(const Process&) = delete;
         Process& operator=(const Process&) = delete;
