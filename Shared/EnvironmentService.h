@@ -13,33 +13,25 @@
 
 #pragma once
 
-namespace Win32::Implementation
+#include "IEnvironmentService.h"
+
+namespace Shared::Services
 {
-    class ProcessImpl final
+    class EnvironmentService final : public IEnvironmentService
     {
     public:
-        ProcessImpl(std::string const& filename, std::string const& arguments);
-        ProcessImpl(const ProcessImpl&) = delete;
-        ProcessImpl& operator=(const ProcessImpl&) = delete;
-        ProcessImpl(ProcessImpl&& other) noexcept;
-        ProcessImpl& operator=(ProcessImpl&& other) noexcept;
-        ~ProcessImpl() = default;
+        EnvironmentService() = default;
+        EnvironmentService(const EnvironmentService&) = default;
+        EnvironmentService(EnvironmentService&&) noexcept = default;
+        EnvironmentService& operator=(const EnvironmentService&) = default;
+        EnvironmentService& operator=(EnvironmentService&&) noexcept = default;
+        ~EnvironmentService() = default;
 
-        [[nodiscard]] std::optional<DWORD> GetId() const noexcept;
-        [[nodiscard]] bool IsRunning() const noexcept;
-        [[nodiscard]] std::optional<DWORD> ExitCode() const noexcept;
-        void WaitForExit() const;
+        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
+        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept override;
 
-    private:
-        DWORD _processId;
-        DWORD _processThreadId;
-        Shared::NullHandle _processHandle;
-        Shared::NullHandle _processThreadHandle;
-
-        static bool CreateProcessAdapter(std::string const& filename, std::string const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
-        static std::tuple<bool, DWORD> GetRunningDetails(HANDLE processHandle);
-        void LoadProcessInformation(const PROCESS_INFORMATION& processInformation);
+        [[nodiscard]] virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
+        [[nodiscard]] virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
     };
 
 }
-

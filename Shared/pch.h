@@ -13,37 +13,21 @@
 
 #pragma once
 
-#include <iterator>
+#include "boolinq/boolinq.h"
+#include <string>
+#include <string_view>
 #include <memory>
+#include <optional>
+#include <filesystem>
+#include <vector>
+#include <algorithm>
 
-namespace  Win32
-{
-    class Process;
+#include "string_extensions.h"
 
+#include <windows.h>
+#include <sdkddkver.h>
+#include <processthreadsapi.h>
 
-    class ProcessIterable final
-    {
-    public:
-        class ProcessIterator final
-        {
-            using iterator_category = std::forward_iterator_tag;
-            using value_type = std::shared_ptr<Process>;
-            using difference_type = std::allocator_traits<std::shared_ptr<Process>>::difference_type;
-            using pointer = std::allocator_traits<std::shared_ptr<Process>>::pointer;
-            using reference = std::shared_ptr<Process>&;
-
-            [[nodiscard]] reference operator*() const;
-            [[nodiscard]] reference operator->() const;
-            [[nodiscard]] ProcessIterator operator++() const;
-        };
-
-        using value_type = std::shared_ptr<Process>;
-        using iterator = ProcessIterator;
-        using const_iterator = const ProcessIterator;
-
-        [[nodiscard]] iterator begin() const noexcept;
-        [[nodiscard]] iterator end() const noexcept;
-    };
-
-
-}
+#include "HandleWithInvalidForEmpty.h"
+#include "HandleWithNullForEmpty.h"
+#include "not_found_exception.h"
