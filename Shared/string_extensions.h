@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <locale>
 
-namespace std
+namespace extension
 {
 
     template <typename TCHAR>
@@ -99,7 +99,14 @@ namespace std
     }
 
     template <typename TCHAR>
-    [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string_view<TCHAR> const& value, std::vector<TCHAR> const& seperators)
+    [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string<TCHAR> const& value, std::vector<TCHAR> const& seperators)
+    {
+        std::basic_string_view<TCHAR> view(value);
+        return string_split(view, seperators);
+    }
+
+    template <typename TCHAR>
+    [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string_view<TCHAR> const value, std::vector<TCHAR> const& seperators)
     {
         if (value.empty())
             return std::vector<std::basic_string_view<TCHAR>>();

@@ -21,8 +21,8 @@ using std::string;
 using std::vector;
 using std::wstring;
 
-using std::string_equal;
-using std::string_split;
+using extension::string_equal;
+using extension::string_split;
 
 #pragma warning(push)
 #pragma warning(disable:4455)

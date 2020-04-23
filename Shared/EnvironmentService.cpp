@@ -27,8 +27,16 @@ using std::string_view;
 using std::unique_ptr;
 using std::vector;
 
+using extension::string_equal;
+using extension::string_split;
+
 using Shared::Model::IProcess;
 using Shared::Model::Process;
+
+#pragma warning(push)
+#pragma warning(disable:4455)
+using std::literals::string_literals::operator ""s;
+#pragma warning(pop)
 
 namespace Shared::Services
 {
@@ -75,15 +83,19 @@ namespace Shared::Services
 
             vector<filesystem::path> matches{};
             auto const files = filesystem::directory_iterator(folder);
-            copy_if(begin(files), end(files), back_inserter(matches), [&matches](filesystem::directory_entry const& entry)
+            copy_if(begin(files), end(files), back_inserter(matches), [filter](filesystem::directory_entry const& entry)
             {
                 if (!entry.is_regular_file())
                     return false;
+                if (filter.empty() || string_equal(filter, string_view("*.*"s)))
+                    return true;
+
                 auto const& filename = entry.path().filename().c_str();
+                auto const parts = string_split(filter, {'*'});
 
-
-
-                return true;
+                return parts.empty()
+                    ? string_equal(filename, filter)
+                    : false; // add method/lambda to check if the break down matches, possibly another string extension
             });
 
             return matches;
