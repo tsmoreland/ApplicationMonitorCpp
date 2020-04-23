@@ -25,7 +25,6 @@ using std::move;
 using std::nullopt;
 using std::optional;
 using std::string;
-using std::string_equal;
 using std::string_view;
 using std::tie;
 using std::to_string;
@@ -33,6 +32,8 @@ using std::tuple;
 using std::unique_ptr;
 using std::vector;
 using std::wstring_view;
+
+using extension::string_equal;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
