@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <regex>
 
 #include "gtest/gtest.h"
 

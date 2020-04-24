@@ -13,21 +13,32 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
 
-#include "string_extensions.h"
+namespace Shared::Tests
+{
+    template<typename TCHAR>
+    void SplitReturnsCorrectNumberOfParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, size_t const expected)
+    {
+        // Act
+        auto const parts = extension::string_split<TCHAR>(value, seperators);;
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+        // Assert
+        ASSERT_EQ(expected, parts.size());
+    }
 
-#include "HandleWithInvalidForEmpty.h"
-#include "HandleWithNullForEmpty.h"
-#include "not_found_exception.h"
+    template <typename TCHAR>
+    void SplitReturnsCorrectCorrectParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, std::vector<std::basic_string<TCHAR>> const& expected_parts)
+    {
+        // Act
+        auto const parts = extension::string_split<TCHAR>(value, seperators);;
+
+        // Assert
+        ASSERT_TRUE(equal(begin(expected_parts), end(expected_parts), begin(parts), 
+            [](auto const& lhs, auto const& rhs) 
+            { 
+                return equal(begin(lhs), end(lhs), begin(rhs));
+            }));
+    }
+
+}
+

@@ -17,18 +17,19 @@
 #include <algorithm>
 #include <locale>
 
-namespace std
+namespace extension
 {
+
     template <typename TCHAR>
-    [[nodiscard]] bool string_equal(std::basic_string_view<TCHAR> const& leftHandSide, std::basic_string_view<TCHAR> const &rightHandSide, bool ignoreCase = false)
+    [[nodiscard]] bool string_equal(std::basic_string_view<TCHAR> const left_hand_side, std::basic_string_view<TCHAR> const right_hand_side, bool const ignoreCase = false)
     {
-        if (&leftHandSide == &rightHandSide)
+        if (&left_hand_side == &right_hand_side)
             return true;
-        if (&leftHandSide == nullptr)
+        if (&left_hand_side == nullptr)
             return false;
 
         if (!ignoreCase)
-            return leftHandSide == rightHandSide;
+            return left_hand_side == right_hand_side;
 
         const auto locale = std::locale();
 
@@ -38,17 +39,20 @@ namespace std
         };
 
         return std::equal(
-            begin(leftHandSide), end(leftHandSide), 
-            begin(rightHandSide), end(rightHandSide), 
+            begin(left_hand_side), end(left_hand_side), 
+            begin(right_hand_side), end(right_hand_side), 
             pred);
     }
-    [[nodiscard]] inline bool string_equal(std::string_view const leftHandSide, std::wstring_view const rightHandSide, bool ignoreCase = false)
+    template <typename TCHAR>
+    [[nodiscard]] bool string_equal(std::basic_string<TCHAR> const& left_hand_side, std::basic_string<TCHAR> const &right_hand_side, bool const ignoreCase = false)
     {
-        if constexpr (&leftHandSide == nullptr && &rightHandSide == nullptr)
-            return true;
-        if constexpr (&leftHandSide == nullptr)
-            return false;
+        std::basic_string_view<TCHAR> const leftView(left_hand_side);
+        std::basic_string_view<TCHAR> const rightView(right_hand_side);
+        return string_equal(leftView, rightView, ignoreCase);
+    }
 
+    [[nodiscard]] inline bool string_equal(std::string_view const left_hand_side, std::wstring_view const right_hand_side, bool const ignoreCase = false)
+    {
         const auto locale = std::locale();
 
         if (ignoreCase)
@@ -60,8 +64,8 @@ namespace std
             };
 
             return std::equal(
-                begin(leftHandSide), end(leftHandSide), 
-                begin(rightHandSide), end(rightHandSide), 
+                begin(left_hand_side), end(left_hand_side), 
+                begin(right_hand_side), end(right_hand_side), 
                 pred);
         }
         else
@@ -73,14 +77,92 @@ namespace std
             };
 
             return std::equal(
-                begin(leftHandSide), end(leftHandSide), 
-                begin(rightHandSide), end(rightHandSide), 
+                begin(left_hand_side), end(left_hand_side), 
+                begin(right_hand_side), end(right_hand_side), 
                 pred);
         }
     }
-    [[nodiscard]] inline bool string_equal(std::wstring_view const leftHandSide, std::string_view const rightHandSide, bool ignoreCase = false)
+    [[nodiscard]] inline bool string_equal(std::wstring_view const left_hand_side, std::string_view const right_hand_side, bool const ignoreCase = false)
     {
-        return string_equal(rightHandSide, leftHandSide, ignoreCase);
+        return string_equal(right_hand_side, left_hand_side, ignoreCase);
+    }
+
+    [[nodiscard]] inline bool string_equal(std::string const& left_hand_side, std::wstring const& right_hand_side, bool const ignoreCase = false)
+    {
+        std::string_view const leftView(left_hand_side);
+        std::wstring_view const rightView(right_hand_side);
+        return string_equal(leftView, rightView, ignoreCase);
+    }
+    [[nodiscard]] inline bool string_equal(std::wstring const& left_hand_side, std::string const& right_hand_side, bool const ignoreCase = false)
+    {
+        return string_equal(right_hand_side, left_hand_side, ignoreCase);
+    }
+
+    template <typename TCHAR>
+    [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string<TCHAR> const& value, std::vector<TCHAR> const& seperators)
+    {
+        std::basic_string_view<TCHAR> view(value);
+        return string_split(view, seperators);
+    }
+
+    template <typename TCHAR>
+    [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string_view<TCHAR> const value, std::vector<TCHAR> const& seperators)
+    {
+        if (value.empty())
+            return std::vector<std::basic_string_view<TCHAR>>();
+        if (seperators.empty())
+            return std::vector<std::basic_string_view<TCHAR>>{value};
+
+        std::vector<std::basic_string_view<TCHAR>> parts{};
+
+        size_t currentIndex{};
+        size_t i{0};
+        size_t const length{value.size()};
+
+        for (; i < length; i++)
+        {
+            auto const& match = std::find_if(begin(seperators), end(seperators), [valueAtIndex = value[i]](auto const& seperator)
+            {
+                return seperator == valueAtIndex;
+            });
+            if (match == end(seperators))
+                continue;
+            if (auto const partLength = currentIndex + (i - currentIndex); partLength > 1)
+                parts.push_back(value.substr(currentIndex, partLength));
+            currentIndex = i + 1;
+        }
+        if (currentIndex < length - 1)
+            parts.push_back(value.substr(currentIndex,  length - currentIndex));
+        return parts;
+    }
+    template <typename TCHAR>
+    bool string_contains_in_order(std::basic_string<TCHAR> const value, std::vector<std::basic_string<TCHAR>> const& parts)
+    {
+        std::basic_string_view<TCHAR> view(value);
+        std::vector<std::basic_string_view<TCHAR>> parts_view(parts.size());
+
+        std::transform(begin(parts), end(parts), begin(parts_view), [](auto const& part)
+        {
+            return std::basic_string_view<TCHAR>(part);
+        });
+        return string_contains_in_order(view, parts_view);
+    }
+
+    template <typename TCHAR>
+    bool string_contains_in_order(std::basic_string_view<TCHAR> const value, std::vector<std::basic_string_view<TCHAR>> const& parts)
+    {
+        size_t start = 0;
+        auto const length = value.size();
+
+        for (auto const& part : parts)
+        {
+            auto const view = value.substr(start, length);
+            if (auto const index = view.find(part); index != std::basic_string_view<TCHAR>::npos)
+                start = std::min(index + part.size(), length);
+            else
+                return false;
+        }
+        return true;
     }
 
 }
