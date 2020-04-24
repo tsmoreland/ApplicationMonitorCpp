@@ -1,2 +1,2 @@
-# DebugMonitor
-Application intended to monitor a process using umdh to take period snapshots, possible other monitoring included over time
+# Application Monitor
+Application intended to monitor a process using umdh to take periodic snapshots, possible other monitoring included over time
