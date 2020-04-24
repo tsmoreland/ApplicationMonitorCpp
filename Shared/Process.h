@@ -46,7 +46,7 @@ namespace Shared::Model
         Process& operator=(Process&&) noexcept;
 
     private:
-        std::unique_ptr<Shared::Infrastructure::ProcessImpl> _pImpl{};
+        std::unique_ptr<Shared::Infrastructure::ProcessImpl> pImpl{};
         explicit Process(Shared::Infrastructure::ProcessImpl* pImpl);
     };
 

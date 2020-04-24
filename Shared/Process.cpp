@@ -49,7 +49,7 @@ namespace Shared::Model
 
     Process::Process()
     {
-        _pImpl = make_unique<ProcessImpl>();
+        pImpl = make_unique<ProcessImpl>();
     }
 
     Process::~Process() 
@@ -60,22 +60,22 @@ namespace Shared::Model
 
     unsigned long Process::GetId() const noexcept
     {
-        return _pImpl->GetId();
+        return pImpl->GetId();
     }
 
     bool Process::IsRunning() const noexcept
     {
-        return _pImpl->IsRunning();
+        return pImpl->IsRunning();
     }
 
     optional<DWORD> Process::ExitCode() const noexcept
     {
-        return _pImpl->ExitCode();
+        return pImpl->ExitCode();
     }
 
     void Process::WaitForExit() const noexcept
     {
-        _pImpl-> WaitForExit();
+        pImpl-> WaitForExit();
     }
 
     optional<path> Process::GetPathToRunningProcess(string_view const& processName) const noexcept
@@ -92,12 +92,12 @@ namespace Shared::Model
 
     Process::Process(ProcessImpl* pImpl)
         : IProcess()
-        , _pImpl{pImpl}
+        , pImpl{pImpl}
     {
     }
     Process& Process::operator=(Process&& other) noexcept
     {
-        _pImpl = move(other._pImpl);
+        pImpl = move(other.pImpl);
         return *this;
     }
 

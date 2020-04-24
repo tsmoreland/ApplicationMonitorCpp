@@ -82,69 +82,69 @@ namespace Shared::Infrastructure
     }
 
     ProcessImpl::ProcessImpl(unsigned long const processId)
-        : _processId(processId)
-        , _processThreadId(0UL)
+        : processId(processId)
+        , processThreadId(0UL)
     {
-        _processHandle.Reset( OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId));
+        processHandle.Reset( OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId));
     }
     ProcessImpl::ProcessImpl(PROCESS_INFORMATION const& processInformation)
     {
-        _processHandle.Reset(processInformation.hProcess);
-        _processThreadHandle.Reset(processInformation.hThread);
-        _processId = processInformation.dwProcessId;
-        _processThreadId = processInformation.dwThreadId;
+        processHandle.Reset(processInformation.hProcess);
+        processThreadHandle.Reset(processInformation.hThread);
+        processId = processInformation.dwProcessId;
+        processThreadId = processInformation.dwThreadId;
     }
     ProcessImpl::ProcessImpl(ProcessImpl&& other) noexcept
-        : _processId{other._processId}
-        , _processThreadId{other._processThreadId}
+        : processId{other.processId}
+        , processThreadId{other.processThreadId}
     {
-        _processHandle = move(other._processHandle);
-        _processThreadHandle = move(other._processThreadHandle);
+        processHandle = move(other.processHandle);
+        processThreadHandle = move(other.processThreadHandle);
 
-        other._processThreadId = 0UL;
-        other._processId = 0UL;
+        other.processThreadId = 0UL;
+        other.processId = 0UL;
     }
     ProcessImpl& ProcessImpl::operator=(ProcessImpl&& other) noexcept
     {
-        _processHandle = move(other._processHandle);
-        _processThreadHandle = move(other._processThreadHandle);
-        _processId = other._processId;
-        _processThreadId = other._processThreadId;
+        processHandle = move(other.processHandle);
+        processThreadHandle = move(other.processThreadHandle);
+        processId = other.processId;
+        processThreadId = other.processThreadId;
 
-        other._processThreadId = 0UL;
-        other._processId = 0UL;
+        other.processThreadId = 0UL;
+        other.processId = 0UL;
         return *this;
     }
 
     ProcessImpl::~ProcessImpl()
     {
-        _processId = 0UL;
-        _processThreadId = 0UL;
+        processId = 0UL;
+        processThreadId = 0UL;
     }
 
     unsigned long ProcessImpl::GetId() const noexcept
     {
-        return _processId;
+        return processId;
     }
     bool ProcessImpl::IsRunning() const 
     {
-        if (!static_cast<bool>(_processHandle))
+        if (!static_cast<bool>(processHandle))
             return false;
 
         bool isRunning{};
-        tie(isRunning, ignore) = GetRunningDetails(_processHandle.Get());;
+        tie(isRunning, ignore) = GetRunningDetails(processHandle.Get());;
         return isRunning;
     }
     std::optional<unsigned long> ProcessImpl::ExitCode() const noexcept
     {
         try
         {
-            if (!static_cast<bool>(_processHandle))
+            if (!static_cast<bool>(processHandle))
                 return nullopt;
 
             bool isRunning{};
             unsigned long exitCode{};
-            tie(isRunning, exitCode) = GetRunningDetails(_processHandle.Get());
+            tie(isRunning, exitCode) = GetRunningDetails(processHandle.Get());
 
             return !isRunning
                 ? optional<unsigned long>(exitCode)
@@ -158,7 +158,7 @@ namespace Shared::Infrastructure
     void ProcessImpl::WaitForExit() const 
     {
         if (IsRunning())
-            WaitForSingleObject(_processHandle.Get(), INFINITE);
+            WaitForSingleObject(processHandle.Get(), INFINITE);
     }
 
     optional<Filesystem::path> ProcessImpl::GetPathToRunningProcess(string_view const& processName) 
@@ -176,10 +176,10 @@ namespace Shared::Infrastructure
 
     bool ProcessImpl::Equals(ProcessImpl const& other) const noexcept
     { 
-        return _processId == other._processId &&
-            _processId == other._processThreadId &&
-            _processHandle.Get() == other._processHandle.Get() &&
-            _processThreadHandle.Get() == other._processThreadHandle.Get();
+        return processId == other.processId &&
+            processId == other.processThreadId &&
+            processHandle.Get() == other.processHandle.Get() &&
+            processThreadHandle.Get() == other.processThreadHandle.Get();
     }
     tuple<bool, unsigned long> ProcessImpl::GetRunningDetails(HANDLE processHandle)
     {
