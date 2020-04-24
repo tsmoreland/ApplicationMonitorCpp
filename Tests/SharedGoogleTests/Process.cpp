@@ -78,7 +78,6 @@ namespace Shared::Tests
         auto const matchingProcesses = Process::GetProcessesByName("cmd.exe");
 
         process->WaitForExit();
-        static_cast<void>(process->ExitCode());
 
         // Assert
         ASSERT_GE(matchingProcesses.size(), 0);

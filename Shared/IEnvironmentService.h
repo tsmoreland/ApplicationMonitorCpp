@@ -17,6 +17,7 @@
 #include <memory>
 #include <string_view>
 #include <vector>
+#include <regex>
 #include "IProcess.h"
 
 namespace Shared::Services
@@ -29,7 +30,8 @@ namespace Shared::Services
         [[nodiscard]] virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
         [[nodiscard]] virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
 
-        [[nodiscard]] virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wstring_view const filter) const noexcept = 0;
+        [[nodiscard]] virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
+        [[nodiscard]] virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
 
         IEnvironmentService() = default;
         IEnvironmentService(IEnvironmentService const&) = default;
