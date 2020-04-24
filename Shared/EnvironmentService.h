@@ -26,7 +26,7 @@ namespace Shared::Services
         [[nodiscard]] virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
         [[nodiscard]] virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
 
-        [[nodiscard]] virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path& folder, std::string_view const& filter) const noexcept override;
+        [[nodiscard]] virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wstring_view const filter) const noexcept override;
 
         EnvironmentService() = default;
         EnvironmentService(const EnvironmentService&) = default;

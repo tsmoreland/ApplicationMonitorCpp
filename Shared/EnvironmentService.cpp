@@ -20,15 +20,20 @@ namespace filesystem = std::filesystem;
 
 using std::back_inserter;
 using std::copy_if;
+using std::make_tuple;
 using std::nullopt;
 using std::optional;
 using std::string;
 using std::string_view;
+using std::tuple;
 using std::unique_ptr;
 using std::vector;
+using std::wstring;
+using std::wstring_view;
 
 using extension::string_equal;
 using extension::string_split;
+using extension::string_contains_in_order;
 
 using Shared::Model::IProcess;
 using Shared::Model::Process;
@@ -63,40 +68,60 @@ namespace Shared::Services
             return vector<unique_ptr<IProcess>>();
         }
     }
-    std::optional<std::string> EnvironmentService::GetVariable(std::string const& key) const noexcept
+    optional<string> EnvironmentService::GetVariable(std::string const& key) const noexcept
     {
         char value[4096]{};
         if (GetEnvironmentVariableA(key.c_str(), value, 16384) == FALSE)
             return nullopt;
         return optional(string(value));
     }
-    bool EnvironmentService::SetVariable(std::string const& key, std::string const& value) const noexcept
+    bool EnvironmentService::SetVariable(string const& key, string const& value) const noexcept
     {
         return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
     }
-    vector<filesystem::path> EnvironmentService::GetFilesFromDirectory(filesystem::path& folder, string_view const& filter) const noexcept
+    vector<filesystem::path> EnvironmentService::GetFilesFromDirectory(filesystem::path const& folder, wstring_view const filter) const noexcept
     {
         try
         {
             if (!filesystem::exists(folder) || !filesystem::is_directory(folder))
                 return vector<filesystem::path>();
 
-            vector<filesystem::path> matches{};
+            vector<filesystem::path> matches;
             auto const files = filesystem::directory_iterator(folder);
-            copy_if(begin(files), end(files), back_inserter(matches), [filter](filesystem::directory_entry const& entry)
+
+            if (filter.empty() || string_equal(filter, wstring_view(L"*.*"s)))
+                copy_if(begin(files), end(files), back_inserter(matches), [filter](auto const& entry) {return entry.is_regular_file();});
+            else
             {
-                if (!entry.is_regular_file())
-                    return false;
-                if (filter.empty() || string_equal(filter, string_view("*.*"s)))
-                    return true;
+                auto getFilenameIfRegularFile = [](auto const& entry) 
+                {
+                    return entry.is_regular_file() 
+                        ? make_tuple(true, entry.path().filename().wstring())
+                        : make_tuple(false, L""s);
+                };
 
-                auto const& filename = entry.path().filename().c_str();
-                auto const parts = string_split(filter, {'*'});
+                if (auto const parts = string_split(filter, vector<wchar_t>({L'*'})); !parts.empty())
+                    copy_if(begin(files), end(files), back_inserter(matches), 
+                        [getFilenameIfRegularFile, &parts](filesystem::directory_entry const& entry)
+                        {
+                            bool isRegularFile{};
+                            wstring filename;
+                            tie(isRegularFile, filename) = getFilenameIfRegularFile(entry);
 
-                return parts.empty()
-                    ? string_equal(filename, filter)
-                    : false; // add method/lambda to check if the break down matches, possibly another string extension
-            });
+                            return isRegularFile && string_contains_in_order<wchar_t>(filename, parts);
+                        });
+                else
+                {
+                    copy_if(begin(files), end(files), back_inserter(matches), 
+                        [getFilenameIfRegularFile, &filter](filesystem::directory_entry const& entry)
+                        {
+                            bool isRegularFile{};
+                            wstring filename;
+                            tie(isRegularFile, filename) = getFilenameIfRegularFile(entry);
+                            return isRegularFile && string_equal(wstring_view(filename), filter);
+                        });
+                }
+            }
 
             return matches;
         }
@@ -105,4 +130,5 @@ namespace Shared::Services
             return vector<filesystem::path>();
         }
     }
+
 }

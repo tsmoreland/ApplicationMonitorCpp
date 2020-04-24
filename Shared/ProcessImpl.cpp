@@ -19,6 +19,7 @@ namespace Filesystem = std::filesystem;
 
 using std::find_if;
 using std::ignore;
+using std::make_tuple;
 using std::make_unique;
 using std::min;
 using std::move;
@@ -189,8 +190,8 @@ namespace Shared::Infrastructure
             throw std::runtime_error(("GetExitCodeProcess failed with "s + to_string(GetLastError())).c_str());
 
         return exitCode == STILL_ACTIVE
-            ? tuple(true, 0UL)
-            : tuple(false, exitCode);
+            ? make_tuple(true, 0UL)
+            : make_tuple(false, exitCode);
     }
     optional<PROCESSENTRY32> ProcessImpl::GetProcessByName(std::string_view const& processName) noexcept
     {

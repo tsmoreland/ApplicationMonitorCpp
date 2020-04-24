@@ -128,14 +128,41 @@ namespace extension
             if (match == end(seperators))
                 continue;
             if (auto const partLength = currentIndex + (i - currentIndex); partLength > 1)
-            {
                 parts.push_back(value.substr(currentIndex, partLength));
-                currentIndex = i + 1;
-            }
+            currentIndex = i + 1;
         }
         if (currentIndex < length - 1)
             parts.push_back(value.substr(currentIndex,  length - currentIndex));
         return parts;
+    }
+    template <typename TCHAR>
+    bool string_contains_in_order(std::basic_string<TCHAR> const value, std::vector<std::basic_string<TCHAR>> const& parts)
+    {
+        std::basic_string_view<TCHAR> view(value);
+        std::vector<std::basic_string_view<TCHAR>> parts_view(parts.size());
+
+        std::transform(begin(parts), end(parts), begin(parts_view), [](auto const& part)
+        {
+            return std::basic_string_view<TCHAR>(part);
+        });
+        return string_contains_in_order(view, parts_view);
+    }
+
+    template <typename TCHAR>
+    bool string_contains_in_order(std::basic_string_view<TCHAR> const value, std::vector<std::basic_string_view<TCHAR>> const& parts)
+    {
+        size_t start = 0;
+        auto const length = value.size();
+
+        for (auto const& part : parts)
+        {
+            auto const view = value.substr(start, length);
+            if (auto const index = view.find(part); index != std::basic_string_view<TCHAR>::npos)
+                start = std::min(index + part.size(), length);
+            else
+                return false;
+        }
+        return true;
     }
 
 }
