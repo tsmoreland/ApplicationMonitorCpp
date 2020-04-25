@@ -10,36 +10,19 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
-
+    
 #pragma once
 
-namespace Win32::Implementation
+#include "IProcess.h"
+
+namespace Shared::Services
 {
-    class ProcessImpl final
+    class EnvironmentServices
     {
     public:
-        ProcessImpl(std::string const& filename, std::string const& arguments);
-        ProcessImpl(const ProcessImpl&) = delete;
-        ProcessImpl& operator=(const ProcessImpl&) = delete;
-        ProcessImpl(ProcessImpl&& other) noexcept;
-        ProcessImpl& operator=(ProcessImpl&& other) noexcept;
-        ~ProcessImpl() = default;
+        explicit EnvironmentServices() = default();
 
-        [[nodiscard]] std::optional<DWORD> GetId() const noexcept;
-        [[nodiscard]] bool IsRunning() const noexcept;
-        [[nodiscard]] std::optional<DWORD> ExitCode() const noexcept;
-        void WaitForExit() const;
-
-    private:
-        DWORD _processId;
-        DWORD _processThreadId;
-        Shared::NullHandle _processHandle;
-        Shared::NullHandle _processThreadHandle;
-
-        static bool CreateProcessAdapter(std::string const& filename, std::string const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
-        static std::tuple<bool, DWORD> GetRunningDetails(HANDLE processHandle);
-        void LoadProcessInformation(const PROCESS_INFORMATION& processInformation);
+        std::unique_ptr<Shared::Domain::IProcess> StartProcess(std::string_view const& filename, std::string_view const& arguments);
     };
 
 }
-

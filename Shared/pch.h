@@ -13,12 +13,21 @@
 
 #pragma once
 
-#include <sdkddkver.h>
-#include <windows.h>
 #include <string>
+#include <string_view>
 #include <memory>
 #include <optional>
-#include <processthreadsapi.h>
 #include <filesystem>
+#include <vector>
+#include <algorithm>
+#include <regex>
 
-#include "NullHandle.h"
+#include "string_extensions.h"
+
+#include <Windows.h>
+#include <sdkddkver.h>
+#include <processthreadsapi.h>
+
+#include "HandleWithInvalidForEmpty.h"
+#include "HandleWithNullForEmpty.h"
+#include "not_found_exception.h"

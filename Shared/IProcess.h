@@ -13,26 +13,24 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include "Export.h"
 
-namespace Shared
+namespace Shared::Model
 {
-    struct NullHandleTraits
+    struct IProcess
     {
-        using Pointer = HANDLE;
+        [[nodiscard]] SHARED_DLL virtual unsigned long GetId() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool IsRunning() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> ExitCode() const noexcept = 0;
+        SHARED_DLL virtual void WaitForExit() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
 
-        static Pointer Invalid() noexcept
-        {
-            return nullptr;
-        }
-        static void Close(const Pointer value) noexcept
-        {
-            CloseHandle(value);
-        }
+        SHARED_DLL IProcess() = default;
+        IProcess(const IProcess&) = delete;
+        IProcess& operator=(const IProcess&) = delete;
+        SHARED_DLL IProcess(IProcess&&) = default;
+        SHARED_DLL IProcess& operator=(IProcess&&) = default;
+        SHARED_DLL virtual ~IProcess() = default;
 
     };
-
-    using NullHandle = UniqueHandle<NullHandleTraits>;
-
 }

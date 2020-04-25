@@ -13,37 +13,20 @@
 
 #pragma once
 
-#include <iterator>
-#include <memory>
-
-namespace  Win32
+namespace Shared::Infrastructure
 {
-    class Process;
-
-
-    class ProcessIterable final
+    class not_found_exception : public std::exception
     {
     public:
-        class ProcessIterator final
+        explicit not_found_exception(char const * const what)
+            : exception(what) 
         {
-            using iterator_category = std::forward_iterator_tag;
-            using value_type = std::shared_ptr<Process>;
-            using difference_type = std::allocator_traits<std::shared_ptr<Process>>::difference_type;
-            using pointer = std::allocator_traits<std::shared_ptr<Process>>::pointer;
-            using reference = std::shared_ptr<Process>&;
-
-            [[nodiscard]] reference operator*() const;
-            [[nodiscard]] reference operator->() const;
-            [[nodiscard]] ProcessIterator operator++() const;
-        };
-
-        using value_type = std::shared_ptr<Process>;
-        using iterator = ProcessIterator;
-        using const_iterator = const ProcessIterator;
-
-        [[nodiscard]] iterator begin() const noexcept;
-        [[nodiscard]] iterator end() const noexcept;
+        }
+        not_found_exception(not_found_exception const&) = default;
+        not_found_exception& operator=(not_found_exception const&) = default;
+        not_found_exception(not_found_exception&&) noexcept = default;
+        not_found_exception& operator=(not_found_exception&&) noexcept = default;
+        virtual ~not_found_exception() = default;
     };
-
 
 }

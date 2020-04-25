@@ -13,13 +13,84 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Infrastructure">
+      <UniqueIdentifier>{555ef3bc-8d2d-4258-a8db-78af7b2071a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Services">
+      <UniqueIdentifier>{a7ab1828-881f-4ab9-ba8d-acef1f32060a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Infrastructure">
+      <UniqueIdentifier>{4ade6450-0135-423d-90ff-f443c42c9b77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Model">
+      <UniqueIdentifier>{a5382d0b-7bdf-4b6b-a9ce-d5a6202edab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Services">
+      <UniqueIdentifier>{cd3867cc-2de6-4139-b697-54fb2790485e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Extensions">
+      <UniqueIdentifier>{69eac279-0c65-4877-a1cb-30c48b7b187b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model">
+      <UniqueIdentifier>{a93efb25-6e6c-4963-a8d0-f6c4f3f60eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Extensions">
+      <UniqueIdentifier>{f1e67477-8041-4920-acdf-b0fbb33927d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Process.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="IProcess.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleWithInvalidForEmpty.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="HandleWithNullForEmpty.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
     <ClInclude Include="UniqueHandle.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="IEnvironmentService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="string_extensions.h">
+      <Filter>Header Files\Extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="not_found_exception.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessImpl.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Export.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NullHandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Process.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentService.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentService.cpp">
+      <Filter>Source Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessImpl.cpp">
+      <Filter>Source Files\Model</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
