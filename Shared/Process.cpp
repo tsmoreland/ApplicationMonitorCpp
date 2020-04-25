@@ -52,10 +52,9 @@ namespace Shared::Model
         pImpl = make_unique<ProcessImpl>();
     }
 
-    Process::~Process() 
+    Process::~Process() // destructor only needed because we're exporting and default would need to know more about pImpl
     {
-        if (IsRunning())
-            WaitForExit();
+        pImpl.reset();
     }
 
     unsigned long Process::GetId() const noexcept

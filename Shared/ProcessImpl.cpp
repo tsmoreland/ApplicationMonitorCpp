@@ -83,7 +83,6 @@ namespace Shared::Infrastructure
 
     ProcessImpl::ProcessImpl(unsigned long const processId)
         : processId(processId)
-        , processThreadId(0UL)
     {
         processHandle.Reset( OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId));
     }
@@ -97,12 +96,14 @@ namespace Shared::Infrastructure
     ProcessImpl::ProcessImpl(ProcessImpl&& other) noexcept
         : processId{other.processId}
         , processThreadId{other.processThreadId}
+        , processLaunched{other.processLaunched}
     {
         processHandle = move(other.processHandle);
         processThreadHandle = move(other.processThreadHandle);
 
         other.processThreadId = 0UL;
         other.processId = 0UL;
+        other.processLaunched = false;
     }
     ProcessImpl& ProcessImpl::operator=(ProcessImpl&& other) noexcept
     {
@@ -110,14 +111,19 @@ namespace Shared::Infrastructure
         processThreadHandle = move(other.processThreadHandle);
         processId = other.processId;
         processThreadId = other.processThreadId;
+        processLaunched = other.processLaunched;
 
         other.processThreadId = 0UL;
         other.processId = 0UL;
+        other.processLaunched = false;
         return *this;
     }
 
     ProcessImpl::~ProcessImpl()
     {
+        if (processLaunched && IsRunning())
+            WaitForExit();
+        processLaunched = false;
         processId = 0UL;
         processThreadId = 0UL;
     }

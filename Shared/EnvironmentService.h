@@ -20,21 +20,21 @@ namespace Shared::Services
     class EnvironmentService final : public IEnvironmentService
     {
     public:
-        [[nodiscard]] virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
-        [[nodiscard]] virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept override;
 
-        [[nodiscard]] virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
-        [[nodiscard]] virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
 
-        [[nodiscard]] virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept override;
-        [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept override;
+        [[nodiscard]] SHARED_DLL std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
 
-        EnvironmentService() = default;
-        EnvironmentService(const EnvironmentService&) = default;
-        EnvironmentService(EnvironmentService&&) noexcept = default;
-        EnvironmentService& operator=(const EnvironmentService&) = default;
-        EnvironmentService& operator=(EnvironmentService&&) noexcept = default;
-        ~EnvironmentService() = default;
+        SHARED_DLL EnvironmentService() = default;
+        SHARED_DLL EnvironmentService(const EnvironmentService&) = default;
+        SHARED_DLL EnvironmentService(EnvironmentService&&) noexcept = default;
+        SHARED_DLL EnvironmentService& operator=(const EnvironmentService&) = default;
+        SHARED_DLL EnvironmentService& operator=(EnvironmentService&&) noexcept = default;
+        SHARED_DLL ~EnvironmentService() = default;
 
     };
 

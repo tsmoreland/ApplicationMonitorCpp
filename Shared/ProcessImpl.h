@@ -38,6 +38,7 @@ namespace Shared::Infrastructure
 
         [[nodiscard]] bool Equals(ProcessImpl const& other) const noexcept;
     private:
+        bool processLaunched{};
         unsigned long processId{};
         unsigned long processThreadId{};
         HandleWithNullForEmpty processHandle{};
