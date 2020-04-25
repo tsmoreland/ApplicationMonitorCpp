@@ -14,6 +14,7 @@
 #include "pch.h"
 #include "Settings.h"
 #include "SettingsImpl.h"
+#include <sstream>
 
 using std::filesystem::path;
 using std::find;
@@ -56,7 +57,6 @@ namespace SymbolPath::Model
         return pImpl ? pImpl->GetLocalCache() : path();
     }
 
-    // ReSharper disable once CppMemberFunctionMayBeConst -- it's a set function it shouldn't be considered const because it's modifying pImpl
     void Settings::SetLocalCache(std::filesystem::path value) noexcept
     {
         if (pImpl)
@@ -71,7 +71,6 @@ namespace SymbolPath::Model
             return nullopt;
     }
 
-    // ReSharper disable once CppMemberFunctionMayBeConst -- it's a set function it shouldn't be considered const because it's modifying pImpl
     void Settings::SetSymbolPath(std::string value) noexcept
     {
         if (pImpl)
