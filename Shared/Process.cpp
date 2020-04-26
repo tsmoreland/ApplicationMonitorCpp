@@ -15,7 +15,7 @@
 #include "Process.h"
 #include "ProcessImpl.h"
 
-using ProcessImpl = Shared::Infrastructure::ProcessImpl;
+using ProcessImpl = Shared::Model::ProcessImpl;
 
 using std::filesystem::path;
 using std::make_unique;
@@ -27,16 +27,14 @@ using std::string_view;
 using std::unique_ptr;
 using std::vector;
 
-namespace Shared::Model
-{
-    unique_ptr<IProcess> Process::Start(string_view const& filename, string_view const& arguments)
-    {
+namespace Shared::Model {
+
+    unique_ptr<IProcess> Process::Start(string_view const& filename, string_view const& arguments) {
         unique_ptr<Process> process{};
         process.reset(new Process(ProcessImpl::Start(filename, arguments).release()));
         return process;
     }
-    vector<unique_ptr<IProcess>> Process::GetProcessesByName(std::string_view const& processName)
-    {
+    vector<unique_ptr<IProcess>> Process::GetProcessesByName(std::string_view const& processName) {
         const size_t minimumSize = 100;
         auto processImplementations = ProcessImpl::GetProcessesByName(processName);
         vector<unique_ptr<IProcess>> processes{};
@@ -47,58 +45,46 @@ namespace Shared::Model
         return processes;
     }
 
-    Process::Process()
-    {
+    Process::Process() {
         pImpl = make_unique<ProcessImpl>();
     }
 
-    Process::~Process() // destructor only needed because we're exporting and default would need to know more about pImpl
-    {
+    // destructor only needed because we're exporting and default would need to know more about pImpl
+    Process::~Process() {
         pImpl.reset();
     }
 
-    unsigned long Process::GetId() const noexcept
-    {
+    unsigned long Process::GetId() const noexcept {
         return pImpl->GetId();
     }
 
-    bool Process::IsRunning() const noexcept
-    {
+    bool Process::IsRunning() const noexcept {
         return pImpl->IsRunning();
     }
 
-    optional<DWORD> Process::ExitCode() const noexcept
-    {
+    optional<DWORD> Process::ExitCode() const noexcept {
         return pImpl->ExitCode();
     }
 
-    void Process::WaitForExit() const noexcept
-    {
+    void Process::WaitForExit() const noexcept {
         pImpl-> WaitForExit();
     }
 
-    optional<path> Process::GetPathToRunningProcess(string_view const& processName) const noexcept
-    {
-        try
-        {
+    optional<path> Process::GetPathToRunningProcess(string_view const& processName) const noexcept {
+        try {
             return ProcessImpl::GetPathToRunningProcess(processName);
         }
-        catch (std::exception&)
-        {
+        catch (std::exception&) {
             return nullopt;
         }
     }
 
     Process::Process(ProcessImpl* pImpl)
         : IProcess()
-        , pImpl{pImpl}
-    {
+        , pImpl{pImpl} {
     }
-    Process& Process::operator=(Process&& other) noexcept
-    {
+    Process& Process::operator=(Process&& other) noexcept {
         pImpl = move(other.pImpl);
         return *this;
     }
-
-
 }

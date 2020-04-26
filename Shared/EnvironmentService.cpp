@@ -45,72 +45,58 @@ using Shared::Model::Process;
 using std::literals::string_literals::operator ""s;
 #pragma warning(pop)
 
-namespace Shared::Services
-{
-    optional<unique_ptr<IProcess>> EnvironmentService::StartProcess(string_view const& filename, string_view const& arguments) const noexcept
-    {
-        try
-        {
+namespace Shared::Services {
+
+    optional<unique_ptr<IProcess>> EnvironmentService::StartProcess(string_view const& filename, string_view const& arguments) const noexcept {
+        try {
             return optional<unique_ptr<IProcess>>(Process::Start(filename, arguments));
         }
-        catch (const std::exception&)
-        {
+        catch (const std::exception&) {
             return nullopt;
         }
     }
 
-    vector<unique_ptr<IProcess>> EnvironmentService::GetProcessesByName(string_view const& processName) const noexcept
-    {
-        try
-        {
+    vector<unique_ptr<IProcess>> EnvironmentService::GetProcessesByName(string_view const& processName) const noexcept {
+        try {
             return Process::GetProcessesByName(processName);
         }
-        catch (const std::exception&)
-        {
+        catch (std::exception const&) {
             return vector<unique_ptr<IProcess>>();
         }
     }
-    optional<string> EnvironmentService::GetVariable(std::string const& key) const noexcept
-    {
+    optional<string> EnvironmentService::GetVariable(std::string const& key) const noexcept {
         char value[4096]{};
         if (GetEnvironmentVariableA(key.c_str(), value, 16384) == FALSE)
             return nullopt;
         return optional(string(value));
     }
-    bool EnvironmentService::SetVariable(string const& key, string const& value) const noexcept
-    {
+    bool EnvironmentService::SetVariable(string const& key, string const& value) const noexcept {
         return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
     }
-    vector<filesystem::path> EnvironmentService::GetFilesFromDirectory(filesystem::path const& folder, std::wregex const& filter) const noexcept
-    {
-        try
-        {
+    vector<filesystem::path> EnvironmentService::GetFilesFromDirectory(filesystem::path const& folder, std::wregex const& filter) const noexcept {
+        try {
             if (!filesystem::exists(folder) || !filesystem::is_directory(folder))
                 return vector<filesystem::path>();
 
             vector<filesystem::path> matches;
             auto const files = filesystem::directory_iterator(folder);
             copy_if(begin(files), end(files), back_inserter(matches),
-                [&filter](auto const& entry)
-                {
+                [&filter](auto const& entry) {
                     return entry.is_regular_file() && regex_match(entry.path().filename().wstring(), filter);
                 });
 
             return matches;
         }
-        catch (std::exception const&)
-        {
+        catch (std::exception const&) {
             return vector<filesystem::path>();
         }
     }
 
-    optional<filesystem::path> EnvironmentService::GetPathToRunningProcess(string_view const& processName) const noexcept
-    {
+    optional<filesystem::path> EnvironmentService::GetPathToRunningProcess(string_view const& processName) const noexcept {
         return Process().GetPathToRunningProcess(processName);
     }
 
-    bool EnvironmentService::DirectoryExists(std::string_view const path) const 
-    {
+    bool EnvironmentService::DirectoryExists(std::string_view const path) const {
         filesystem::path const folder(path);
         return filesystem::exists(folder) && filesystem::is_directory(folder);
     }

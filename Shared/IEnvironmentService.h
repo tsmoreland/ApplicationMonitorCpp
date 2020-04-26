@@ -21,10 +21,8 @@
 #include "IProcess.h"
 #include "Export.h"
 
-namespace Shared::Services
-{
-    struct IEnvironmentService
-    {
+namespace Shared::Services {
+    struct IEnvironmentService {
         [[nodiscard]] SHARED_DLL virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
 
@@ -34,9 +32,6 @@ namespace Shared::Services
         [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
 
-        /// <summary>
-        /// 
-        /// </summary>
         [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
 
         SHARED_DLL IEnvironmentService() = default;

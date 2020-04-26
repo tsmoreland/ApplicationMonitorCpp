@@ -14,10 +14,9 @@
 #pragma once
 #include <TlHelp32.h>
 
-namespace Shared::Infrastructure
-{
-    class ProcessImpl final
-    {
+namespace Shared::Model {
+
+    class ProcessImpl final {
     public:
         static std::unique_ptr<ProcessImpl> Start(std::string_view const& filename, std::string_view const& arguments);
         static std::vector<std::unique_ptr<ProcessImpl>> GetProcessesByName(std::string_view const& processName);
@@ -26,7 +25,7 @@ namespace Shared::Infrastructure
         [[nodiscard]] bool IsRunning() const;
         [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept;
         void WaitForExit() const; 
-        static [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName);
+        [[nodiscard]] static std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName);
 
         ProcessImpl() = default;
         explicit ProcessImpl(unsigned long const processId);
@@ -41,8 +40,8 @@ namespace Shared::Infrastructure
         bool processLaunched{};
         unsigned long processId{};
         unsigned long processThreadId{};
-        HandleWithNullForEmpty processHandle{};
-        HandleWithNullForEmpty processThreadHandle{};
+        Shared::Infrastructure::HandleWithNullForEmpty processHandle{};
+        Shared::Infrastructure::HandleWithNullForEmpty processThreadHandle{};
 
         explicit ProcessImpl(PROCESS_INFORMATION const& processInformation);
         static bool CreateProcessAdapter(std::string_view const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);

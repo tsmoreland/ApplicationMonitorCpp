@@ -13,14 +13,12 @@
 
 #pragma once
 
-namespace Shared::Infrastructure
-{
+namespace Shared::Infrastructure {
     template<typename OWNER_TYPE, typename VALUE_TYPE>
-    struct DataMember
-    {
+    struct DataMember {
+
         constexpr DataMember(VALUE_TYPE OWNER_TYPE::*member, char const*const name)
-            : Member(member), Name(name)
-        {
+            : Member(member), Name(name) {
         }
         using Type = VALUE_TYPE;
         VALUE_TYPE OWNER_TYPE::*Member;
@@ -28,8 +26,7 @@ namespace Shared::Infrastructure
     };
 
     template<typename OWNER_TYPE, typename VALUE_TYPE>
-    constexpr auto property(VALUE_TYPE OWNER_TYPE::*member, char const*const name)
-    {
+    constexpr auto property(VALUE_TYPE OWNER_TYPE::*member, char const*const name) {
         return DataMemberImpl(member, name);
     }
 

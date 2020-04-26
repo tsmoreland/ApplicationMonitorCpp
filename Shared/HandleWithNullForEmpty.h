@@ -16,21 +16,17 @@
  #include "UniqueHandle.h" 
 #include <windows.h>
 
-namespace Shared::Infrastructure
-{
-    struct HandleWithNullForEmptyTraits
-    {
+namespace Shared::Infrastructure {
+
+    struct HandleWithNullForEmptyTraits {
         using Pointer = HANDLE;
 
-        static Pointer Invalid() noexcept
-        {
+        static Pointer Invalid() noexcept {
             return nullptr;
         }
-        static void Close(Pointer const value) noexcept
-        {
+        static void Close(Pointer const value) noexcept {
             CloseHandle(value);
         }
-
     };
 
     using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;

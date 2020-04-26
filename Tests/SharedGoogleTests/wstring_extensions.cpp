@@ -35,107 +35,82 @@ using std::literals::string_literals::operator ""s;
 
 namespace Shared::Tests
 {
-    TEST(WideString, TwoPartsWithSeperatorInTheMiddle)
-    {
+    TEST(WideString, TwoPartsWithSeperatorInTheMiddle) {
         SplitReturnsCorrectNumberOfParts(L"alpha*bravo"s, {L'*'}, 2ULL);
     }
-    TEST(WideString, ThreePartsWithSeperatorAtTheStart)
-    {
+    TEST(WideString, ThreePartsWithSeperatorAtTheStart) {
         SplitReturnsCorrectNumberOfParts(L"<alpha<bravo<charlie"s, {L'<'}, 3ULL);
     }
-    TEST(WideString, CorrectThreePartsWithSeperatorAtTheStart)
-    {
+    TEST(WideString, CorrectThreePartsWithSeperatorAtTheStart) {
         SplitReturnsCorrectCorrectParts(L"<alpha<bravo<charlie"s, {L'<'}, {L"alpha"s, L"bravo"s, L"charlie"s});
     }
-    TEST(WideString, FourPartsWithSeperatorAtTheEnd)
-    {
+    TEST(WideString, FourPartsWithSeperatorAtTheEnd) {
         SplitReturnsCorrectNumberOfParts(L"alpha>bravo>charlie>delta>"s, {L'>'}, 4ULL);
     }
-    TEST(WideString, CorrectFourPartsWithSeperatorAtTheEnd)
-    {
+    TEST(WideString, CorrectFourPartsWithSeperatorAtTheEnd) {
         SplitReturnsCorrectCorrectParts(L"alpha>bravo>charlie>delta>"s, {L'>'}, {L"alpha"s, L"bravo"s, L"charlie"s, L"delta"s});
     }
-    TEST(WideString, ExpectedPartsFound)
-    {
+    TEST(WideString, ExpectedPartsFound) {
         SplitReturnsCorrectCorrectParts(L"alpha,bravo,charlie,delta"s, {L','}, {L"alpha"s, L"bravo"s, L"charlie"s, L"delta"s});
     }
-    TEST(WideString, ExpectedPartsFoundWithMultipleSeperators)
-    {
+    TEST(WideString, ExpectedPartsFoundWithMultipleSeperators) {
         SplitReturnsCorrectCorrectParts(L"alpha,bravo.charlie.delta,echo"s, {L',', L'.'}, {L"alpha"s, L"bravo"s, L"charlie"s, L"delta"s, L"echo"s});
     }
-    TEST(WideString, NoPartsWhenStringIsEmpty)
-    {
+    TEST(WideString, NoPartsWhenStringIsEmpty) {
         SplitReturnsCorrectCorrectParts(L""s, {L',', L'.'}, {});
     }
-    TEST(WideString, OnePartWhenNoSeperators)
-    {
+    TEST(WideString, OnePartWhenNoSeperators) {
         SplitReturnsCorrectCorrectParts(L"alpha,bravo"s, {}, {L"alpha,bravo"s});
     }
-    TEST(WideString, SplitReturnsCorrectNumberOfParts)
-    {
+    TEST(WideString, SplitReturnsCorrectNumberOfParts) {
         SplitReturnsCorrectNumberOfParts(L"alpha*bravo"s, {L'*'}, 2ULL);
     }
-    TEST(WideString, EqualsReturnsTrueForMatchingCaseWhenNotIgnoring)
-    {
+    TEST(WideString, EqualsReturnsTrueForMatchingCaseWhenNotIgnoring) {
         ASSERT_TRUE(string_equal(L"alpha"s, L"alpha"s, false));
     }
-    TEST(WideString, EqualsReturnsTrueForMatchingCaseWhenIgnoring)
-    {
+    TEST(WideString, EqualsReturnsTrueForMatchingCaseWhenIgnoring) {
         ASSERT_TRUE(string_equal(L"alpha"s, L"AlphA"s, true));
     }
-    TEST(WideString, EqualsReturnsFalseForMatchingCaseWhenNotIgnoring)
-    {
+    TEST(WideString, EqualsReturnsFalseForMatchingCaseWhenNotIgnoring) {
         ASSERT_FALSE(string_equal(L"alpha"s, L"AlphA"s, false));
     }
-    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenNotIgnoringCase)
-    {
+    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenNotIgnoringCase) {
         ASSERT_FALSE(string_equal(L"alpha"s, L"Bravo"s, false));
     }
-    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenIgnoringCase)
-    {
+    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenIgnoringCase) {
         ASSERT_FALSE(string_equal(L"alpha"s, L"Bravo"s, true));
     }
-    TEST(WideString, EqualsReturnsTrueWhenNotIgnoringCaseWithWideStringToStringComparison)
-    {
+    TEST(WideString, EqualsReturnsTrueWhenNotIgnoringCaseWithWideStringToStringComparison) {
         ASSERT_TRUE(string_equal(L"alpha"s, "alpha"s, false));
     }
-    TEST(WideString, EqualsReturnsTrueWhenIgnoringCaseWithWideStringToStringComparison)
-    {
+    TEST(WideString, EqualsReturnsTrueWhenIgnoringCaseWithWideStringToStringComparison) {
         ASSERT_TRUE(string_equal(L"alpha"s, "AlphA"s, true));
     }
-    TEST(WideString, EqualsReturnsFalseForMatchingCaseWhenNotIgnoringWithWideStringToStringComparison)
-    {
+    TEST(WideString, EqualsReturnsFalseForMatchingCaseWhenNotIgnoringWithWideStringToStringComparison) {
         ASSERT_FALSE(string_equal(L"alpha"s, "AlphA"s, false));
     }
-    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenNotIgnoringCaseWithWideStringToStringComparison)
-    {
+    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenNotIgnoringCaseWithWideStringToStringComparison) {
         ASSERT_FALSE(string_equal(L"alpha"s, "Bravo"s, false));
     }
-    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenIgnoringCaseWithWideStringToStringComparison)
-    {
+    TEST(WideString, EqualsReturnsFalseWhenNotEqualWhenIgnoringCaseWithWideStringToStringComparison) {
         ASSERT_FALSE(string_equal(L"alpha"s, "Bravo"s, true));
     }
 
-    TEST(WideString, ReturnsTrueWhenContainsSinglePart)
-    {
+    TEST(WideString, ReturnsTrueWhenContainsSinglePart) {
         ASSERT_TRUE(string_contains_in_order(L"abcdef"s,  vector<wstring>{L"bc"s}));
     }
-    TEST(WideString, ReturnsFalseWhenContainsSinglePart)
-    {
+    TEST(WideString, ReturnsFalseWhenContainsSinglePart) {
         ASSERT_FALSE(string_contains_in_order(L"abcdef"s,  vector<wstring>{L"xy"s}));
     }
-    TEST(WideString, ReturnsTrueWhenNoPartsGiven)
-    {
+    TEST(WideString, ReturnsTrueWhenNoPartsGiven) {
         vector<wstring> const parts{};
         ASSERT_TRUE(string_contains_in_order(L"abcdef"s, parts));
     }
 
-    TEST(WideString, ReturnsTrueWhenContainsMultipleParts)
-    {
+    TEST(WideString, ReturnsTrueWhenContainsMultipleParts) {
         ASSERT_TRUE(string_contains_in_order(L"abcdef"s,  vector<wstring>{L"bc"s, L"de"s}));
     }
-    TEST(WideString, ReturnsFalseWhenDoesNotContainsMultiplePartsWhenOutOfOrder)
-    {
+    TEST(WideString, ReturnsFalseWhenDoesNotContainsMultiplePartsWhenOutOfOrder) {
         ASSERT_FALSE(string_contains_in_order(L"abcdef"s,  vector<wstring>{L"de"s, L"bc"s}));
     }
 

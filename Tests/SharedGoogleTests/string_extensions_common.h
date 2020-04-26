@@ -17,8 +17,7 @@
 namespace Shared::Tests
 {
     template<typename TCHAR>
-    void SplitReturnsCorrectNumberOfParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, size_t const expected)
-    {
+    void SplitReturnsCorrectNumberOfParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, size_t const expected) {
         // Act
         auto const parts = extension::string_split<TCHAR>(value, seperators);;
 
@@ -27,15 +26,13 @@ namespace Shared::Tests
     }
 
     template <typename TCHAR>
-    void SplitReturnsCorrectCorrectParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, std::vector<std::basic_string<TCHAR>> const& expected_parts)
-    {
+    void SplitReturnsCorrectCorrectParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, std::vector<std::basic_string<TCHAR>> const& expected_parts) {
         // Act
         auto const parts = extension::string_split<TCHAR>(value, seperators);;
 
         // Assert
         ASSERT_TRUE(equal(begin(expected_parts), end(expected_parts), begin(parts), 
-            [](auto const& lhs, auto const& rhs) 
-            { 
+            [](auto const& lhs, auto const& rhs) { 
                 return equal(begin(lhs), end(lhs), begin(rhs));
             }));
     }
