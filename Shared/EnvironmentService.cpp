@@ -14,18 +14,20 @@
 #include "pch.h"
 #include "IEnvironmentService.h"
 #include "EnvironmentService.h"
-#include "Process.h"
+#include "ProcessImpl.h"
 
 namespace filesystem = std::filesystem;
 
 using std::back_inserter;
 using std::copy_if;
 using std::make_tuple;
+using std::move;
 using std::nullopt;
 using std::optional;
 using std::regex_match;
 using std::string;
 using std::string_view;
+using std::transform;
 using std::tuple;
 using std::unique_ptr;
 using std::vector;
@@ -37,8 +39,10 @@ using extension::string_equal;
 using extension::string_split;
 using extension::string_contains_in_order;
 
+using Shared::Infrastructure::UniqueOwner;
 using Shared::Model::IProcess;
-using Shared::Model::Process;
+using Shared::Model::ProcessImpl;
+using Process = Shared::Infrastructure::UniqueOwner<Shared::Model::IProcess>;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
@@ -47,26 +51,37 @@ using std::literals::string_literals::operator ""s;
 
 namespace Shared::Services {
 
-    optional<unique_ptr<IProcess>> EnvironmentService::StartProcess(string_view const& filename, string_view const& arguments) const noexcept {
+    Process EnvironmentService::StartProcess(string_view const& filename, string_view const& arguments) const noexcept
+    {
         try {
-            return optional<unique_ptr<IProcess>>(Process::Start(filename, arguments));
+            return Process(ProcessImpl::Start(filename, arguments));
         }
         catch (const std::exception&) {
-            return nullopt;
+            return UniqueOwner<IProcess>::Empty();
         }
     }
-
-    vector<unique_ptr<IProcess>> EnvironmentService::GetProcessesByName(string_view const& processName) const noexcept {
+    vector<Process> EnvironmentService::GetProcessesByName(string_view const& processName) const noexcept {
         try {
-            return Process::GetProcessesByName(processName);
+            const size_t minimumSize = 100;
+            auto processImplementations = ProcessImpl::GetProcessesByName(processName);
+            vector<Process> processes{};
+            processes.reserve(minimumSize);
+
+            transform(begin(processImplementations), end(processImplementations), back_inserter(processes),
+                [](auto& pImpl) {
+                    return UniqueOwner<IProcess>(move(pImpl));
+                });
+
+            return processes;
         }
         catch (std::exception const&) {
-            return vector<unique_ptr<IProcess>>();
+            return vector<Process>();
         }
     }
     optional<string> EnvironmentService::GetVariable(std::string const& key) const noexcept {
-        char value[4096]{};
-        if (GetEnvironmentVariableA(key.c_str(), value, 16384) == FALSE)
+        constexpr auto MAX_VARIABLE_NAME_SIZE = 8192;
+        char value[MAX_VARIABLE_NAME_SIZE]{};
+        if (GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE) == FALSE)
             return nullopt;
         return optional(string(value));
     }
@@ -93,7 +108,7 @@ namespace Shared::Services {
     }
 
     optional<filesystem::path> EnvironmentService::GetPathToRunningProcess(string_view const& processName) const noexcept {
-        return Process().GetPathToRunningProcess(processName);
+        return ProcessImpl().GetPathToRunningProcess(processName);
     }
 
     bool EnvironmentService::DirectoryExists(std::string_view const path) const {

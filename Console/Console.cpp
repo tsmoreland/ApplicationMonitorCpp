@@ -15,9 +15,9 @@ int main() {
             cout << "Failed to set environment variable" << endl;
 
         auto const process = environment.StartProcess(R"(c:\windows\system32\cmd.exe)", "/c sleep 5");
-        if (!process.has_value())
+        if (!process.HasValue())
             return -1;
-        process.value()->WaitForExit();
+        process->WaitForExit();
 
         auto const envVar = environment.GetVariable("Hello");
         cout << envVar.value_or("no value found") << endl;

@@ -42,9 +42,6 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Process.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
     <ClInclude Include="IProcess.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
@@ -78,13 +75,22 @@
     <ClInclude Include="DataMember.h">
       <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
+    <ClInclude Include="BadOwnerAccess.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="UniqueOwner.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedOwner.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Owner.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Process.cpp">
-      <Filter>Source Files\Model</Filter>
     </ClCompile>
     <ClCompile Include="EnvironmentService.cpp">
       <Filter>Source Files\Services</Filter>

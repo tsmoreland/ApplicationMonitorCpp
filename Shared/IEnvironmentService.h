@@ -14,17 +14,18 @@
 #pragma once
 
 #include <optional>
-#include <memory>
-#include <string_view>
 #include <vector>
 #include <regex>
 #include "IProcess.h"
 #include "Export.h"
+#include "UniqueOwner.h"
 
 namespace Shared::Services {
     struct IEnvironmentService {
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
+        using Process = Shared::Infrastructure::UniqueOwner<Shared::Model::IProcess>;
+
+        [[nodiscard]] SHARED_DLL virtual Process StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<Process> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
 
         [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;

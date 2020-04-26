@@ -65,6 +65,7 @@ namespace Shared::Model {
         return unique_ptr<ProcessImpl>(new ProcessImpl(processInformation)); 
 
     }
+
     vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& processName) {
         auto const entries = GetProcessEntries();
         vector<unique_ptr<ProcessImpl>> filtered{};
@@ -77,16 +78,76 @@ namespace Shared::Model {
         return filtered;
     }
 
+    unsigned long ProcessImpl::GetId() const noexcept {
+        return processId;
+    }
+
+    bool ProcessImpl::IsRunning() const noexcept {
+        if (!static_cast<bool>(processHandle))
+            return false;
+
+        try {
+            bool isRunning{};
+            tie(isRunning, ignore) = GetRunningDetails(processHandle.Get());;
+            return isRunning;
+
+        } catch (std::exception const&) {
+            return false;
+        }
+    }
+
+    std::optional<unsigned long> ProcessImpl::ExitCode() const noexcept {
+        try {
+            if (!static_cast<bool>(processHandle))
+                return nullopt;
+
+            bool isRunning{};
+            unsigned long exitCode{};
+            tie(isRunning, exitCode) = GetRunningDetails(processHandle.Get());
+
+            return !isRunning
+                ? optional<unsigned long>(exitCode)
+                : nullopt;
+        }
+        catch (std::runtime_error const&) {
+            return nullopt;
+        }
+    }
+    void ProcessImpl::WaitForExit() const noexcept {
+        if (IsRunning())
+            WaitForSingleObject(processHandle.Get(), INFINITE);
+    }
+
+    optional<Filesystem::path> ProcessImpl::GetPathToRunningProcess(string_view const& processName) const noexcept {
+
+        try {
+            auto const process = GetProcessByName(processName);
+            if (!process.has_value())
+                return nullopt;
+
+            auto const module = GetModuleByIdAndName(process.value().th32ProcessID, processName);
+            if (!module.has_value())
+                return nullopt;
+
+            return optional(Filesystem::path(module.value().szExePath));
+        } catch (std::exception const&) {
+            return nullopt;
+        }
+    }
+
     ProcessImpl::ProcessImpl(unsigned long const processId)
         : processId(processId) {
         processHandle.Reset( OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId));
     }
+
     ProcessImpl::ProcessImpl(PROCESS_INFORMATION const& processInformation) {
         processHandle.Reset(processInformation.hProcess);
         processThreadHandle.Reset(processInformation.hThread);
         processId = processInformation.dwProcessId;
         processThreadId = processInformation.dwThreadId;
+        processLaunched = true;
     }
+
     ProcessImpl::ProcessImpl(ProcessImpl&& other) noexcept
         : processLaunched{other.processLaunched} 
         , processId{other.processId}
@@ -120,57 +181,13 @@ namespace Shared::Model {
         processThreadId = 0UL;
     }
 
-    unsigned long ProcessImpl::GetId() const noexcept {
-        return processId;
-    }
-    bool ProcessImpl::IsRunning() const {
-        if (!static_cast<bool>(processHandle))
-            return false;
-
-        bool isRunning{};
-        tie(isRunning, ignore) = GetRunningDetails(processHandle.Get());;
-        return isRunning;
-    }
-    std::optional<unsigned long> ProcessImpl::ExitCode() const noexcept {
-        try {
-            if (!static_cast<bool>(processHandle))
-                return nullopt;
-
-            bool isRunning{};
-            unsigned long exitCode{};
-            tie(isRunning, exitCode) = GetRunningDetails(processHandle.Get());
-
-            return !isRunning
-                ? optional<unsigned long>(exitCode)
-                : nullopt;
-        }
-        catch (std::runtime_error const&) {
-            return nullopt;
-        }
-    }
-    void ProcessImpl::WaitForExit() const {
-        if (IsRunning())
-            WaitForSingleObject(processHandle.Get(), INFINITE);
-    }
-
-    optional<Filesystem::path> ProcessImpl::GetPathToRunningProcess(string_view const& processName) {
-        auto const process = GetProcessByName(processName);
-        if (!process.has_value())
-            return nullopt;
-
-        auto const module = GetModuleByIdAndName(process.value().th32ProcessID, processName);
-        if (!module.has_value())
-            return nullopt;
-
-        return optional(Filesystem::path(module.value().szExePath));
-    }
-
     bool ProcessImpl::Equals(ProcessImpl const& other) const noexcept { 
         return processId == other.processId &&
             processId == other.processThreadId &&
             processHandle.Get() == other.processHandle.Get() &&
             processThreadHandle.Get() == other.processThreadHandle.Get();
     }
+
     tuple<bool, unsigned long> ProcessImpl::GetRunningDetails(HANDLE processHandle) {
         DWORD exitCode{};
 
@@ -182,6 +199,7 @@ namespace Shared::Model {
             ? make_tuple(true, 0UL)
             : make_tuple(false, exitCode);
     }
+
     optional<PROCESSENTRY32> ProcessImpl::GetProcessByName(std::string_view const& processName) noexcept {
         auto const entries = GetProcessEntries(); // if we were concerned with performance this would be a bad idea
         auto const matchingEntry = find_if(begin(entries), end(entries), 
@@ -194,6 +212,7 @@ namespace Shared::Model {
             ? optional(*matchingEntry)
             : nullopt;
     }
+
     vector<PROCESSENTRY32> ProcessImpl::GetProcessEntries() noexcept {
         HandleWithInvalidForEmpty const processSnapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS | TH32CS_SNAPTHREAD, 0));
         if (!static_cast<bool>(processSnapshot))
@@ -212,6 +231,7 @@ namespace Shared::Model {
 
         return processes;
     }
+
     optional<MODULEENTRY32> ProcessImpl::GetModuleByIdAndName(unsigned long const processId, string_view const& processName) noexcept {
         auto const modules = GetModuleEntries(processId);
         auto const matchingModule =  find_if(begin(modules), end(modules), 
@@ -224,6 +244,7 @@ namespace Shared::Model {
             ? optional(*matchingModule)
             : nullopt;
     }
+
     std::vector<MODULEENTRY32> ProcessImpl::GetModuleEntries(unsigned long const processId) noexcept {
         HandleWithInvalidForEmpty const snapshot(CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, processId));
         MODULEENTRY32 entry{};
@@ -240,6 +261,7 @@ namespace Shared::Model {
 
         return modules;
     }
+
     bool ProcessImpl::CreateProcessAdapter(string_view const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo) {
         auto const maxPath = 256UL;
         auto const commandLine = make_unique<char[]>(32768); // max size of command line which cannot be readonly
@@ -254,6 +276,7 @@ namespace Shared::Model {
         return CreateProcessA(nullptr, commandLineString, nullptr, nullptr, TRUE, CREATE_NO_WINDOW, 
             nullptr, nullptr, startupInfo, processInfo) == TRUE;
     }
+
     bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide) {
         return &leftHandSide == &rightHandSide || leftHandSide.Equals(rightHandSide);
     }
