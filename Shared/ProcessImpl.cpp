@@ -44,10 +44,9 @@ using std::literals::string_literals::operator""s;
 using Shared::Infrastructure::HandleWithNullForEmpty;
 using Shared::Infrastructure::HandleWithInvalidForEmpty;
 
-namespace Shared::Infrastructure
-{
-    unique_ptr<ProcessImpl> ProcessImpl::Start(string_view const& filename, string_view const& arguments)
-    {
+namespace Shared::Model {
+
+    unique_ptr<ProcessImpl> ProcessImpl::Start(string_view const& filename, string_view const& arguments) {
         const auto absolutePath = Filesystem::absolute(filename).string();
 
         if (!Filesystem::exists(absolutePath) || !Filesystem::is_regular_file(absolutePath))
@@ -66,15 +65,12 @@ namespace Shared::Infrastructure
         return unique_ptr<ProcessImpl>(new ProcessImpl(processInformation)); 
 
     }
-    vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& processName)
-    {
+    vector<unique_ptr<ProcessImpl>> ProcessImpl::GetProcessesByName(string_view const& processName) {
         auto const entries = GetProcessEntries();
         vector<unique_ptr<ProcessImpl>> filtered{};
-        for (auto const& processEntry : entries)
-        {
+        for (auto const& processEntry : entries) {
             if (auto const exeView = wstring_view(processEntry.szExeFile, wcslen(processEntry.szExeFile));
-                string_equal(processName, exeView, true))
-            {
+                string_equal(processName, exeView, true)) {
                 filtered.emplace_back(new ProcessImpl(processEntry.th32ProcessID));
             }
         }
@@ -82,22 +78,20 @@ namespace Shared::Infrastructure
     }
 
     ProcessImpl::ProcessImpl(unsigned long const processId)
-        : processId(processId)
-    {
+        : processId(processId) {
         processHandle.Reset( OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId));
     }
-    ProcessImpl::ProcessImpl(PROCESS_INFORMATION const& processInformation)
-    {
+    ProcessImpl::ProcessImpl(PROCESS_INFORMATION const& processInformation) {
         processHandle.Reset(processInformation.hProcess);
         processThreadHandle.Reset(processInformation.hThread);
         processId = processInformation.dwProcessId;
         processThreadId = processInformation.dwThreadId;
     }
     ProcessImpl::ProcessImpl(ProcessImpl&& other) noexcept
-        : processId{other.processId}
-        , processThreadId{other.processThreadId}
-        , processLaunched{other.processLaunched}
-    {
+        : processLaunched{other.processLaunched} 
+        , processId{other.processId}
+        , processThreadId{other.processThreadId} {
+
         processHandle = move(other.processHandle);
         processThreadHandle = move(other.processThreadHandle);
 
@@ -105,8 +99,7 @@ namespace Shared::Infrastructure
         other.processId = 0UL;
         other.processLaunched = false;
     }
-    ProcessImpl& ProcessImpl::operator=(ProcessImpl&& other) noexcept
-    {
+    ProcessImpl& ProcessImpl::operator=(ProcessImpl&& other) noexcept {
         processHandle = move(other.processHandle);
         processThreadHandle = move(other.processThreadHandle);
         processId = other.processId;
@@ -119,8 +112,7 @@ namespace Shared::Infrastructure
         return *this;
     }
 
-    ProcessImpl::~ProcessImpl()
-    {
+    ProcessImpl::~ProcessImpl() {
         if (processLaunched && IsRunning())
             WaitForExit();
         processLaunched = false;
@@ -128,12 +120,10 @@ namespace Shared::Infrastructure
         processThreadId = 0UL;
     }
 
-    unsigned long ProcessImpl::GetId() const noexcept
-    {
+    unsigned long ProcessImpl::GetId() const noexcept {
         return processId;
     }
-    bool ProcessImpl::IsRunning() const 
-    {
+    bool ProcessImpl::IsRunning() const {
         if (!static_cast<bool>(processHandle))
             return false;
 
@@ -141,10 +131,8 @@ namespace Shared::Infrastructure
         tie(isRunning, ignore) = GetRunningDetails(processHandle.Get());;
         return isRunning;
     }
-    std::optional<unsigned long> ProcessImpl::ExitCode() const noexcept
-    {
-        try
-        {
+    std::optional<unsigned long> ProcessImpl::ExitCode() const noexcept {
+        try {
             if (!static_cast<bool>(processHandle))
                 return nullopt;
 
@@ -156,19 +144,16 @@ namespace Shared::Infrastructure
                 ? optional<unsigned long>(exitCode)
                 : nullopt;
         }
-        catch (std::runtime_error&)
-        {
+        catch (std::runtime_error const&) {
             return nullopt;
         }
     }
-    void ProcessImpl::WaitForExit() const 
-    {
+    void ProcessImpl::WaitForExit() const {
         if (IsRunning())
             WaitForSingleObject(processHandle.Get(), INFINITE);
     }
 
-    optional<Filesystem::path> ProcessImpl::GetPathToRunningProcess(string_view const& processName) 
-    {
+    optional<Filesystem::path> ProcessImpl::GetPathToRunningProcess(string_view const& processName) {
         auto const process = GetProcessByName(processName);
         if (!process.has_value())
             return nullopt;
@@ -180,15 +165,13 @@ namespace Shared::Infrastructure
         return optional(Filesystem::path(module.value().szExePath));
     }
 
-    bool ProcessImpl::Equals(ProcessImpl const& other) const noexcept
-    { 
+    bool ProcessImpl::Equals(ProcessImpl const& other) const noexcept { 
         return processId == other.processId &&
             processId == other.processThreadId &&
             processHandle.Get() == other.processHandle.Get() &&
             processThreadHandle.Get() == other.processThreadHandle.Get();
     }
-    tuple<bool, unsigned long> ProcessImpl::GetRunningDetails(HANDLE processHandle)
-    {
+    tuple<bool, unsigned long> ProcessImpl::GetRunningDetails(HANDLE processHandle) {
         DWORD exitCode{};
 
         auto const getExitProcessSuccess = GetExitCodeProcess(processHandle, &exitCode);
@@ -199,21 +182,19 @@ namespace Shared::Infrastructure
             ? make_tuple(true, 0UL)
             : make_tuple(false, exitCode);
     }
-    optional<PROCESSENTRY32> ProcessImpl::GetProcessByName(std::string_view const& processName) noexcept
-    {
+    optional<PROCESSENTRY32> ProcessImpl::GetProcessByName(std::string_view const& processName) noexcept {
         auto const entries = GetProcessEntries(); // if we were concerned with performance this would be a bad idea
-        auto const matchingEntry = find_if(begin(entries), end(entries), [&processName](auto const& entry)
-        {
-            auto const exeView = wstring_view(entry.szExeFile, wcslen(entry.szExeFile));
-            return string_equal(processName, exeView, true);
-        });
+        auto const matchingEntry = find_if(begin(entries), end(entries), 
+            [&processName](auto const& entry) {
+                auto const exeView = wstring_view(entry.szExeFile, wcslen(entry.szExeFile));
+                return string_equal(processName, exeView, true);
+            });
 
         return matchingEntry != entries.end()
             ? optional(*matchingEntry)
             : nullopt;
     }
-    vector<PROCESSENTRY32> ProcessImpl::GetProcessEntries() noexcept
-    {
+    vector<PROCESSENTRY32> ProcessImpl::GetProcessEntries() noexcept {
         HandleWithInvalidForEmpty const processSnapshot(CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS | TH32CS_SNAPTHREAD, 0));
         if (!static_cast<bool>(processSnapshot))
             return vector<PROCESSENTRY32>();
@@ -224,29 +205,26 @@ namespace Shared::Infrastructure
             return vector<PROCESSENTRY32>();
 
         vector<PROCESSENTRY32> processes;
-        do
-        {
+        do {
             processes.push_back(entry);
 
         } while (Process32Next(processSnapshot.Get(), &entry));
 
         return processes;
     }
-    optional<MODULEENTRY32> ProcessImpl::GetModuleByIdAndName(unsigned long const processId, string_view const& processName) noexcept
-    {
+    optional<MODULEENTRY32> ProcessImpl::GetModuleByIdAndName(unsigned long const processId, string_view const& processName) noexcept {
         auto const modules = GetModuleEntries(processId);
-        auto const matchingModule =  find_if(begin(modules), end(modules), [processName](auto const& module)
-        {
-            wstring_view const moduleName(module.szModule, wcslen(module.szModule));
-            return string_equal(processName, moduleName, true);
-        });
+        auto const matchingModule =  find_if(begin(modules), end(modules), 
+            [processName](auto const& module) {
+                wstring_view const moduleName(module.szModule, wcslen(module.szModule));
+                return string_equal(processName, moduleName, true);
+            });
 
         return matchingModule != modules.end()
             ? optional(*matchingModule)
             : nullopt;
     }
-    std::vector<MODULEENTRY32> ProcessImpl::GetModuleEntries(unsigned long const processId) noexcept
-    {
+    std::vector<MODULEENTRY32> ProcessImpl::GetModuleEntries(unsigned long const processId) noexcept {
         HandleWithInvalidForEmpty const snapshot(CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, processId));
         MODULEENTRY32 entry{};
         entry.dwSize = sizeof(MODULEENTRY32);
@@ -255,16 +233,14 @@ namespace Shared::Infrastructure
             return vector<MODULEENTRY32>();
 
         vector<MODULEENTRY32> modules;
-        do
-        {
+        do {
             modules.push_back(entry);
 
         } while (Module32Next(snapshot.Get(), &entry));
 
         return modules;
     }
-    bool ProcessImpl::CreateProcessAdapter(string_view const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo)
-    {
+    bool ProcessImpl::CreateProcessAdapter(string_view const& filename, string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo) {
         auto const maxPath = 256UL;
         auto const commandLine = make_unique<char[]>(32768); // max size of command line which cannot be readonly
         auto const filenameLength = std::min<size_t>(filename.size(), maxPath);
@@ -278,8 +254,7 @@ namespace Shared::Infrastructure
         return CreateProcessA(nullptr, commandLineString, nullptr, nullptr, TRUE, CREATE_NO_WINDOW, 
             nullptr, nullptr, startupInfo, processInfo) == TRUE;
     }
-    bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide)
-    {
+    bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide) {
         return &leftHandSide == &rightHandSide || leftHandSide.Equals(rightHandSide);
     }
 

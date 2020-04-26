@@ -13,23 +13,22 @@
 
 #pragma once
 
-#include "Export.h"
+namespace Shared::Infrastructure {
+    template<typename OWNER_TYPE, typename VALUE_TYPE>
+    struct DataMember {
 
-namespace Shared::Model {
-
-    struct IProcess {
-        [[nodiscard]] SHARED_DLL virtual unsigned long GetId() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool IsRunning() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> ExitCode() const noexcept = 0;
-        SHARED_DLL virtual void WaitForExit() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
-
-        SHARED_DLL IProcess() = default;
-        IProcess(const IProcess&) = delete;
-        IProcess& operator=(const IProcess&) = delete;
-        SHARED_DLL IProcess(IProcess&&) = default;
-        SHARED_DLL IProcess& operator=(IProcess&&) = default;
-        SHARED_DLL virtual ~IProcess() = default;
-
+        constexpr DataMember(VALUE_TYPE OWNER_TYPE::*member, char const*const name)
+            : Member(member), Name(name) {
+        }
+        using Type = VALUE_TYPE;
+        VALUE_TYPE OWNER_TYPE::*Member;
+        char const*const Name;
     };
+
+    template<typename OWNER_TYPE, typename VALUE_TYPE>
+    constexpr auto property(VALUE_TYPE OWNER_TYPE::*member, char const*const name) {
+        return DataMember(member, name);
+    }
+
 }
+

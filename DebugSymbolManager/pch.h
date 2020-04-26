@@ -13,23 +13,18 @@
 
 #pragma once
 
-#include "Export.h"
+#include <string>
+#include <string_view>
+#include <memory>
+#include <optional>
+#include <filesystem>
+#include <vector>
+#include <algorithm>
+#include <regex>
+#include <ranges>
+#include "string_extensions.h"
 
-namespace Shared::Model {
+#include <windows.h>
 
-    struct IProcess {
-        [[nodiscard]] SHARED_DLL virtual unsigned long GetId() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool IsRunning() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> ExitCode() const noexcept = 0;
-        SHARED_DLL virtual void WaitForExit() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
+#include <IEnvironmentService.h>
 
-        SHARED_DLL IProcess() = default;
-        IProcess(const IProcess&) = delete;
-        IProcess& operator=(const IProcess&) = delete;
-        SHARED_DLL IProcess(IProcess&&) = default;
-        SHARED_DLL IProcess& operator=(IProcess&&) = default;
-        SHARED_DLL virtual ~IProcess() = default;
-
-    };
-}

@@ -15,18 +15,14 @@
 
 #include "UniqueHandle.h"
 
-namespace Shared::Infrastructure
-{
-    struct HandleWithInvalidForEmptyTraits
-    {
+namespace Shared::Infrastructure {
+    struct HandleWithInvalidForEmptyTraits {
         using Pointer = HANDLE;
 
-        static Pointer Invalid() noexcept
-        {
+        static Pointer Invalid() noexcept {
             return INVALID_HANDLE_VALUE;
         }
-        static void Close(Pointer const value) noexcept
-        {
+        static void Close(Pointer const value) noexcept {
             CloseHandle(value);
         }
     };

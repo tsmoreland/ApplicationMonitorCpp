@@ -51,8 +51,7 @@ namespace Shared::Tests
     template <class PREDICATE>
     tuple<unique_ptr<IEnvironmentService>, vector<FileSystem::path>> Arrange(FileSystem::path const& folder, PREDICATE predicate);
 
-    TEST(EnvironmentService, ReturnsNoFilesWhenPathIsNotDirectory)
-    {
+    TEST(EnvironmentService, ReturnsNoFilesWhenPathIsNotDirectory) {
         // Arrange
         auto const windowsDirectory = FileSystem::path(LR"(C:\windows\system32\cmd.exe)");
         wregex const filter(LR"(.*\.exe$)");
@@ -65,16 +64,14 @@ namespace Shared::Tests
         ASSERT_EQ(0ULL, files.size());
     }
 
-    TEST(EnvironmentService, ReturnsAllFilesMatchingFilter)
-    {
+    TEST(EnvironmentService, ReturnsAllFilesMatchingFilter) {
         // Arrange
         auto const windowsDirectory = FileSystem::path(LR"(C:\windows)");
         unique_ptr<IEnvironmentService> service;
         vector<FileSystem::path> expected{};
         wregex const filter(LR"(.*\.exe$)");
         tie(service, expected) = Arrange(windowsDirectory, 
-            [&filter](FileSystem::directory_entry const& entry)
-            {
+            [&filter](FileSystem::directory_entry const& entry) {
                return regex_match(entry.path().wstring(), filter);
             });
 
@@ -85,8 +82,7 @@ namespace Shared::Tests
         ASSERT_TRUE(equal(begin(expected), end(expected), begin(files)));
     }
 
-    TEST(EnvironmentService, StartThrowsWhenFileNotFound)
-    {
+    TEST(EnvironmentService, StartThrowsWhenFileNotFound) {
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
 
         auto const process = service->StartProcess(""s, ""s);
@@ -94,8 +90,7 @@ namespace Shared::Tests
         ASSERT_FALSE(process.has_value());
     }
 
-    TEST(EnvironmentService, ReturnsProcessValueWhenFileFound)
-    {
+    TEST(EnvironmentService, ReturnsProcessValueWhenFileFound) {
         std::string const XcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
 
@@ -105,8 +100,7 @@ namespace Shared::Tests
         process.value()->WaitForExit();
     }
 
-    TEST(EnvironmentService, ExitCodeNonZeroWithBadCommand)
-    {
+    TEST(EnvironmentService, ExitCodeNonZeroWithBadCommand) {
         std::string const XcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
 
@@ -122,8 +116,7 @@ namespace Shared::Tests
     }
 
     std::string const CommandExe = R"(c:\windows\system32\cmd.exe)"s;
-    TEST(EnvironmentService, ExitCodeZeroWithGoodCommand)
-    {
+    TEST(EnvironmentService, ExitCodeZeroWithGoodCommand) {
         // Assert / Act
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
         auto const process = service->StartProcess(CommandExe, "/c echo \"Test\"");
@@ -138,8 +131,7 @@ namespace Shared::Tests
         ASSERT_EQ(0, exitCode.value());
     }
 
-    TEST(EnvironmentService, ProcessByNameFindsMatch)
-    {
+    TEST(EnvironmentService, ProcessByNameFindsMatch) {
         // Assert / Act
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
         auto const process = service->StartProcess(CommandExe, "/c Sleep 1");
@@ -150,8 +142,7 @@ namespace Shared::Tests
         // Assert
         ASSERT_GE(matchingProcesses.size(), 0);
     }
-    TEST(EnvironmentService, NoProcessesFoundWithEmptyProcessname)
-    {
+    TEST(EnvironmentService, NoProcessesFoundWithEmptyProcessname) {
         // Arrange
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
         // Act
@@ -160,8 +151,7 @@ namespace Shared::Tests
         ASSERT_EQ(matchingProcesses.size(), 0);
     }
 
-    TEST(EnvironmentService, GetPathFromRunningPathReturnsPath)
-    {
+    TEST(EnvironmentService, GetPathFromRunningPathReturnsPath) {
         // Arrange
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
         auto const runningProcess = service->StartProcess(CommandExe, "/c Sleep 1");
@@ -175,8 +165,7 @@ namespace Shared::Tests
 
     }
 
-    TEST(EnvironmentService, GetPathFromRunningPathReturnsCorrectPath)
-    {
+    TEST(EnvironmentService, GetPathFromRunningPathReturnsCorrectPath) {
         // Arrange
         std::filesystem::path expected(CommandExe);
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
@@ -190,17 +179,14 @@ namespace Shared::Tests
     }
 
     template <class PREDICATE>
-    tuple<unique_ptr<IEnvironmentService>, vector<FileSystem::path>> Arrange(FileSystem::path const& folder, PREDICATE predicate)
-    {
+    tuple<unique_ptr<IEnvironmentService>, vector<FileSystem::path>> Arrange(FileSystem::path const& folder, PREDICATE predicate) {
         unique_ptr<IEnvironmentService> service = make_unique<EnvironmentService>();
 
         vector<FileSystem::path> expected{};
-        if (FileSystem::exists(folder) && FileSystem::is_directory(folder))
-        {
+        if (FileSystem::exists(folder) && FileSystem::is_directory(folder)) {
             auto const expectedFiles = FileSystem::directory_iterator(folder);
             copy_if(begin(expectedFiles), end(expectedFiles), back_inserter(expected), 
-                [predicate](FileSystem::directory_entry const& entry)
-                {
+                [predicate](FileSystem::directory_entry const& entry) {
                     return entry.is_regular_file() && predicate(entry);
                 });
         }

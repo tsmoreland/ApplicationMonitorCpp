@@ -19,15 +19,13 @@
 #include <vector>
 #include "IProcess.h"
 
-namespace Shared::Infrastructure
-{
+namespace Shared::Model {
     class ProcessImpl;
 }
 
-namespace Shared::Model
-{
-    class Process final : public IProcess
-    {
+namespace Shared::Model {
+
+    class Process final : public IProcess {
     public:
         static std::unique_ptr<IProcess> Start(std::string_view const& filename, std::string_view const& arguments);
         static std::vector<std::unique_ptr<IProcess>> GetProcessesByName(std::string_view const& processName);
@@ -46,8 +44,8 @@ namespace Shared::Model
         Process& operator=(Process&&) noexcept;
 
     private:
-        std::unique_ptr<Shared::Infrastructure::ProcessImpl> pImpl{};
-        explicit Process(Shared::Infrastructure::ProcessImpl* pImpl);
+        std::unique_ptr<Shared::Model::ProcessImpl> pImpl{};
+        explicit Process(Shared::Model::ProcessImpl* pImpl);
     };
 
 };
