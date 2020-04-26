@@ -19,6 +19,11 @@
 
 namespace extension
 {
+    template<typename TCHAR>
+    constexpr size_t zstring_length(TCHAR const*const value)
+    {
+        return *value ? 1 + zstring_length(value + 1) : 0;
+    };
 
     template <typename TCHAR>
     [[nodiscard]] bool string_equal(std::basic_string_view<TCHAR> const left_hand_side, std::basic_string_view<TCHAR> const right_hand_side, bool const ignoreCase = false)

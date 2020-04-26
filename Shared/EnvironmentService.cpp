@@ -109,4 +109,10 @@ namespace Shared::Services
         return Process().GetPathToRunningProcess(processName);
     }
 
+    bool EnvironmentService::DirectoryExists(std::string_view const path) const 
+    {
+        filesystem::path const folder(path);
+        return filesystem::exists(folder) && filesystem::is_directory(folder);
+    }
+
 }

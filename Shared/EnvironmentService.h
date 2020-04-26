@@ -29,6 +29,8 @@ namespace Shared::Services
         [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept override;
         [[nodiscard]] SHARED_DLL std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
 
+        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const override;
+
         SHARED_DLL EnvironmentService() = default;
         SHARED_DLL EnvironmentService(const EnvironmentService&) = default;
         SHARED_DLL EnvironmentService(EnvironmentService&&) noexcept = default;

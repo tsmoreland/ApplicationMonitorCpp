@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DataMember.h" />
     <ClInclude Include="EnvironmentService.h" />
     <ClInclude Include="Export.h" />
     <ClInclude Include="HandleWithInvalidForEmpty.h" />
