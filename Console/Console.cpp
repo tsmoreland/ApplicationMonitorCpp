@@ -7,10 +7,8 @@ using std::cout;
 using std::endl;
 using Shared::Services::EnvironmentService;
 
-int main()
-{
-    try
-    {
+int main() {
+    try {
         EnvironmentService const environment{};
 
         if (!environment.SetVariable("Hello", "World"))
@@ -28,8 +26,7 @@ int main()
         for (auto const& p : processes)
             cout << "Process ID: " << p->GetId() << endl;
     }
-    catch (std::exception &e)
-    {
+    catch (std::exception const& e) {
         cout << "Unexpected error occured: " << e.what() << endl;
     }
 }

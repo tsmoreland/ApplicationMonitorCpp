@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKerne
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedGoogleTests", "Tests\SharedGoogleTests\SharedGoogleTests.vcxproj", "{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SymbolPath", "SymbolPath", "{78A0FB1A-090D-4F0F-910C-F73062925A58}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DebugSymbolManager", "DebugSymbolManager", "{78A0FB1A-090D-4F0F-910C-F73062925A58}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SymbolPath", "SymbolPath\SymbolPath.vcxproj", "{262E86ED-58E2-4E79-8C1E-1D77681766F6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugSymbolManager", "DebugSymbolManager\DebugSymbolManager.vcxproj", "{262E86ED-58E2-4E79-8C1E-1D77681766F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

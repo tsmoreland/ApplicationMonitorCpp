@@ -30,7 +30,7 @@
     <ClInclude Include="Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SettingsImpl.h">
+    <ClInclude Include="NtSymbolPath.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,10 +38,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Settings.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="SettingsImpl.cpp">
+    <ClCompile Include="NtSymbolPath.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>

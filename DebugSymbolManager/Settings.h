@@ -1,33 +1,42 @@
 #pragma once
 
-#include "Common.h"
-#include <filesystem>
-#include <optional>
 #include <string>
+#include <DataMember.h>
+#include <string_extensions.h>
 
-namespace SymbolPath::Model
-{
+namespace DebugSymbolManager::Model {
     class SettingsImpl;
 
-    class Settings final
-    {
-    public:
-        SYMBOL_PATH_DLL explicit Settings(); 
-        SYMBOL_PATH_DLL Settings(Settings const& other);
-        SYMBOL_PATH_DLL Settings(Settings&& other) noexcept = default;
-        SYMBOL_PATH_DLL ~Settings() = default;
+    struct Settings final {
+        std::string LocalCache;
+        std::string BaseSymbolPath;
+        constexpr static auto LOCAL_CACHE_KEY = "[Local Cache]";
+        constexpr static auto LOCAL_CACHE_KEY_SIZE = extension::zstring_length("[Local Cache]");
 
-        SYMBOL_PATH_DLL Settings& operator=(Settings const& other);
-        SYMBOL_PATH_DLL Settings& operator=(Settings&&) noexcept = default;
+        bool operator==(Settings const& other) const noexcept {
+            return Equals(other);
+        }
+        bool operator!=(Settings const& other) const noexcept {
+            return !Equals(other);
+        }
+        [[nodiscard]] bool Equals(Settings const& other) const noexcept {
+            return this == &other ||
+                BaseSymbolPath == other.BaseSymbolPath &&
+                LocalCache == other.BaseSymbolPath;
+        }
 
-        [[nodiscard]] SYMBOL_PATH_DLL std::filesystem::path GetLocalCache() const noexcept;
-        SYMBOL_PATH_DLL void SetLocalCache(std::filesystem::path value) noexcept;
-        [[nodiscard]] SYMBOL_PATH_DLL std::optional<std::string> GetSymbolPath() const noexcept;
-        SYMBOL_PATH_DLL void SetSymbolPath(std::string value) noexcept;
-
-    private:
-        std::unique_ptr<SettingsImpl> pImpl;
-
+        constexpr static auto PROPERTIES = std::make_tuple(
+            Shared::Infrastructure::property(&Settings::LocalCache, "localCache"),
+            Shared::Infrastructure::property(&Settings::BaseSymbolPath, "baseSymbolPath")
+        );
     };
+
+    inline bool operator==(Settings const& left, Settings const& right) {
+        return left.Equals(right);
+    }
+    inline bool operator!=(Settings const& left, Settings const& right) {
+        return !left.Equals(right);
+    }
+
 }
 

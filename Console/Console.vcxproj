@@ -158,16 +158,6 @@
     <ClCompile Include="Console.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\3rdParty\bin\Debuggers\gflags.exe">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="..\3rdParty\bin\Debuggers\umdh.exe">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.vcxproj">
       <Project>{df70d038-5dec-4957-b2b8-289f083c5294}</Project>
     </ProjectReference>

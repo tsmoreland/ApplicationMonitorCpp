@@ -26,3 +26,5 @@
 
 #include <windows.h>
 
+#include <IEnvironmentService.h>
+

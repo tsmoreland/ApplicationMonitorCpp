@@ -27,7 +27,7 @@ namespace Shared::Infrastructure {
 
     template<typename OWNER_TYPE, typename VALUE_TYPE>
     constexpr auto property(VALUE_TYPE OWNER_TYPE::*member, char const*const name) {
-        return DataMemberImpl(member, name);
+        return DataMember(member, name);
     }
 
 }

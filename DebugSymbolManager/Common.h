@@ -13,8 +13,8 @@
 
 #pragma once
 
-#ifdef SYMBOLPATH_DLL_EXPORT
-#   define SYMBOL_PATH_DLL __declspec(dllexport)
+#ifdef DEBUG_SYMBOL_MANAGER_DLL_EXPORT
+#   define DEBUG_SYMBOL_MANAGER_DLL __declspec(dllexport)
 #else
-#   define SYMBOL_PATH_DLL __declspec(dllimport)
+#   define DEBUG_SYMBOL_MANAGER_DLL __declspec(dllimport)
 #endif
