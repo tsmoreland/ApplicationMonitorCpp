@@ -19,15 +19,14 @@
 namespace Shared::Infrastructure {
 
     template<typename TINTERFACE>
-    struct UniqueOwnerTraits {
-        using Pointer = std::unique_ptr<TINTERFACE>;
+    struct SharedOwnerTraits {
+        using Pointer = std::shared_ptr<TINTERFACE>;
         using ValueType = TINTERFACE;
 
         constexpr static Pointer Build(ValueType&& value) {
-            return make_unique<TINTERFACE>(std::forward(value));
+            return make_shared<TINTERFACE>(std::forward(value));
         }
-
-        constexpr static Pointer Build(std::unique_ptr<TINTERFACE>&& value) {
+        constexpr static Pointer Build(std::shared_ptr<TINTERFACE> value) {
             return value;
         }
         constexpr static bool HasValue(Pointer const& value) {
@@ -39,9 +38,8 @@ namespace Shared::Infrastructure {
         constexpr static ValueType const* Value(Pointer const& value) {
             return value.get();
         }
-
-        constexpr static ValueType* Release(Pointer& value) {
-            return value.release();
+        constexpr static void Release(Pointer& value) {
+            value.release();
         }
         constexpr static void Reset(Pointer& value) {
             value.reset();
@@ -49,6 +47,6 @@ namespace Shared::Infrastructure {
     };
 
     template<typename TINTERFACE>
-    using UniqueOwner = Shared::Infrastructure::Owner<UniqueOwnerTraits<TINTERFACE>>;
+    using SharedOwner = Shared::Infrastructure::Owner<SharedOwnerTraits<TINTERFACE>>;
 
 }

@@ -20,8 +20,9 @@ namespace Shared::Services
     class EnvironmentService final : public IEnvironmentService
     {
     public:
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual Process StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual std::vector<Process> GetProcessesByName(std::string_view const& processName) const noexcept override;
+
 
         [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
         [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept override;

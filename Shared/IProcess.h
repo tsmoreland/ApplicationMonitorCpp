@@ -30,6 +30,5 @@ namespace Shared::Model {
         SHARED_DLL IProcess(IProcess&&) = default;
         SHARED_DLL IProcess& operator=(IProcess&&) = default;
         SHARED_DLL virtual ~IProcess() = default;
-
     };
 }

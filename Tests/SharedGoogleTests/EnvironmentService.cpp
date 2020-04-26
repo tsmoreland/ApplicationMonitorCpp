@@ -17,6 +17,7 @@
 #include <chrono>
 
 using std::chrono::duration;
+using std::chrono::steady_clock;
 using std::copy;
 using std::copy_if;
 using std::equal;
@@ -55,7 +56,7 @@ namespace Shared::Tests
         // Arrange
         auto const windowsDirectory = FileSystem::path(LR"(C:\windows\system32\cmd.exe)");
         wregex const filter(LR"(.*\.exe$)");
-        unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
+        unique_ptr<IEnvironmentService> const service(make_unique<EnvironmentService>());
 
         // Act
         auto const files = service->GetFilesFromDirectory(windowsDirectory, filter);
@@ -68,7 +69,7 @@ namespace Shared::Tests
         // Arrange
         auto const windowsDirectory = FileSystem::path(LR"(C:\windows)");
         unique_ptr<IEnvironmentService> service;
-        vector<FileSystem::path> expected{};
+        vector<FileSystem::path> expected;
         wregex const filter(LR"(.*\.exe$)");
         tie(service, expected) = Arrange(windowsDirectory, 
             [&filter](FileSystem::directory_entry const& entry) {
@@ -87,49 +88,62 @@ namespace Shared::Tests
 
         auto const process = service->StartProcess(""s, ""s);
 
-        ASSERT_FALSE(process.has_value());
+        ASSERT_FALSE(process.HasValue());
     }
 
     TEST(EnvironmentService, ReturnsProcessValueWhenFileFound) {
-        std::string const XcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
+        auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
 
-        auto const process = service->StartProcess(XcopyExe, ""s);
+        auto const process = service->StartProcess(xcopyExe, ""s);
 
-        ASSERT_TRUE(process.has_value());
-        process.value()->WaitForExit();
+        ASSERT_TRUE(process.HasValue());
+        process->WaitForExit();
     }
 
     TEST(EnvironmentService, ExitCodeNonZeroWithBadCommand) {
-        std::string const XcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
+        std::string const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
 
-        auto const process = service->StartProcess(XcopyExe, ""s);
+        auto const process = service->StartProcess(xcopyExe, ""s);
 
-        EXPECT_TRUE(process.has_value());
-        process.value()->WaitForExit();
+        EXPECT_TRUE(process.HasValue());
+        process->WaitForExit();
 
-        auto const exitCode = process.value()->ExitCode();
+        auto const exitCode = process->ExitCode();
         EXPECT_TRUE(exitCode.has_value());
 
         ASSERT_NE(0, exitCode.value());
     }
 
-    std::string const CommandExe = R"(c:\windows\system32\cmd.exe)"s;
+    constexpr auto const CommandExe = R"(c:\windows\system32\cmd.exe)";
     TEST(EnvironmentService, ExitCodeZeroWithGoodCommand) {
         // Assert / Act
         unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
         auto const process = service->StartProcess(CommandExe, "/c echo \"Test\"");
 
-        EXPECT_TRUE(process.has_value());
-        process.value()->WaitForExit();
+        EXPECT_TRUE(process.HasValue());
+        process->WaitForExit();
 
-        auto const exitCode = process.value()->ExitCode();
+        auto const exitCode = process->ExitCode();
         EXPECT_TRUE(exitCode.has_value());
 
         // Assert
         ASSERT_EQ(0, exitCode.value());
     }
+
+    TEST(EnvironmentService, WaitsForProcessToEnd) {
+        auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
+        unique_ptr<IEnvironmentService> const service = make_unique<EnvironmentService>();
+        auto const start = steady_clock::now();
+
+        auto const process = service->StartProcess(CommandExe, "/c Sleep 1");
+        process->WaitForExit();
+
+        auto const end = steady_clock::now();
+        ASSERT_GE(duration<double>(end - start).count(), 1.0);
+    }
+
 
     TEST(EnvironmentService, ProcessByNameFindsMatch) {
         // Assert / Act
@@ -137,7 +151,7 @@ namespace Shared::Tests
         auto const process = service->StartProcess(CommandExe, "/c Sleep 1");
         auto const matchingProcesses = service->GetProcessesByName("cmd.exe");
 
-        process.value()->WaitForExit();
+        process->WaitForExit();
 
         // Assert
         ASSERT_GE(matchingProcesses.size(), 0);
@@ -158,7 +172,7 @@ namespace Shared::Tests
 
         // Act
         auto const path = service->GetPathToRunningProcess("cmd.exe");
-        runningProcess.value()->WaitForExit();
+        runningProcess->WaitForExit();
 
         // Assert
         ASSERT_TRUE(path.has_value());

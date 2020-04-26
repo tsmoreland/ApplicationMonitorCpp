@@ -13,19 +13,20 @@
 
 #pragma once
 #include <TlHelp32.h>
+#include "IProcess.h"
 
 namespace Shared::Model {
 
-    class ProcessImpl final {
+    class ProcessImpl final : public IProcess {
     public:
         static std::unique_ptr<ProcessImpl> Start(std::string_view const& filename, std::string_view const& arguments);
         static std::vector<std::unique_ptr<ProcessImpl>> GetProcessesByName(std::string_view const& processName);
 
-        [[nodiscard]] unsigned long GetId() const noexcept;
-        [[nodiscard]] bool IsRunning() const;
-        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept;
-        void WaitForExit() const; 
-        [[nodiscard]] static std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName);
+        [[nodiscard]] unsigned long GetId() const noexcept override;
+        [[nodiscard]] bool IsRunning() const noexcept override;
+        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept override;
+        void WaitForExit() const noexcept override; 
+        [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
 
         ProcessImpl() = default;
         explicit ProcessImpl(unsigned long const processId);

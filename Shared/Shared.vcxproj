@@ -154,6 +154,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BadOwnerAccess.h" />
+    <ClInclude Include="Owner.h" />
+    <ClInclude Include="SharedOwner.h" />
+    <ClInclude Include="UniqueOwner.h" />
     <ClInclude Include="DataMember.h" />
     <ClInclude Include="EnvironmentService.h" />
     <ClInclude Include="Export.h" />
@@ -163,7 +167,6 @@
     <ClInclude Include="HandleWithNullForEmpty.h" />
     <ClInclude Include="not_found_exception.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessImpl.h" />
     <ClInclude Include="string_extensions.h" />
     <ClInclude Include="UniqueHandle.h" />
@@ -171,7 +174,6 @@
   <ItemGroup>
     <ClCompile Include="EnvironmentService.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Process.cpp" />
     <ClCompile Include="ProcessImpl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

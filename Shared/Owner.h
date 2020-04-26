@@ -21,51 +21,60 @@ namespace Shared::Infrastructure {
     /// <summary>Decorator of unique_ptr<TINTERFACE> combining it with Optional</summary>
     template<typename TRAITS>
     class Owner final {
-        using SmartPointer = TRAITS::SmartPointer;
-        using ValueType = TRAITS::ValueType;
+        using Pointer = typename TRAITS::Pointer;
+        using ValueType = typename TRAITS::ValueType;
     public:
         [[nodiscard]] bool HasValue() const noexcept {
             return static_cast<bool>(owned);
         }
 
         [[nodiscard]] ValueType& Value() {
-            return HasValue() ? *owned.get() : throw BadOwnerAccess();
+            return HasValue() ? *TRAITS::Value(owned) : throw BadOwnerAccess();
         }
         [[nodiscard]] ValueType& Value() const {
-            return HasValue() ? *owned.get() : throw BadOwnerAccess();
+            return HasValue() ? *TRAITS::Value(owned) : throw BadOwnerAccess();
         }
         [[nodiscard]] ValueType& OrElse(ValueType& other) noexcept {
-            return owned ? *owned.get() : other;
+            return owned ? *TRAITS::Value(owned) : other;
         }
         template<typename SUPPLIER>
         [[nodiscard]] ValueType& OrElse(SUPPLIER other) {
-            return owned ? *owned.get() : SUPPLIER();
+            return owned ? *TRAITS::Value(owned) : SUPPLIER();
         }
 
-        ValueType* operator->() {
-            return owned ? owned.get() : throw BadOwnerAccess();
+        [[nodiscard]] ValueType* operator->() {
+            return owned ? TRAITS::Value(owned) : throw BadOwnerAccess();
         }
-        ValueType* const* operator->() const {
-            return owned ? owned.get() : throw BadOwnerAccess();
+        [[nodiscard]] ValueType const* operator->() const {
+            return owned ? TRAITS::Value(owned) : throw BadOwnerAccess();
         }
 
-        void swap(SmartPointer& other) noexcept {
+        void swap(Pointer& other) noexcept {
             std::swap(owned, other.owned);
         }
 
         explicit Owner() = default;
-        explicit Owner(SmartPointer owned) {
-            owned = TRAITS ::Build(owned);
+        explicit Owner(Pointer owned) {
+            this->owned = TRAITS::Build(move(owned));
         }
-        explicit Owner(ValueType&& owned) {
-            owned = TRAITS::Build(move(owned));
+        explicit Owner(ValueType&& owned) noexcept : owned(move(owned)) {
+        }
+        Owner(Owner<TRAITS>&& other) noexcept : owned(move(other.owned)) { 
+        }
+        ~Owner() {
+            static_cast<void>(owned.release());
         }
 
         static constexpr Owner<TRAITS> Empty() {
             return Owner<TRAITS>();
         };
     private:
-        SmartPointer owned;
+        Pointer owned;
     };
+
+    template <typename TRAITS> void swap(Owner<TRAITS>& left, Owner<TRAITS>& right) noexcept {
+        left.swap(right);
+    }
+
 
 }
