@@ -24,6 +24,8 @@ using std::string;
 using std::stringstream;
 using std::string_view;
 
+using Shared::Model::CommandResult;
+
 #pragma warning(push)
 #pragma warning(disable:4455)
 using std::literals::string_literals::operator""s;
@@ -31,23 +33,24 @@ using std::literals::string_literals::operator""s;
 
 namespace DebugSymbolManager::Model {
 
-    NtSymbolPath::NtSymbolPath(Shared::Services::IEnvironmentService const& environmentService, Settings const& settings)
+    NtSymbolPath::NtSymbolPath(Shared::Services::IFileService const& fileService, Settings const& settings)
         : localCache(nullopt)
-        , environmentService(environmentService) {
-        if (settings.LocalCache.empty() && environmentService.DirectoryExists(settings.LocalCache))
-            localCache = optional(settings.LocalCache);
+        , fileService(fileService) {
 
+        if (settings.LocalCache.empty() && fileService.DirectoryExists(settings.LocalCache))
+            localCache = optional(settings.LocalCache);
     }
 
     optional<string> const& NtSymbolPath::GetLocalCache() const noexcept {
         return localCache;
     }
 
-    bool NtSymbolPath::SetLocalCache(string const& value) noexcept {
-        if (value.empty() || !environmentService.DirectoryExists(value))
-            return false;
+    CommandResult NtSymbolPath::SetLocalCache(string const& value) noexcept {
+        if (value.empty() || !fileService.DirectoryExists(value))
+            return CommandResult::Fail("IDirectory not found");
         localCache = value;
-        return true;
+        UpdateIsModified();
+        return CommandResult::Ok();
     }
 
     optional<string> NtSymbolPath::GetSymbolPath() const noexcept {
@@ -57,7 +60,7 @@ namespace DebugSymbolManager::Model {
                 index != string::npos) {
 
                 if (auto const cache = localCache.value_or(""s); // change or with environmentService.GetTempPath
-                    !cache.empty() && environmentService.DirectoryExists(cache)) {
+                    !cache.empty() && fileService.DirectoryExists(cache)) {
                     symbolPath = symbolPath.replace(index, Settings::LOCAL_CACHE_KEY_SIZE, cache);
                 }
             }
@@ -70,19 +73,26 @@ namespace DebugSymbolManager::Model {
 
             return optional(builder.str());
         }
-        catch (std::exception&) {
+        catch (std::exception const&) {
             return nullopt;
         }
     }
 
+    void NtSymbolPath::SetSymbolServer(std::string server) noexcept {
+        if (server == symbolServer)
+            return;
+        symbolServer = move(server);
+    }
+
     void NtSymbolPath::AddDirectory(std::string const& directory) noexcept {
-        if (directory.empty() || !environmentService.DirectoryExists(directory))
+        if (directory.empty() || !fileService.DirectoryExists(directory))
             return;
 
         if (find(begin(additionalPaths), end(additionalPaths), directory) == end(additionalPaths))
             return;
 
         additionalPaths.emplace_back(directory);
+        UpdateIsModified();
     }
 
     void NtSymbolPath::RemoveDirectory(std::string const& directory) noexcept {
@@ -90,6 +100,20 @@ namespace DebugSymbolManager::Model {
         if (entry == end(additionalPaths))
             return;
         additionalPaths.erase(entry);
+        UpdateIsModified();
     }
+
+    bool NtSymbolPath::IsModified() const noexcept {
+        return isModified;
+    }
+
+    void NtSymbolPath::ResetModified() noexcept {
+        lastSavedState = GetSymbolPath().value_or(""s);
+        isModified = false;
+    }
+    void NtSymbolPath::UpdateIsModified() noexcept {
+        isModified = lastSavedState != GetSymbolPath().value_or(""s) || lastSavedState == ""s;
+    }
+
 
 }

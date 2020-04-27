@@ -13,20 +13,17 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
 #include <optional>
-#include <filesystem>
 #include <vector>
-#include <algorithm>
 #include <regex>
-#include <ranges>
-#include "string_extensions.h"
+#include "Export.h"
+#include "UniqueOwner.h"
 
-#include <windows.h>
+namespace Shared::Services {
+    struct IFileService {
+        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
 
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentService.h"
-
+        virtual ~IFileService() = 0 { };
+    };
+}

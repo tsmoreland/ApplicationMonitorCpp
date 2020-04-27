@@ -155,6 +155,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BadOwnerAccess.h" />
+    <ClInclude Include="CommandResult.h" />
+    <ClInclude Include="IEnvironmentService.h" />
+    <ClInclude Include="IFileService.h" />
+    <ClInclude Include="IProcessService.h" />
     <ClInclude Include="Owner.h" />
     <ClInclude Include="SharedOwner.h" />
     <ClInclude Include="UniqueOwner.h" />
@@ -162,7 +166,6 @@
     <ClInclude Include="EnvironmentService.h" />
     <ClInclude Include="Export.h" />
     <ClInclude Include="HandleWithInvalidForEmpty.h" />
-    <ClInclude Include="IEnvironmentService.h" />
     <ClInclude Include="IProcess.h" />
     <ClInclude Include="HandleWithNullForEmpty.h" />
     <ClInclude Include="not_found_exception.h" />
