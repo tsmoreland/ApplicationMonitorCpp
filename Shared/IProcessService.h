@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <optional>
 #include <vector>
 #include <regex>
@@ -20,20 +21,15 @@
 #include "Export.h"
 #include "UniqueOwner.h"
 
-namespace Shared::Services {
+namespace Shared::Service {
     struct IProcessService {
-        using Process = Shared::Infrastructure::UniqueOwner<Shared::Model::IProcess>;
+        using UniqueProcess = Shared::Infrastructure::UniqueOwner<Shared::Model::IProcess>;
 
-        [[nodiscard]] SHARED_DLL virtual Process StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::vector<Process> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual UniqueProcess StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<UniqueProcess> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
 
-        SHARED_DLL IProcessService() = default;
-        SHARED_DLL IProcessService(IProcessService const&) = default;
-        SHARED_DLL IProcessService& operator=(IProcessService const&) = default;
-        SHARED_DLL IProcessService(IProcessService&&) noexcept = default;
-        SHARED_DLL IProcessService& operator=(IProcessService&& other) noexcept = default;
-        SHARED_DLL virtual ~IProcessService() = default;
+        virtual ~IProcessService() = 0 { }
 
     };
 }

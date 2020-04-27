@@ -14,16 +14,23 @@
 #pragma once
 
 #include <filesystem>
-#include <regex>
-#include <vector>
-#include "Export.h"
-#include "UniqueOwner.h"
+#include "IEnvironmentRepository.h"
 
-namespace Shared::Service {
-    struct IFileService {
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
+namespace Shared::Infrastructure {
 
-        virtual ~IFileService() = 0 { };
+    class EnvironmentRepository final : public IEnvironmentRepository {
+    public:
+
+        [[nodiscard]] SHARED_DLL std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
+        [[nodiscard]] SHARED_DLL bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
+
+        SHARED_DLL EnvironmentRepository() = default;
+        SHARED_DLL EnvironmentRepository(const EnvironmentRepository&) = default;
+        SHARED_DLL EnvironmentRepository(EnvironmentRepository&&) noexcept = default;
+        SHARED_DLL EnvironmentRepository& operator=(const EnvironmentRepository&) = default;
+        SHARED_DLL EnvironmentRepository& operator=(EnvironmentRepository&&) noexcept = default;
+        SHARED_DLL ~EnvironmentRepository() override = default;
+
     };
+
 }

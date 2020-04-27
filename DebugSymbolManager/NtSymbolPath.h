@@ -37,7 +37,7 @@ namespace DebugSymbolManager::Model {
         [[nodiscard]] bool IsModified() const noexcept;
         void ResetModified() noexcept;
 
-        explicit NtSymbolPath(Shared::Services::IFileService const& fileService);
+        explicit NtSymbolPath(Shared::Service::IFileService const& fileService);
         NtSymbolPath(NtSymbolPath const&) = default;
         NtSymbolPath(NtSymbolPath&&) noexcept = default;
         ~NtSymbolPath() = default;
@@ -50,7 +50,7 @@ namespace DebugSymbolManager::Model {
         bool isModified{false};
         std::optional<std::string> localCache;
         std::string symbolServer;
-        Shared::Services::IFileService const& fileService;
+        Shared::Service::IFileService const& fileService;
         std::vector<std::filesystem::path> additionalPaths;
         std::string baseSymbolPath;
 

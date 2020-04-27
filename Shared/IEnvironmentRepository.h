@@ -13,17 +13,16 @@
 
 #pragma once
 
-#include <filesystem>
-#include <regex>
-#include <vector>
+#include <optional>
+#include <string>
 #include "Export.h"
-#include "UniqueOwner.h"
 
-namespace Shared::Service {
-    struct IFileService {
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
+namespace Shared::Infrastructure {
 
-        virtual ~IFileService() = 0 { };
+    struct IEnvironmentRepository {
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
+
+        virtual ~IEnvironmentRepository() = 0 {}
     };
 }

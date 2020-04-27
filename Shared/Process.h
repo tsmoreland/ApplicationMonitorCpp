@@ -17,10 +17,10 @@
 
 namespace Shared::Model {
 
-    class ProcessImpl final : public IProcess {
+    class Process final : public IProcess {
     public:
-        static std::unique_ptr<ProcessImpl> Start(std::string_view const& filename, std::string_view const& arguments);
-        static std::vector<std::unique_ptr<ProcessImpl>> GetProcessesByName(std::string_view const& processName);
+        static std::unique_ptr<Process> Start(std::string_view const& filename, std::string_view const& arguments);
+        static std::vector<std::unique_ptr<Process>> GetProcessesByName(std::string_view const& processName);
 
         [[nodiscard]] unsigned long GetId() const noexcept override;
         [[nodiscard]] bool IsRunning() const noexcept override;
@@ -28,15 +28,15 @@ namespace Shared::Model {
         void WaitForExit() const noexcept override; 
         [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
 
-        ProcessImpl() = default;
-        explicit ProcessImpl(unsigned long const processId);
-        ProcessImpl(const ProcessImpl&) = delete;
-        ProcessImpl& operator=(const ProcessImpl&) = delete;
-        ProcessImpl(ProcessImpl&& other) noexcept;
-        ProcessImpl& operator=(ProcessImpl&& other) noexcept;
-        ~ProcessImpl();
+        Process() = default;
+        explicit Process(unsigned long const processId);
+        Process(const Process&) = delete;
+        Process& operator=(const Process&) = delete;
+        Process(Process&& other) noexcept;
+        Process& operator=(Process&& other) noexcept;
+        ~Process();
 
-        [[nodiscard]] bool Equals(ProcessImpl const& other) const noexcept;
+        [[nodiscard]] bool Equals(Process const& other) const noexcept;
     private:
         bool processLaunched{};
         unsigned long processId{};
@@ -44,7 +44,7 @@ namespace Shared::Model {
         Shared::Infrastructure::HandleWithNullForEmpty processHandle{};
         Shared::Infrastructure::HandleWithNullForEmpty processThreadHandle{};
 
-        explicit ProcessImpl(PROCESS_INFORMATION const& processInformation);
+        explicit Process(PROCESS_INFORMATION const& processInformation);
         static bool CreateProcessAdapter(std::string_view const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
         static std::tuple<bool, unsigned long> GetRunningDetails(HANDLE processHandle);
 
@@ -54,7 +54,7 @@ namespace Shared::Model {
         static std::vector<MODULEENTRY32> GetModuleEntries(unsigned long const processId) noexcept;
     };
 
-    bool operator==(ProcessImpl const& leftHandSide, ProcessImpl const& rightHandSide);
+    bool operator==(Process const& leftHandSide, Process const& rightHandSide);
 
 }
 

@@ -156,28 +156,32 @@
   <ItemGroup>
     <ClInclude Include="BadOwnerAccess.h" />
     <ClInclude Include="CommandResult.h" />
-    <ClInclude Include="IEnvironmentService.h" />
+    <ClInclude Include="FileService.h" />
+    <ClInclude Include="IEnvironmentRepository.h" />
     <ClInclude Include="IFileService.h" />
     <ClInclude Include="IProcessService.h" />
     <ClInclude Include="Owner.h" />
+    <ClInclude Include="Process.h" />
+    <ClInclude Include="ProcessService.h" />
     <ClInclude Include="SharedOwner.h" />
     <ClInclude Include="UniqueOwner.h" />
     <ClInclude Include="DataMember.h" />
-    <ClInclude Include="EnvironmentService.h" />
+    <ClInclude Include="EnvironmentRepository.h" />
     <ClInclude Include="Export.h" />
     <ClInclude Include="HandleWithInvalidForEmpty.h" />
     <ClInclude Include="IProcess.h" />
     <ClInclude Include="HandleWithNullForEmpty.h" />
     <ClInclude Include="not_found_exception.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ProcessImpl.h" />
     <ClInclude Include="string_extensions.h" />
     <ClInclude Include="UniqueHandle.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnvironmentService.cpp" />
+    <ClCompile Include="EnvironmentRepository.cpp" />
+    <ClCompile Include="FileService.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="ProcessImpl.cpp" />
+    <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProcessService.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -33,7 +33,7 @@ using std::literals::string_literals::operator""s;
 
 namespace DebugSymbolManager::Model {
 
-    NtSymbolPath::NtSymbolPath(Shared::Services::IFileService const& fileService)
+    NtSymbolPath::NtSymbolPath(Shared::Service::IFileService const& fileService)
         : localCache(nullopt)
         , fileService(fileService) {
 

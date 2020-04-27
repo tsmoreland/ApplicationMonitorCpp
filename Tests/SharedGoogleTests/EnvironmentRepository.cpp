@@ -11,19 +11,43 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "EnvironmentRepository.h"
 
-#include <filesystem>
-#include <regex>
-#include <vector>
-#include "Export.h"
-#include "UniqueOwner.h"
+using std::stringstream;
+using std::to_string;
 
-namespace Shared::Service {
-    struct IFileService {
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
+using Shared::Infrastructure::EnvironmentRepository;
 
-        virtual ~IFileService() = 0 { };
-    };
+#pragma warning(push)
+#pragma warning(disable:4455)
+using std::literals::string_literals::operator ""s;
+using std::literals::chrono_literals::operator ""s;
+#pragma warning(pop)
+
+namespace Shared::Tests {
+
+
+    TEST(EnvironmentRepository, PathVariableHasValue) {
+
+        EnvironmentRepository const repository{};
+
+        auto const pathVariable = repository.GetVariable("PATH");
+
+        ASSERT_FALSE(pathVariable->empty());
+    }
+
+    TEST(EnvironmentRepository, VariableIsUpdated) {
+        EnvironmentRepository const repository{};
+        auto const key = "ENV_TEST"s;
+        auto const start = repository.GetVariable(key);
+
+        ASSERT_TRUE(repository.SetVariable(key, "ALPHA"s));
+        ASSERT_TRUE(repository.GetVariable(key) == "ALPHA"s);
+
+        ASSERT_TRUE(repository.SetVariable(key, "BETA"s));
+        ASSERT_TRUE(repository.GetVariable(key) == "BETA"s);
+    }
+
 }
+

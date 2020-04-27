@@ -13,17 +13,23 @@
 
 #pragma once
 
-#include <filesystem>
-#include <regex>
-#include <vector>
+#include "IProcessService.h"
 #include "Export.h"
-#include "UniqueOwner.h"
 
 namespace Shared::Service {
-    struct IFileService {
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
 
-        virtual ~IFileService() = 0 { };
+    class ProcessService final : public IProcessService {
+    public:
+        [[nodiscard]] SHARED_DLL UniqueProcess StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
+        [[nodiscard]] SHARED_DLL std::vector<UniqueProcess> GetProcessesByName(std::string_view const& processName) const noexcept override;
+        [[nodiscard]] SHARED_DLL std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
+
+        SHARED_DLL ProcessService() = default;
+        SHARED_DLL ProcessService(const ProcessService&) = default;
+        SHARED_DLL ProcessService(ProcessService&&) noexcept = default;
+        SHARED_DLL ProcessService& operator=(const ProcessService&) = default;
+        SHARED_DLL ProcessService& operator=(ProcessService&&) noexcept = default;
+        SHARED_DLL ~ProcessService() override = default;
     };
+
 }

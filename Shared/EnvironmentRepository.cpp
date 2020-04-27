@@ -11,19 +11,33 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "EnvironmentRepository.h"
 
-#include <filesystem>
-#include <regex>
-#include <vector>
-#include "Export.h"
-#include "UniqueOwner.h"
+using std::nullopt;
+using std::optional;
+using std::string;
 
-namespace Shared::Service {
-    struct IFileService {
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
+using extension::string_equal;
+using extension::string_split;
+using extension::string_contains_in_order;
 
-        virtual ~IFileService() = 0 { };
-    };
+#pragma warning(push)
+#pragma warning(disable:4455)
+using std::literals::string_literals::operator ""s;
+#pragma warning(pop)
+
+namespace Shared::Infrastructure {
+
+    optional<string> EnvironmentRepository::GetVariable(std::string const& key) const noexcept {
+        constexpr auto MAX_VARIABLE_NAME_SIZE = 8192;
+        char value[MAX_VARIABLE_NAME_SIZE]{};
+        if (GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE) == FALSE)
+            return nullopt;
+        return optional(string(value));
+    }
+    bool EnvironmentRepository::SetVariable(string const& key, string const& value) const noexcept {
+        return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
+    }
+
 }

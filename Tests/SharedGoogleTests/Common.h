@@ -13,16 +13,20 @@
 
 #pragma once
 
-#include <optional>
-#include <string>
-#include "Export.h"
+#include <filesystem>
+#include <vector>
 
-namespace Shared::Services {
-
-    struct IEnvironmentService {
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
-
-        virtual ~IEnvironmentService() = 0 {}
-    };
+namespace Shared::Tests {
+    template <class PREDICATE>
+    std::vector<std::filesystem::path> PopulateExpectedFiles(std::filesystem::path const& folder, PREDICATE predicate) {
+        std::vector<std::filesystem::path> expected;
+        if (std::filesystem::exists(folder) && std::filesystem::is_directory(folder)) {
+            auto const expectedFiles = std::filesystem::directory_iterator(folder);
+            std::copy_if(begin(expectedFiles), end(expectedFiles), back_inserter(expected), 
+                [predicate](std::filesystem::directory_entry const& entry) {
+                    return entry.is_regular_file() && predicate(entry);
+                });
+        }
+        return expected;
+    }
 }
