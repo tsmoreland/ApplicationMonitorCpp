@@ -23,6 +23,7 @@ namespace Shared::Infrastructure {
 
         [[nodiscard]] SHARED_DLL std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
         [[nodiscard]] SHARED_DLL bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept override;
 
         SHARED_DLL EnvironmentRepository() = default;
         SHARED_DLL EnvironmentRepository(const EnvironmentRepository&) = default;

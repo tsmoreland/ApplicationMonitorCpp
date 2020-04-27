@@ -22,6 +22,7 @@ namespace Shared::Infrastructure {
     struct IEnvironmentRepository {
         [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept = 0;
 
         virtual ~IEnvironmentRepository() = 0 {}
     };

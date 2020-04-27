@@ -14,9 +14,6 @@
 #include "pch.h"
 #include "EnvironmentRepository.h"
 
-using std::stringstream;
-using std::to_string;
-
 using Shared::Infrastructure::EnvironmentRepository;
 
 #pragma warning(push)
@@ -39,14 +36,29 @@ namespace Shared::Tests {
 
     TEST(EnvironmentRepository, VariableIsUpdated) {
         EnvironmentRepository const repository{};
-        auto const key = "ENV_TEST"s;
-        auto const start = repository.GetVariable(key);
+        auto const key = "SET_ENV_TEST"s;
 
-        ASSERT_TRUE(repository.SetVariable(key, "ALPHA"s));
-        ASSERT_TRUE(repository.GetVariable(key) == "ALPHA"s);
+        EXPECT_TRUE(repository.SetVariable(key, "ALPHA"s));
+        EXPECT_TRUE(repository.GetVariable(key) == "ALPHA"s);
 
         ASSERT_TRUE(repository.SetVariable(key, "BETA"s));
         ASSERT_TRUE(repository.GetVariable(key) == "BETA"s);
+
+        static_cast<void>(repository.RemoveVariable(key));
+    }
+
+    TEST(EnvironmentRepository, VariableIsRemoved) {
+        EnvironmentRepository const repository{};
+
+        auto const key = "DEL_ENV_TEST"s;
+
+        static_cast<void>(repository.RemoveVariable(key));
+        EXPECT_FALSE(repository.GetVariable(key).has_value());
+
+        EXPECT_TRUE(repository.SetVariable(key, "ALPHA"s));
+        EXPECT_TRUE(repository.GetVariable(key) == "ALPHA"s);
+
+        ASSERT_TRUE(repository.RemoveVariable(key));
     }
 
 }

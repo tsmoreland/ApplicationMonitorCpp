@@ -32,12 +32,19 @@ namespace Shared::Infrastructure {
     optional<string> EnvironmentRepository::GetVariable(std::string const& key) const noexcept {
         constexpr auto MAX_VARIABLE_NAME_SIZE = 8192;
         char value[MAX_VARIABLE_NAME_SIZE]{};
-        if (GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE) == FALSE)
+
+        auto const size = GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE);
+        if (size > MAX_VARIABLE_NAME_SIZE || size == 0)
             return nullopt;
         return optional(string(value));
     }
     bool EnvironmentRepository::SetVariable(string const& key, string const& value) const noexcept {
         return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
+    }
+
+    bool EnvironmentRepository::RemoveVariable(string const& key) const noexcept {
+        return SetEnvironmentVariableA(key.c_str(), nullptr) == TRUE;
+
     }
 
 }
