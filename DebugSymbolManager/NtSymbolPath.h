@@ -23,18 +23,21 @@ namespace DebugSymbolManager::Model {
 
     class NtSymbolPath final {
     public:
-        [[nodiscard]] std::optional<std::string> const& GetLocalCache() const noexcept;
-        [[nodiscard]] Shared::Model::CommandResult SetLocalCache(std::string const& value) noexcept;
         [[nodiscard]] std::optional<std::string> GetSymbolPath() const noexcept;
 
+        [[nodiscard]] std::optional<std::string> const& GetLocalCache() const noexcept;
+        [[nodiscard]] Shared::Model::CommandResult SetLocalCache(std::string const& value) noexcept;
+
+        [[nodiscard]] std::string const& GetSymbolServer() const noexcept;
         void SetSymbolServer(std::string server) noexcept;
+
         void AddDirectory(std::string const& directory) noexcept;
         void RemoveDirectory(std::string const& directory) noexcept;
 
         [[nodiscard]] bool IsModified() const noexcept;
         void ResetModified() noexcept;
 
-        explicit NtSymbolPath(Shared::Services::IFileService const& fileService, Settings const& settings);
+        explicit NtSymbolPath(Shared::Services::IFileService const& fileService);
         NtSymbolPath(NtSymbolPath const&) = default;
         NtSymbolPath(NtSymbolPath&&) noexcept = default;
         ~NtSymbolPath() = default;

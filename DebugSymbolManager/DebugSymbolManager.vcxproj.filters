@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Model">
       <UniqueIdentifier>{efedf68d-bedd-4efe-817b-024944dc80a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Service">
+      <UniqueIdentifier>{17405cc1-7bd5-4e68-a4e3-81364530587d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Service">
+      <UniqueIdentifier>{b2072946-6854-471b-aebd-7315105033b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -32,6 +38,9 @@
     </ClInclude>
     <ClInclude Include="NtSymbolPath.h">
       <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolPathService.h">
+      <Filter>Header Files\Service</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

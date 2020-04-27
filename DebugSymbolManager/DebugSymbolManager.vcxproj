@@ -158,6 +158,7 @@
     <ClInclude Include="NtSymbolpath.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SymbolPathService.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NtSymbolPath.cpp" />

@@ -33,12 +33,10 @@ using std::literals::string_literals::operator""s;
 
 namespace DebugSymbolManager::Model {
 
-    NtSymbolPath::NtSymbolPath(Shared::Services::IFileService const& fileService, Settings const& settings)
+    NtSymbolPath::NtSymbolPath(Shared::Services::IFileService const& fileService)
         : localCache(nullopt)
         , fileService(fileService) {
 
-        if (settings.LocalCache.empty() && fileService.DirectoryExists(settings.LocalCache))
-            localCache = optional(settings.LocalCache);
     }
 
     optional<string> const& NtSymbolPath::GetLocalCache() const noexcept {
@@ -76,6 +74,11 @@ namespace DebugSymbolManager::Model {
         catch (std::exception const&) {
             return nullopt;
         }
+    }
+
+    std::string const& NtSymbolPath::GetSymbolServer() const noexcept
+    {
+        return symbolServer;
     }
 
     void NtSymbolPath::SetSymbolServer(std::string server) noexcept {
