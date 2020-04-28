@@ -110,9 +110,10 @@ namespace DebugSymbolManager::Model {
         return isModified;
     }
 
-    void NtSymbolPath::ResetModified() noexcept {
-        lastSavedState = GetSymbolPath().value_or(""s);
-        isModified = false;
+    void NtSymbolPath::Reset(string const& currentValue) noexcept {
+        lastSavedState = currentValue;
+        auto expectedValue = GetSymbolPath();
+        isModified = expectedValue.has_value() ? expectedValue.value() == lastSavedState : true;
     }
     void NtSymbolPath::UpdateIsModified() noexcept {
         isModified = lastSavedState != GetSymbolPath().value_or(""s) || lastSavedState == ""s;

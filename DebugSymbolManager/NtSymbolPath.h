@@ -35,7 +35,7 @@ namespace DebugSymbolManager::Model {
         void RemoveDirectory(std::string const& directory) noexcept;
 
         [[nodiscard]] bool IsModified() const noexcept;
-        void ResetModified() noexcept;
+        void Reset(std::string const& currentValue) noexcept;
 
         explicit NtSymbolPath(Shared::Service::IFileService const& fileService);
         NtSymbolPath(NtSymbolPath const&) = default;
@@ -45,6 +45,7 @@ namespace DebugSymbolManager::Model {
         NtSymbolPath& operator=(NtSymbolPath const&) = delete;
         NtSymbolPath& operator=(NtSymbolPath&&) = delete;
 
+        constexpr static auto ENVIRONMENT_KEY = "_NT_SYMBOL_PATH";
     private:
         std::string lastSavedState{};
         bool isModified{false};
