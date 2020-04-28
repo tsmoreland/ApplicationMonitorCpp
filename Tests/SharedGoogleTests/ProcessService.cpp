@@ -110,7 +110,7 @@ namespace Shared::ProcessServiceTests {
         process->WaitForExit();
 
         // Assert
-        ASSERT_GE(matchingProcesses.size(), 0);
+        ASSERT_GE(matchingProcesses.size(), 0UL);
     }
     TEST(ProcessService, NoProcessesFoundWithEmptyProcessname) {
         // Arrange

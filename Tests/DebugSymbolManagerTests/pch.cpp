@@ -11,18 +11,4 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
-
-#include <filesystem>
-#include "Common.h"
-#include "CommandResult.h"
-
-namespace DebugSymbolManager::Service {
-
-    struct ISymbolPathService {
-        DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::filesystem::path const& applicationPath) noexcept = 0;
-        DEBUG_SYMBOL_MANAGER_DLL virtual void Reapply() const noexcept = 0;
-        DEBUG_SYMBOL_MANAGER_DLL virtual ~ISymbolPathService() = 0 {}
-    };
-
-}
+#include "pch.h"
