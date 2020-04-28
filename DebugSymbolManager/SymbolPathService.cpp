@@ -50,6 +50,11 @@ namespace DebugSymbolManager::Service {
         }
     }
 
+    void SymbolPathService::Reapply() const noexcept
+    {
+        UpdateIfModified();
+    }
+
     SymbolPathService::SymbolPathService(Settings const& settings, IEnvironmentRepository const& environemntRepository, IFileService const& fileService)
         : environemntRepository(environemntRepository)
         , symbolPath(fileService) {
