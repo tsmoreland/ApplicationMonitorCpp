@@ -110,9 +110,6 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EnvironmentService.cpp">
-      <Filter>Source Files\Services</Filter>
-    </ClCompile>
     <ClCompile Include="FileService.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
@@ -125,5 +122,8 @@
     <ClCompile Include="EnvironmentRepository.cpp">
       <Filter>Source Files\Infrastructure</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

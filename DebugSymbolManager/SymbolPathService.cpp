@@ -14,8 +14,7 @@
 #include "pch.h"
 #include "SymbolPathService.h"
 
-namespace filesystem = std::filesystem;
-using std::filesystem::path;
+using std::string;
 
 using DebugSymbolManager::Model::Settings;
 using DebugSymbolManager::Model::NtSymbolPath;
@@ -31,16 +30,17 @@ using std::literals::chrono_literals::operator ""s;
 
 namespace DebugSymbolManager::Service {
 
-    CommandResult SymbolPathService::UpdateApplicationPath(path const& applicationPath) noexcept {
+    CommandResult SymbolPathService::UpdateApplicationPath(string const& applicationPath) noexcept {
         try {
-            if (this->applicationSymbolFolder == applicationPath)
+            if (m_applicationPath == applicationPath)
                 return CommandResult::Ok("No update required");
 
-            symbolPath.RemoveDirectory(this->applicationSymbolFolder.generic_string());
-            if (filesystem::exists(applicationPath) && filesystem::is_directory(applicationPath))
-                symbolPath.AddDirectory(applicationPath.generic_string());
+            m_symbolPath.RemoveDirectory(m_applicationPath);
+            
+            if (m_fileService.DirectoryExists(applicationPath))
+                m_symbolPath.AddDirectory(applicationPath);
 
-            this->applicationSymbolFolder = applicationPath;
+            m_applicationPath = applicationPath;
             UpdateIfModified();
 
             return CommandResult::Ok();
@@ -56,22 +56,26 @@ namespace DebugSymbolManager::Service {
     }
 
     SymbolPathService::SymbolPathService(Settings const& settings, IEnvironmentRepository const& environemntRepository, IFileService const& fileService)
-        : environemntRepository(environemntRepository)
-        , symbolPath(fileService) {
+        : m_environemntRepository(environemntRepository)
+        , m_symbolPath{fileService}
+        , m_fileService(fileService) {
 
-        if (auto const result = symbolPath.SetLocalCache(settings.LocalCache); !result) {
+        if (auto const result = m_symbolPath.SetLocalCache(settings.LocalCache); !result) {
             // TODO: add logging
         }
 
-        symbolPath.SetSymbolServer(settings.BaseSymbolPath);
-        symbolPath.Reset(environemntRepository.GetVariable(NtSymbolPath::ENVIRONMENT_KEY).value_or(""s));
+        m_symbolPath.SetSymbolServer(settings.BaseSymbolPath);
+        m_symbolPath.Reset(environemntRepository.GetVariable(NtSymbolPath::ENVIRONMENT_KEY).value_or(""s));
 
         UpdateIfModified();
     }
 
     void SymbolPathService::UpdateIfModified() const noexcept {
-        if (auto const updatedPath = symbolPath.GetSymbolPath(); symbolPath.IsModified() && updatedPath.has_value())
-            if (auto const updated = environemntRepository.SetVariable(NtSymbolPath::ENVIRONMENT_KEY, updatedPath.value()); !updated) {
+        if (auto const updatedPath = m_symbolPath.GetSymbolPath(); 
+            m_symbolPath.IsModified() && updatedPath.has_value())
+
+            if (auto const updated = m_environemntRepository.SetVariable(NtSymbolPath::ENVIRONMENT_KEY, updatedPath.value()); 
+                !updated) {
                 // TODO: log 
             }
     }

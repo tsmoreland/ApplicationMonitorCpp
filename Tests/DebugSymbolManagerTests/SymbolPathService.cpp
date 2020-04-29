@@ -13,11 +13,57 @@
 
 #include "pch.h"
 
+using std::filesystem::path;
+using std::optional;
+using std::string;
+using std::vector;
+using std::wregex;
+
 #define BOOST_TEST_MODULE SymbolPathService
 #include <boost/test/included/unit_test.hpp>
 
-BOOST_AUTO_TEST_CASE(Sample)
-{
+using DebugSymbolManager::Model::Settings;
+using DebugSymbolManager::Service::ISymbolPathService;
+using DebugSymbolManager::Service::SymbolPathService;
+
+#pragma warning(push)
+#pragma warning(disable:4455)
+using std::literals::string_literals::operator ""s;
+#pragma warning(pop)
+
+namespace Test {
+    class MockEnviromentRepository : public Shared::Infrastructure::IEnvironmentRepository {
+    public:
+        MOCK_METHOD(optional<string>, GetVariable, (string const& key), (const, noexcept, override));
+        MOCK_METHOD(bool, SetVariable, (string const& key, string const& value), (const, noexcept, override));
+        MOCK_METHOD(bool, RemoveVariable, (string const& key), (const, noexcept, override));
+    };
+    class MockFileService : public Shared::Service::IFileService {
+    public:
+        MOCK_METHOD(vector<path>, GetFilesFromDirectory, (path const& folder, wregex const& filter), (const, noexcept, override));
+        MOCK_METHOD(bool, DirectoryExists, (std::string_view const path), (const, override));
+
+    };
+}
+
+
+BOOST_AUTO_TEST_CASE(ConstructorGetsCurrentSymbolPath) {
+    // Arrange
+    Test::MockEnviromentRepository enviromentRepository;
+    Test::MockFileService fileService;
+    Settings settings{ "local_cache"s, "base_[Local Cache]_template"s};
+
+    // Act
+    SymbolPathService service(settings, enviromentRepository, fileService);
+    
+    // Assert -- covered by expect call?
+
+}
+
+BOOST_AUTO_TEST_CASE(Sample) {
+
   BOOST_TEST(1 == 1);
   BOOST_TEST(true);
 }
+
+

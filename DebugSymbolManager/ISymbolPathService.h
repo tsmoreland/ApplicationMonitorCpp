@@ -13,13 +13,16 @@
 
 #pragma once
 
-#include <filesystem>
-#include <optional>
 #include <string>
-#include <vector>
+#include "Common.h"
+#include "CommandResult.h"
 
-#include "../../DebugSymbolManager/SymbolPathService.h"
-#include "../../Shared/IFileService.h"
-#include "../../Shared/IEnvironmentRepository.h"
-#include <gmock/gmock.h>
+namespace DebugSymbolManager::Service {
 
+    struct ISymbolPathService {
+        DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual void Reapply() const noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual ~ISymbolPathService() = 0 {}
+    };
+
+}
