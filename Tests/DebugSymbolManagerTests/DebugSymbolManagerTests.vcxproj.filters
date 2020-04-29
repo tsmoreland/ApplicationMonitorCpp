@@ -6,6 +6,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="TestAdapter.h" />
+    <ClInclude Include="TestFixture.h" />
+    <ClInclude Include="MockObjects.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.md" />

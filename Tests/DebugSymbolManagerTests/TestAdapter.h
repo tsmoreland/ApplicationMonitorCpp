@@ -10,47 +10,33 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
+ 
+#pragma once
 
-#include "pch.h"
-
-using std::filesystem::path;
-using std::optional;
-using std::string;
-using std::vector;
-using std::wregex;
-
-#define BOOST_TEST_MODULE SymbolPathService
 #include <boost/test/included/unit_test.hpp>
 
-#include "TestAdapter.h"
-#include "TestFixture.h"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-using DebugSymbolManager::Model::Settings;
-using DebugSymbolManager::Service::ISymbolPathService;
-using DebugSymbolManager::Service::SymbolPathService;
+using namespace std;
+using namespace testing;
 
-#include "MockObjects.h"
-
-#pragma warning(push)
-#pragma warning(disable:4455)
-using std::literals::string_literals::operator ""s;
-#pragma warning(pop)
-
-BOOST_AUTO_TEST_CASE(ConstructorGetsCurrentSymbolPath) {
-    // Arrange
-    MockObjects::MockEnviromentRepository enviromentRepository;
-    MockObjects::MockFileService fileService;
-    Settings settings{ "local_cache"s, "base_[Local Cache]_template"s};
-
-    EXPECT_CALL(enviromentRepository, GetVariable("_NT_SYMBOL_PATH"))
-        .Times(1)
-        .WillRepeatedly(Return(optional("sympath123")));
-
-    // Act
-    SymbolPathService service(settings, enviromentRepository, fileService);
-    
-    // Assert -- covered by expect call
-
-}
-
+// adapted from https://www.semipol.de/2010/04/13/using-googlemock-with-the-boost-test-library.html
+class BoostTestAdapter: public EmptyTestEventListener {
+public:
+    void OnTestStart(const TestInfo&) override { }
+    void OnTestPartResult(const TestPartResult& testPartResult) override {
+        if (testPartResult.failed()) {
+            stringstream s;
+            s << "Mock test failed (file = '"
+              << testPartResult.file_name()
+              << "', line = "
+              << testPartResult.line_number()
+              << "): "
+              << testPartResult.summary();
+            BOOST_FAIL(s.str());
+        }
+    }
+    void OnTestEnd(const ::testing::TestInfo&) override { }
+};
 
