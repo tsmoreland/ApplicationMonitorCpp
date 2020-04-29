@@ -13,31 +13,16 @@
 
 #pragma once
 
-#include "ISymbolPathService.h"
-#include "Settings.h"
-#include "NtSymbolPath.h"
-#include <IEnvironmentRepository.h>
-#include <IFileService.h>
+#include <filesystem>
+#include "Common.h"
+#include "CommandResult.h"
 
 namespace DebugSymbolManager::Service {
 
-    class SymbolPathService final : public ISymbolPathService {
-    public:
-        DEBUG_SYMBOL_MANAGER_DLL Shared::Model::CommandResult UpdateApplicationPath(std::filesystem::path const& applicationPath) noexcept override;
-        DEBUG_SYMBOL_MANAGER_DLL virtual void Reapply() const noexcept override;
-
-        DEBUG_SYMBOL_MANAGER_DLL explicit SymbolPathService(DebugSymbolManager::Model::Settings const& settings, Shared::Infrastructure::IEnvironmentRepository const& environemntRepository, Shared::Service::IFileService const& fileService);
-        DEBUG_SYMBOL_MANAGER_DLL SymbolPathService(SymbolPathService const&) = default;
-        DEBUG_SYMBOL_MANAGER_DLL SymbolPathService(SymbolPathService&&) noexcept = default;
-        DEBUG_SYMBOL_MANAGER_DLL ~SymbolPathService() override = default;
-        DEBUG_SYMBOL_MANAGER_DLL SymbolPathService& operator=(SymbolPathService const&) = delete;
-        DEBUG_SYMBOL_MANAGER_DLL SymbolPathService& operator=(SymbolPathService&&) noexcept = delete;
-    private:
-        Shared::Infrastructure::IEnvironmentRepository const& environemntRepository;
-        DebugSymbolManager::Model::NtSymbolPath symbolPath;
-        std::filesystem::path applicationSymbolFolder;
-
-        void UpdateIfModified() const noexcept;
+    struct ISymbolPathService {
+        DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::filesystem::path const& applicationPath) noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual void Reapply() const noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual ~ISymbolPathService() = 0 {}
     };
 
 }
