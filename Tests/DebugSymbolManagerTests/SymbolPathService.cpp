@@ -40,7 +40,24 @@ BOOST_AUTO_TEST_CASE(ConstructorGetsCurrentSymbolPath) {
     // Arrange
     MockObjects::MockEnviromentRepository enviromentRepository;
     MockObjects::MockFileService fileService;
-    Settings settings{ "local_cache"s, "base_[Local Cache]_template"s};
+    Settings settings{ "*SRV"s};
+
+    EXPECT_CALL(enviromentRepository, GetVariable("_NT_SYMBOL_PATH"))
+        .Times(1)
+        .WillRepeatedly(Return(optional("sympath123")));
+
+    // Act
+    SymbolPathService service(settings, enviromentRepository, fileService);
+    
+    // Assert -- covered by expect call
+}
+
+
+BOOST_AUTO_TEST_CASE(ConstructorUpdatesCurrentSymbolPathWhenHasValue) {
+    // Arrange
+    MockObjects::MockEnviromentRepository enviromentRepository;
+    MockObjects::MockFileService fileService;
+    Settings settings{  "*SRV"s};
 
     EXPECT_CALL(enviromentRepository, GetVariable("_NT_SYMBOL_PATH"))
         .Times(1)
@@ -52,5 +69,3 @@ BOOST_AUTO_TEST_CASE(ConstructorGetsCurrentSymbolPath) {
     // Assert -- covered by expect call
 
 }
-
-

@@ -25,17 +25,14 @@ namespace DebugSymbolManager::Model {
     public:
         [[nodiscard]] std::optional<std::string> GetSymbolPath() const noexcept;
 
-        [[nodiscard]] std::optional<std::string> const& GetLocalCache() const noexcept;
-        [[nodiscard]] Shared::Model::CommandResult SetLocalCache(std::string const& value) noexcept;
+        [[nodiscard]] std::string const& GetBaseSymbolPath() const noexcept;
+        void SetBaseSymbolPath(std::string server) noexcept;
 
-        [[nodiscard]] std::string const& GetSymbolServer() const noexcept;
-        void SetSymbolServer(std::string server) noexcept;
-
-        void AddDirectory(std::string const& directory) noexcept;
+        [[nodiscard]] Shared::Model::CommandResult AddDirectory(std::string const& directory) noexcept;
         void RemoveDirectory(std::string const& directory) noexcept;
 
         [[nodiscard]] bool IsModified() const noexcept;
-        void Reset(std::string const& currentValue) noexcept;
+        [[nodiscard]] Shared::Model::CommandResult Reset(std::string const& currentValue) noexcept;
 
         explicit NtSymbolPath(Shared::Service::IFileService const& fileService);
         NtSymbolPath(NtSymbolPath const&) = default;
@@ -47,13 +44,11 @@ namespace DebugSymbolManager::Model {
 
         constexpr static auto ENVIRONMENT_KEY = "_NT_SYMBOL_PATH";
     private:
-        std::string lastSavedState{};
-        bool isModified{false};
-        std::optional<std::string> localCache;
-        std::string symbolServer;
-        Shared::Service::IFileService const& fileService;
-        std::vector<std::filesystem::path> additionalPaths;
-        std::string baseSymbolPath;
+        std::string m_lastSavedState{};
+        bool m_isModified{false};
+        std::string m_baseSymbolPath;
+        Shared::Service::IFileService const& m_fileService;
+        std::vector<std::filesystem::path> m_additionalPaths;
 
         void UpdateIsModified() noexcept;
     };

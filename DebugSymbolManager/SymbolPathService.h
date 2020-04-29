@@ -24,8 +24,8 @@ namespace DebugSymbolManager::Service {
 
     class SymbolPathService final : public ISymbolPathService {
     public:
-        DEBUG_SYMBOL_MANAGER_DLL Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept override;
-        DEBUG_SYMBOL_MANAGER_DLL virtual void Reapply() const noexcept override;
+        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept override;
+        DEBUG_SYMBOL_MANAGER_DLL virtual void Reload() const noexcept override;
 
         DEBUG_SYMBOL_MANAGER_DLL explicit SymbolPathService(DebugSymbolManager::Model::Settings const& settings, Shared::Infrastructure::IEnvironmentRepository const& environemntRepository, Shared::Service::IFileService const& fileService);
         DEBUG_SYMBOL_MANAGER_DLL SymbolPathService(SymbolPathService const&) = default;

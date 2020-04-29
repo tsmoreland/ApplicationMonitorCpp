@@ -50,8 +50,8 @@ namespace DebugSymbolManager::Service {
         }
     }
 
-    void SymbolPathService::Reapply() const noexcept
-    {
+
+    void SymbolPathService::Reload() const noexcept {
         UpdateIfModified();
     }
 
@@ -60,12 +60,10 @@ namespace DebugSymbolManager::Service {
         , m_symbolPath{fileService}
         , m_fileService(fileService) {
 
-        if (auto const result = m_symbolPath.SetLocalCache(settings.LocalCache); !result) {
-            // TODO: add logging
+        m_symbolPath.SetBaseSymbolPath(settings.BaseSymbolPath);
+        if (!m_symbolPath.Reset(environemntRepository.GetVariable(NtSymbolPath::ENVIRONMENT_KEY).value_or(""s)).IsSuccess()) {
+            // Log
         }
-
-        m_symbolPath.SetSymbolServer(settings.BaseSymbolPath);
-        m_symbolPath.Reset(environemntRepository.GetVariable(NtSymbolPath::ENVIRONMENT_KEY).value_or(""s));
 
         UpdateIfModified();
     }

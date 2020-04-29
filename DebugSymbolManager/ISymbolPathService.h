@@ -20,8 +20,8 @@
 namespace DebugSymbolManager::Service {
 
     struct ISymbolPathService {
-        DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept = 0;
-        DEBUG_SYMBOL_MANAGER_DLL virtual void Reapply() const noexcept = 0;
+        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual void Reload() const noexcept = 0;
         DEBUG_SYMBOL_MANAGER_DLL virtual ~ISymbolPathService() = 0 {}
     };
 

@@ -34,39 +34,18 @@ using std::literals::string_literals::operator""s;
 namespace DebugSymbolManager::Model {
 
     NtSymbolPath::NtSymbolPath(Shared::Service::IFileService const& fileService)
-        : localCache(nullopt)
-        , fileService(fileService) {
+        : m_fileService(fileService) {
 
-    }
-
-    optional<string> const& NtSymbolPath::GetLocalCache() const noexcept {
-        return localCache;
-    }
-
-    CommandResult NtSymbolPath::SetLocalCache(string const& value) noexcept {
-        if (value.empty() || !fileService.DirectoryExists(value))
-            return CommandResult::Fail("IDirectory not found");
-        localCache = value;
-        UpdateIsModified();
-        return CommandResult::Ok();
     }
 
     optional<string> NtSymbolPath::GetSymbolPath() const noexcept {
         try {
-            auto symbolPath = baseSymbolPath;
-            if (auto const index = baseSymbolPath.find(Settings::LOCAL_CACHE_KEY); 
-                index != string::npos) {
-
-                if (auto const cache = localCache.value_or(""s); // change or with environmentService.GetTempPath
-                    !cache.empty() && fileService.DirectoryExists(cache)) {
-                    symbolPath = symbolPath.replace(index, Settings::LOCAL_CACHE_KEY_SIZE, cache);
-                }
-            }
-
             stringstream builder{};
-            builder << symbolPath;
 
-            for (auto const& path : additionalPaths)
+            if (m_baseSymbolPath != ""s)
+                builder << m_baseSymbolPath;
+
+            for (auto const& path : m_additionalPaths)
                 builder << ";" << path;
 
             return optional(builder.str());
@@ -76,47 +55,58 @@ namespace DebugSymbolManager::Model {
         }
     }
 
-    std::string const& NtSymbolPath::GetSymbolServer() const noexcept
+    std::string const& NtSymbolPath::GetBaseSymbolPath() const noexcept
     {
-        return symbolServer;
+        return m_baseSymbolPath;
     }
 
-    void NtSymbolPath::SetSymbolServer(std::string server) noexcept {
-        if (server == symbolServer)
+    void NtSymbolPath::SetBaseSymbolPath(std::string server) noexcept {
+        if (server == m_baseSymbolPath)
             return;
-        symbolServer = move(server);
+        m_baseSymbolPath = move(server);
     }
 
-    void NtSymbolPath::AddDirectory(std::string const& directory) noexcept {
-        if (directory.empty() || !fileService.DirectoryExists(directory))
-            return;
+    CommandResult NtSymbolPath::AddDirectory(std::string const& directory) noexcept {
+        try {
+            if (directory.empty() || !m_fileService.DirectoryExists(directory))
+                return CommandResult::Fail("Directory not found");
 
-        if (find(begin(additionalPaths), end(additionalPaths), directory) == end(additionalPaths))
-            return;
+            if (find(begin(m_additionalPaths), end(m_additionalPaths), directory) == end(m_additionalPaths))
+                return CommandResult::Ok("Already present");
 
-        additionalPaths.emplace_back(directory);
-        UpdateIsModified();
+            m_additionalPaths.emplace_back(directory);
+            UpdateIsModified();
+            return CommandResult::Ok();
+
+        } catch (std::exception const& ex) {
+            return CommandResult::Error(ex);
+        }
     }
 
     void NtSymbolPath::RemoveDirectory(std::string const& directory) noexcept {
-        auto const& entry = find(begin(additionalPaths), end(additionalPaths), directory);
-        if (entry == end(additionalPaths))
+        auto const& entry = find(begin(m_additionalPaths), end(m_additionalPaths), directory);
+        if (entry == end(m_additionalPaths))
             return;
-        additionalPaths.erase(entry);
+        m_additionalPaths.erase(entry);
         UpdateIsModified();
     }
 
     bool NtSymbolPath::IsModified() const noexcept {
-        return isModified;
+        return m_isModified;
     }
 
-    void NtSymbolPath::Reset(string const& currentValue) noexcept {
-        lastSavedState = currentValue;
-        auto expectedValue = GetSymbolPath();
-        isModified = expectedValue.has_value() ? expectedValue.value() == lastSavedState : true;
+    CommandResult NtSymbolPath::Reset(string const& currentValue) noexcept {
+        try {
+            m_lastSavedState = currentValue;
+            m_isModified = GetSymbolPath().value_or(""s) == m_lastSavedState;
+            return CommandResult::Ok();
+
+        } catch (std::exception const& ex) {
+            return CommandResult::Error(ex);
+        }
     }
     void NtSymbolPath::UpdateIsModified() noexcept {
-        isModified = lastSavedState != GetSymbolPath().value_or(""s) || lastSavedState == ""s;
+        m_isModified = m_lastSavedState != GetSymbolPath().value_or(""s) || m_lastSavedState == ""s;
     }
 
 
