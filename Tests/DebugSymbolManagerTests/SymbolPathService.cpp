@@ -14,6 +14,7 @@
 #include "pch.h"
 
 using std::filesystem::path;
+using std::initializer_list;
 using std::move;
 using std::optional;
 using std::string;
@@ -44,10 +45,24 @@ namespace {
     constexpr auto SYMBOL_SERVER = "*SRV";
     
     struct ExpectedSetCall {
+
         Cardinality Cardinality;
         string Value;
         bool Success;
+
+        void swap(ExpectedSetCall& other) noexcept {
+            ::swap(Cardinality, other.Cardinality);
+            ::swap(Value, other.Value);
+            ::swap(Success, other.Success);
+        }
     };
+
+    void swap(ExpectedSetCall& left, ExpectedSetCall& right) noexcept {
+        left.swap(right);
+    }
+    ExpectedSetCall SuccessfullySetTo(string value, optional<Cardinality> const& cardinality = nullopt) {
+        return { cardinality.value_or(AnyNumber()), move(value), true };
+    }
 
     struct Context {
         Context() {
@@ -58,14 +73,12 @@ namespace {
         Context(Context&& other) noexcept
             : EnviromentRepository(other.EnviromentRepository.release())
             , FileService(other.FileService.release())
+            , Service(other.Service.release())
             , ApplicationPath(move(other.ApplicationPath))
             , InitialSymbolPath(move(other.InitialSymbolPath))
             , ExpectedSymbolPath(move(other.ExpectedSymbolPath))
             , NumberOfGetCalls(move(other.NumberOfGetCalls))
-            , NumberOfInitialSetCalls(move(other.NumberOfInitialSetCalls))
-            , NumberOfSetCalls(move(other.NumberOfSetCalls))
-            , InitialSetReturns(other.InitialSetReturns)
-            , SetReturns(other.SetReturns) {
+            , ExpectedSetCalls(move(other.ExpectedSetCalls)) {
             other.Reset();
         }
         Context& operator=(Context const& other) = delete;
@@ -73,16 +86,14 @@ namespace {
             if (this == &other)
                 return *this;
 
-            swap(EnviromentRepository, other.EnviromentRepository);
-            swap(FileService, other.FileService);
-            swap(ApplicationPath, other.ApplicationPath);
-            swap(InitialSymbolPath, other.InitialSymbolPath);
-            swap(ExpectedSymbolPath, other.ExpectedSymbolPath);
-            swap(NumberOfGetCalls, other.NumberOfGetCalls);
-            swap(NumberOfInitialSetCalls, other.NumberOfInitialSetCalls);
-            swap(NumberOfSetCalls, other.NumberOfSetCalls);
-            swap(InitialSetReturns, other.InitialSetReturns);
-            swap(SetReturns, other.SetReturns); 
+            ::swap(EnviromentRepository, other.EnviromentRepository);
+            ::swap(FileService, other.FileService);
+            ::swap(ApplicationPath, other.ApplicationPath);
+            ::swap(InitialSymbolPath, other.InitialSymbolPath);
+            ::swap(ExpectedSymbolPath, other.ExpectedSymbolPath);
+            ::swap(NumberOfGetCalls, other.NumberOfGetCalls);
+            ::swap(ExpectedSetCalls, other.ExpectedSetCalls);
+            ::swap(Service, other.Service);
 
             other.Reset();
             return *this;
@@ -99,7 +110,7 @@ namespace {
 
         unique_ptr<MockObjects::MockEnviromentRepository> EnviromentRepository{};
         unique_ptr<MockObjects::MockFileService> FileService{};
-        optional<SymbolPathService> Service{};
+        unique_ptr<SymbolPathService> Service{};
 
         Settings Settings{SYMBOL_SERVER};
         std::string ApplicationPath{};
@@ -170,28 +181,27 @@ namespace {
                     context.NumberOfGetCalls = move(count);
                 });
         }
-        ContextBuilder& WithInitialSetCalledCountTimes(Cardinality count) {
+        template<typename TExpectedSetCall, typename... Args> // could be done with std::initializer_list but I wanted an excuse for varadic template
+        ContextBuilder& WithExpectedSetCalls(TExpectedSetCall first, Args... expectedCalls) {
+            static_assert(typeid(TExpectedSetCall) == typeid(ExpectedSetCall), "invalid type, must use ExpectedSetCall");
+            m_context.ExpectedSetCalls.push_back(move(first));
+            return WithExpectedSetCalls(expectedCalls...);
+        }
+        template <typename TExpectedSetCall>
+        ContextBuilder& WithExpectedSetCalls(TExpectedSetCall expectedCall) {
+            m_context.ExpectedSetCalls.push_back(move(expectedCall));
+            return *this;
+        }
+        ContextBuilder& WithServiceCreated() {
             return UpdateObject(
-                [&count](auto& context) {
-                    context.NumberOfInitialSetCalls = move(count);
+                [](Context& context) {
+                    context.Service.reset(new SymbolPathService(context.Settings, *context.EnviromentRepository, *context.FileService));
                 });
         }
-        ContextBuilder& WithSetCalledCountTimes(Cardinality count) {
+        // TODO: change this to take paths and add them to a vector
+        ContextBuilder& WithFileServiceReturningDirectoryExists(bool exists) {
             return UpdateObject(
-                [&count](auto& context) {
-                    context.NumberOfSetCalls = move(count);
-                });
-        }
-        ContextBuilder& WithInitialSetReturns(bool success) {
-            return UpdateObject(
-                [success](auto& context) {
-                    context.InitialSetReturns = success;
-                });
-        }
-        ContextBuilder& WithSetReturns(bool success) {
-            return UpdateObject(
-                [success](auto& context) {
-                    context.SetReturns = success;
+                [exists](auto& context) {
                 });
         }
     };
@@ -213,8 +223,7 @@ BOOST_AUTO_TEST_CASE(ConstructorGetsCurrentSymbolPath) {
 BOOST_AUTO_TEST_CASE(ConstructorUpdatesCurrentSymbolPathWhenHasValue) {
     // Arrange
     auto const context = ContextBuilder::ArrangeForConstructorTest("symPath123")
-        .WithInitialSetCalledCountTimes(Exactly(1))
-        .WithInitialSetReturns(true)
+        .WithExpectedSetCalls(SuccessfullySetTo(SYMBOL_SERVER))
         .Build();
 
     // Act
@@ -226,13 +235,14 @@ BOOST_AUTO_TEST_CASE(ConstructorUpdatesCurrentSymbolPathWhenHasValue) {
 BOOST_AUTO_TEST_CASE(UpdateApplicationPathChangesSymbolPath) {
     // Arrange
     auto const appPath = R"(C:\Program Files\Application)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
     auto context = ContextBuilder::Arrange()
-        .WithExpectedVariable(string(SYMBOL_SERVER) + ";"s + appPath)
-        .WithSetCalledCountTimes(Exactly(1))
+        .WithExpectedSetCalls(SuccessfullySetTo(string(SYMBOL_SERVER) + ";"s + appPath))
+        .WithServiceCreated()
         .Build();
 
     // Act
-    auto const result = context.Service.value().UpdateApplicationPath(appPath);
+    auto const result = context.Service->UpdateApplicationPath(appPath);
 
     // Assert
 
