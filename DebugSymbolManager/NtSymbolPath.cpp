@@ -25,6 +25,7 @@ using std::stringstream;
 using std::string_view;
 
 using Shared::Model::CommandResult;
+using collection::contains;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
@@ -45,8 +46,9 @@ namespace DebugSymbolManager::Model {
             if (m_baseSymbolPath != ""s)
                 builder << m_baseSymbolPath;
 
-            for (auto const& path : m_additionalPaths)
+            for (auto const& path : m_additionalPaths) {
                 builder << ";" << path;
+            }
 
             return optional(builder.str());
         }
@@ -72,7 +74,7 @@ namespace DebugSymbolManager::Model {
             if (directory.empty() || !m_fileService.DirectoryExists(directory))
                 return CommandResult::Fail("Directory not found");
 
-            if (find(begin(m_additionalPaths), end(m_additionalPaths), directory) == end(m_additionalPaths))
+            if (contains(m_additionalPaths, directory))
                 return CommandResult::Ok("Already present");
 
             m_additionalPaths.emplace_back(directory);

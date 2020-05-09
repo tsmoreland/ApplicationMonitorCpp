@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="BadOwnerAccess.h" />
     <ClInclude Include="CommandResult.h" />
+    <ClInclude Include="collection.h" />
     <ClInclude Include="FileService.h" />
     <ClInclude Include="IEnvironmentRepository.h" />
     <ClInclude Include="IFileService.h" />

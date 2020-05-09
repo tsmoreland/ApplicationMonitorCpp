@@ -13,11 +13,13 @@
 
 #include "pch.h"
 
+using std::copy;
 using std::filesystem::path;
 using std::initializer_list;
 using std::move;
 using std::optional;
 using std::string;
+using std::string_view;
 using std::swap;
 using std::unique_ptr;
 using std::vector;
@@ -78,7 +80,8 @@ namespace {
             , InitialSymbolPath(move(other.InitialSymbolPath))
             , ExpectedSymbolPath(move(other.ExpectedSymbolPath))
             , NumberOfGetCalls(move(other.NumberOfGetCalls))
-            , ExpectedSetCalls(move(other.ExpectedSetCalls)) {
+            , ExpectedSetCalls(move(other.ExpectedSetCalls)) 
+            , ExistingDirectories(move(other.ExistingDirectories)) {
             other.Reset();
         }
         Context& operator=(Context const& other) = delete;
@@ -94,6 +97,7 @@ namespace {
             ::swap(NumberOfGetCalls, other.NumberOfGetCalls);
             ::swap(ExpectedSetCalls, other.ExpectedSetCalls);
             ::swap(Service, other.Service);
+            ::swap(ExistingDirectories, other.ExistingDirectories);
 
             other.Reset();
             return *this;
@@ -106,6 +110,7 @@ namespace {
             Settings = ::Settings{SYMBOL_SERVER};
             NumberOfGetCalls = AnyNumber();
             ExpectedSetCalls.clear();
+            ExistingDirectories.clear();
         }
 
         unique_ptr<MockObjects::MockEnviromentRepository> EnviromentRepository{};
@@ -117,7 +122,8 @@ namespace {
         std::string InitialSymbolPath{};
         std::string ExpectedSymbolPath{};
         Cardinality NumberOfGetCalls{AnyNumber()};
-        vector<ExpectedSetCall> ExpectedSetCalls;
+        vector<ExpectedSetCall> ExpectedSetCalls{};
+        vector<string> ExistingDirectories{};
     };
 
     class ContextBuilder {
@@ -153,6 +159,10 @@ namespace {
                 EXPECT_CALL(*m_context.EnviromentRepository, SetVariable(SYMBOL_PATH_VAR, expected.Value))
                     .Times(expected.Cardinality)
                     .WillRepeatedly(Return(expected.Success));
+
+            for (auto const& directory : m_context.ExistingDirectories)
+                EXPECT_CALL(*m_context.FileService, DirectoryExists(string_view(directory)))
+                    .WillRepeatedly(Return(true));
 
             return move(m_context);
         }
@@ -192,16 +202,18 @@ namespace {
             m_context.ExpectedSetCalls.push_back(move(expectedCall));
             return *this;
         }
+        ContextBuilder& WithExistingDirectories(std::initializer_list<string> directories) {
+            return UpdateObject(
+                [&directories](Context& context) {
+                    copy(directories.begin(), directories.end(), 
+                        back_inserter(context.ExistingDirectories));
+                });
+        }
         ContextBuilder& WithServiceCreated() {
             return UpdateObject(
                 [](Context& context) {
-                    context.Service.reset(new SymbolPathService(context.Settings, *context.EnviromentRepository, *context.FileService));
-                });
-        }
-        // TODO: change this to take paths and add them to a vector
-        ContextBuilder& WithFileServiceReturningDirectoryExists(bool exists) {
-            return UpdateObject(
-                [exists](auto& context) {
+                    auto service = make_unique<SymbolPathService>(context.Settings, *context.EnviromentRepository, *context.FileService);
+                    context.Service  = move(service);
                 });
         }
     };
@@ -237,7 +249,8 @@ BOOST_AUTO_TEST_CASE(UpdateApplicationPathChangesSymbolPath) {
     auto const appPath = R"(C:\Program Files\Application)"s;
     auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
     auto context = ContextBuilder::Arrange()
-        .WithExpectedSetCalls(SuccessfullySetTo(string(SYMBOL_SERVER) + ";"s + appPath))
+        .WithExpectedSetCalls(SuccessfullySetTo(string(SYMBOL_SERVER) + ";"s + appPath, Exactly(1)))
+        .WithExistingDirectories({appPath})
         .WithServiceCreated()
         .Build();
 

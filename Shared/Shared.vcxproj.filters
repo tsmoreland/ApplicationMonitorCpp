@@ -105,6 +105,9 @@
     <ClInclude Include="Process.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
+    <ClInclude Include="collection.h">
+      <Filter>Header Files\Extensions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">

@@ -48,7 +48,7 @@ namespace DebugSymbolManager::Model {
         bool m_isModified{false};
         std::string m_baseSymbolPath;
         Shared::Service::IFileService const& m_fileService;
-        std::vector<std::filesystem::path> m_additionalPaths;
+        std::vector<std::string> m_additionalPaths;
 
         void UpdateIsModified() noexcept;
     };

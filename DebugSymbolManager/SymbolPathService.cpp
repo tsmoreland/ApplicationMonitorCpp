@@ -71,15 +71,18 @@ namespace DebugSymbolManager::Service {
     }
 
     void SymbolPathService::UpdateIfModified() const noexcept {
-        if (auto const updatedPath = m_symbolPath.GetSymbolPath(); 
-            m_symbolPath.IsModified() && updatedPath.has_value()) {
+        try {
+            if (auto const updatedPath = m_symbolPath.GetSymbolPath(); 
+                m_symbolPath.IsModified() && updatedPath.has_value()) {
 
-            auto const s = updatedPath.value();
-
-            if (auto const updated = m_environemntRepository.SetVariable(NtSymbolPath::ENVIRONMENT_KEY, updatedPath.value()); 
-                !updated) {
-                // TODO: log 
+                if (auto const updated = m_environemntRepository.SetVariable(NtSymbolPath::ENVIRONMENT_KEY, updatedPath.value()); 
+                    !updated) {
+                    // TODO: log 
+                }
             }
+        }
+        catch (std::bad_optional_access const&) {
+            // should never occur because we check has_value() first but here to silence warning
         }
     }
 

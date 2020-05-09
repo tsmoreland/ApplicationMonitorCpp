@@ -13,21 +13,13 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
 #include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
 
-#include <windows.h>
+namespace collection {
 
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+    template <typename TContainer>
+    [[nodiscard]] inline bool contains(TContainer const& container, typename TContainer::value_type const& item) {
+        return std::find(container.begin(), container.end(), item) != container.end();    
+    }
 
+}
