@@ -24,6 +24,9 @@ using std::string;
 using std::stringstream;
 using std::string_view;
 
+using Shared::Model::CommandResult;
+using collection::contains;
+
 #pragma warning(push)
 #pragma warning(disable:4455)
 using std::literals::string_literals::operator""s;
@@ -31,65 +34,83 @@ using std::literals::string_literals::operator""s;
 
 namespace DebugSymbolManager::Model {
 
-    NtSymbolPath::NtSymbolPath(Shared::Services::IEnvironmentService const& environmentService, Settings const& settings)
-        : localCache(nullopt)
-        , environmentService(environmentService) {
-        if (settings.LocalCache.empty() && environmentService.DirectoryExists(settings.LocalCache))
-            localCache = optional(settings.LocalCache);
+    NtSymbolPath::NtSymbolPath(Shared::Service::IFileService const& fileService)
+        : m_fileService(fileService) {
 
-    }
-
-    optional<string> const& NtSymbolPath::GetLocalCache() const noexcept {
-        return localCache;
-    }
-
-    bool NtSymbolPath::SetLocalCache(string const& value) noexcept {
-        if (value.empty() || !environmentService.DirectoryExists(value))
-            return false;
-        localCache = value;
-        return true;
     }
 
     optional<string> NtSymbolPath::GetSymbolPath() const noexcept {
         try {
-            auto symbolPath = baseSymbolPath;
-            if (auto const index = baseSymbolPath.find(Settings::LOCAL_CACHE_KEY); 
-                index != string::npos) {
-
-                if (auto const cache = localCache.value_or(""s); // change or with environmentService.GetTempPath
-                    !cache.empty() && environmentService.DirectoryExists(cache)) {
-                    symbolPath = symbolPath.replace(index, Settings::LOCAL_CACHE_KEY_SIZE, cache);
-                }
-            }
-
             stringstream builder{};
-            builder << symbolPath;
 
-            for (auto const& path : additionalPaths)
+            if (m_baseSymbolPath != ""s)
+                builder << m_baseSymbolPath;
+
+            for (auto const& path : m_additionalPaths) {
                 builder << ";" << path;
+            }
 
             return optional(builder.str());
         }
-        catch (std::exception&) {
+        catch (std::exception const&) {
             return nullopt;
         }
     }
 
-    void NtSymbolPath::AddDirectory(std::string const& directory) noexcept {
-        if (directory.empty() || !environmentService.DirectoryExists(directory))
-            return;
+    std::string const& NtSymbolPath::GetBaseSymbolPath() const noexcept
+    {
+        return m_baseSymbolPath;
+    }
 
-        if (find(begin(additionalPaths), end(additionalPaths), directory) == end(additionalPaths))
+    void NtSymbolPath::SetBaseSymbolPath(std::string server) noexcept {
+        if (server == m_baseSymbolPath)
             return;
+        m_baseSymbolPath = move(server);
+        UpdateIsModified();
+    }
 
-        additionalPaths.emplace_back(directory);
+    CommandResult NtSymbolPath::AddDirectory(std::string const& directory) noexcept {
+        try {
+            if (directory.empty() || !m_fileService.DirectoryExists(directory))
+                return CommandResult::Fail("Directory not found");
+
+            if (contains(m_additionalPaths, directory))
+                return CommandResult::Ok("Already present");
+
+            m_additionalPaths.emplace_back(directory);
+            UpdateIsModified();
+            return CommandResult::Ok();
+
+        } catch (std::exception const& ex) {
+            return CommandResult::Error(ex);
+        }
     }
 
     void NtSymbolPath::RemoveDirectory(std::string const& directory) noexcept {
-        auto const& entry = find(begin(additionalPaths), end(additionalPaths), directory);
-        if (entry == end(additionalPaths))
+        auto const& entry = find(begin(m_additionalPaths), end(m_additionalPaths), directory);
+        if (entry == end(m_additionalPaths))
             return;
-        additionalPaths.erase(entry);
+        m_additionalPaths.erase(entry);
+        UpdateIsModified();
     }
+
+    bool NtSymbolPath::IsModified() const noexcept {
+        return m_isModified;
+    }
+
+    CommandResult NtSymbolPath::Reset(string const& currentValue) noexcept {
+        try {
+            m_lastSavedState = currentValue;
+            UpdateIsModified();
+            return CommandResult::Ok();
+
+        } catch (std::exception const& ex) {
+            return CommandResult::Error(ex);
+        }
+    }
+    void NtSymbolPath::UpdateIsModified() noexcept {
+        m_isModified = m_lastSavedState != GetSymbolPath().value_or(""s) || m_lastSavedState == ""s;
+    }
+
 
 }

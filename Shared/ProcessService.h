@@ -13,21 +13,23 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
-
-#include <windows.h>
-
-#include "IFileService.h"
 #include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+#include "Export.h"
 
+namespace Shared::Service {
+
+    class ProcessService final : public IProcessService {
+    public:
+        [[nodiscard]] SHARED_DLL UniqueProcess StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept override;
+        [[nodiscard]] SHARED_DLL std::vector<UniqueProcess> GetProcessesByName(std::string_view const& processName) const noexcept override;
+        [[nodiscard]] SHARED_DLL std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
+
+        SHARED_DLL ProcessService() = default;
+        SHARED_DLL ProcessService(const ProcessService&) = default;
+        SHARED_DLL ProcessService(ProcessService&&) noexcept = default;
+        SHARED_DLL ProcessService& operator=(const ProcessService&) = default;
+        SHARED_DLL ProcessService& operator=(ProcessService&&) noexcept = default;
+        SHARED_DLL ~ProcessService() override = default;
+    };
+
+}

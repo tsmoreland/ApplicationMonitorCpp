@@ -13,21 +13,25 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
 #include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
-
-#include <windows.h>
-
-#include "IFileService.h"
-#include "IProcessService.h"
 #include "IEnvironmentRepository.h"
 
+namespace Shared::Infrastructure {
+
+    class EnvironmentRepository final : public IEnvironmentRepository {
+    public:
+
+        [[nodiscard]] SHARED_DLL std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
+        [[nodiscard]] SHARED_DLL bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept override;
+
+        SHARED_DLL EnvironmentRepository() = default;
+        SHARED_DLL EnvironmentRepository(const EnvironmentRepository&) = default;
+        SHARED_DLL EnvironmentRepository(EnvironmentRepository&&) noexcept = default;
+        SHARED_DLL EnvironmentRepository& operator=(const EnvironmentRepository&) = default;
+        SHARED_DLL EnvironmentRepository& operator=(EnvironmentRepository&&) noexcept = default;
+        SHARED_DLL ~EnvironmentRepository() override = default;
+
+    };
+
+}

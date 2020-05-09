@@ -13,21 +13,23 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
+class TestFixture {
+public:
+    TestFixture() {
+        InitGoogleMock(
+            &boost::unit_test::framework::master_test_suite().argc,
+            boost::unit_test::framework::master_test_suite().argv);
+        TestEventListeners &listeners = UnitTest::GetInstance()->listeners();
+        // this removes the default error printer
+        delete listeners.Release(listeners.default_result_printer());
+        listeners.Append(new BoostTestAdapter);
 
-#include <windows.h>
+    }
 
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+    ~TestFixture() {
+        // nothing to tear down
+    }
 
+};
+
+BOOST_GLOBAL_FIXTURE(TestFixture);

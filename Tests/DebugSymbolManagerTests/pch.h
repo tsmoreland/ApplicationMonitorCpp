@@ -13,21 +13,13 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
 #include <filesystem>
+#include <optional>
+#include <string>
 #include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
 
-#include <windows.h>
-
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+#include "../../DebugSymbolManager/SymbolPathService.h"
+#include "../../Shared/IFileService.h"
+#include "../../Shared/IEnvironmentRepository.h"
+#include <gmock/gmock.h>
 

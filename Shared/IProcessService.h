@@ -13,21 +13,24 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
 #include <filesystem>
+#include <optional>
 #include <vector>
-#include <algorithm>
 #include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
+#include "IProcess.h"
+#include "Export.h"
+#include "UniqueOwner.h"
 
-#include <windows.h>
+namespace Shared::Service {
+    struct IProcessService {
+        using UniqueProcess = Shared::Infrastructure::UniqueOwner<Shared::Model::IProcess>;
 
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+        [[nodiscard]] SHARED_DLL virtual UniqueProcess StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<UniqueProcess> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
+
+        virtual ~IProcessService() = 0 { }
+
+    };
+}
 

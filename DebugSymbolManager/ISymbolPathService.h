@@ -14,20 +14,15 @@
 #pragma once
 
 #include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
+#include "Common.h"
+#include "CommandResult.h"
 
-#include <windows.h>
+namespace DebugSymbolManager::Service {
 
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+    struct ISymbolPathService {
+        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual void Reload() const noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual ~ISymbolPathService() = 0 {}
+    };
 
+}

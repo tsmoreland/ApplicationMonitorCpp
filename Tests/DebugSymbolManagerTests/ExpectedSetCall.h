@@ -13,21 +13,26 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
+namespace DebugSymbolManager::Test {
 
-#include <windows.h>
+    struct ExpectedSetCall {
 
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+        Cardinality Cardinality;
+        std::string Value;
+        bool Success;
 
+        void swap(ExpectedSetCall& other) noexcept {
+            ::swap(Cardinality, other.Cardinality);
+            ::swap(Value, other.Value);
+            ::swap(Success, other.Success);
+        }
+    };
+
+    void swap(ExpectedSetCall& left, ExpectedSetCall& right) noexcept {
+        left.swap(right);
+    }
+    ExpectedSetCall SuccessfullySetTo(string value, optional<Cardinality> const& cardinality = nullopt) {
+        return { cardinality.value_or(AnyNumber()), move(value), true };
+    }
+
+}

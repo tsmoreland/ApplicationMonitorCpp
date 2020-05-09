@@ -13,21 +13,21 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
-
-#include <windows.h>
-
 #include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
 
+namespace Shared::Service {
+
+    class FileService final : public IFileService {
+    public:
+        [[nodiscard]] SHARED_DLL std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept override;
+        [[nodiscard]] SHARED_DLL bool DirectoryExists(std::string_view const path) const override;
+
+        SHARED_DLL FileService() = default;
+        SHARED_DLL FileService(const FileService&) = default;
+        SHARED_DLL FileService(FileService&&) noexcept = default;
+        SHARED_DLL FileService& operator=(const FileService&) = default;
+        SHARED_DLL FileService& operator=(FileService&&) noexcept = default;
+        SHARED_DLL ~FileService() override = default;
+
+    };
+}

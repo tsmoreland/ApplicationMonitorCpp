@@ -13,21 +13,17 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
 #include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
-#include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
+#include <string>
+#include "Export.h"
 
-#include <windows.h>
+namespace Shared::Infrastructure {
 
-#include "IFileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+    struct IEnvironmentRepository {
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept = 0;
 
+        virtual ~IEnvironmentRepository() = 0 {}
+    };
+}

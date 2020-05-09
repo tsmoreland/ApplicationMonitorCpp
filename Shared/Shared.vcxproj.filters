@@ -37,6 +37,9 @@
     <Filter Include="Source Files\Extensions">
       <UniqueIdentifier>{f1e67477-8041-4920-acdf-b0fbb33927d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Services\Impl">
+      <UniqueIdentifier>{ca19d149-79cd-4979-82f3-09305469242f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -54,20 +57,11 @@
     <ClInclude Include="UniqueHandle.h">
       <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
-    <ClInclude Include="IEnvironmentService.h">
-      <Filter>Header Files\Services</Filter>
-    </ClInclude>
-    <ClInclude Include="EnvironmentService.h">
-      <Filter>Header Files\Services</Filter>
-    </ClInclude>
     <ClInclude Include="string_extensions.h">
       <Filter>Header Files\Extensions</Filter>
     </ClInclude>
     <ClInclude Include="not_found_exception.h">
       <Filter>Header Files\Infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessImpl.h">
-      <Filter>Header Files\Model</Filter>
     </ClInclude>
     <ClInclude Include="Export.h">
       <Filter>Header Files</Filter>
@@ -87,19 +81,52 @@
     <ClInclude Include="Owner.h">
       <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
+    <ClInclude Include="CommandResult.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="IFileService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="IProcessService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="FileService.h">
+      <Filter>Header Files\Services\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessService.h">
+      <Filter>Header Files\Services\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentRepository.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="IEnvironmentRepository.h">
+      <Filter>Header Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Process.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="collection.h">
+      <Filter>Header Files\Extensions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EnvironmentService.cpp">
+    <ClCompile Include="FileService.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
-    <ClCompile Include="EnvironmentService.cpp">
+    <ClCompile Include="ProcessService.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
-    <ClCompile Include="ProcessImpl.cpp">
+    <ClCompile Include="Process.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
+    <ClCompile Include="EnvironmentRepository.cpp">
+      <Filter>Source Files\Infrastructure</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

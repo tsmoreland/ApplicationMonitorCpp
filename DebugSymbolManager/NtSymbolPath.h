@@ -15,22 +15,26 @@
 
 #include <optional>
 #include <vector>
-#include "Common.h"
 #include "Settings.h"
-#include <IEnvironmentService.h>
+#include "IFileService.h"
+#include <CommandResult.h>
 
 namespace DebugSymbolManager::Model {
 
     class NtSymbolPath final {
     public:
-        [[nodiscard]] std::optional<std::string> const& GetLocalCache() const noexcept;
-        bool SetLocalCache(std::string const& value) noexcept;
         [[nodiscard]] std::optional<std::string> GetSymbolPath() const noexcept;
 
-        void AddDirectory(std::string const& directory) noexcept;
+        [[nodiscard]] std::string const& GetBaseSymbolPath() const noexcept;
+        void SetBaseSymbolPath(std::string server) noexcept;
+
+        [[nodiscard]] Shared::Model::CommandResult AddDirectory(std::string const& directory) noexcept;
         void RemoveDirectory(std::string const& directory) noexcept;
 
-        explicit NtSymbolPath(Shared::Services::IEnvironmentService const& environmentService, Settings const& settings);
+        [[nodiscard]] bool IsModified() const noexcept;
+        [[nodiscard]] Shared::Model::CommandResult Reset(std::string const& currentValue) noexcept;
+
+        explicit NtSymbolPath(Shared::Service::IFileService const& fileService);
         NtSymbolPath(NtSymbolPath const&) = default;
         NtSymbolPath(NtSymbolPath&&) noexcept = default;
         ~NtSymbolPath() = default;
@@ -38,10 +42,14 @@ namespace DebugSymbolManager::Model {
         NtSymbolPath& operator=(NtSymbolPath const&) = delete;
         NtSymbolPath& operator=(NtSymbolPath&&) = delete;
 
+        constexpr static auto ENVIRONMENT_KEY = "_NT_SYMBOL_PATH";
     private:
-        std::optional<std::string> localCache;
-        Shared::Services::IEnvironmentService const& environmentService;
-        std::vector<std::filesystem::path> additionalPaths;
-        std::string baseSymbolPath;
+        std::string m_lastSavedState{};
+        bool m_isModified{false};
+        std::string m_baseSymbolPath;
+        Shared::Service::IFileService const& m_fileService;
+        std::vector<std::string> m_additionalPaths;
+
+        void UpdateIsModified() noexcept;
     };
 }
