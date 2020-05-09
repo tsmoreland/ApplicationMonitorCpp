@@ -9,6 +9,9 @@
     <ClInclude Include="TestAdapter.h" />
     <ClInclude Include="TestFixture.h" />
     <ClInclude Include="MockObjects.h" />
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="ExpectedSetCall.h" />
+    <ClInclude Include="ContextBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.md" />

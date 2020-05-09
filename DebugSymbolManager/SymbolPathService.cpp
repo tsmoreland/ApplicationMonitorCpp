@@ -35,10 +35,12 @@ namespace DebugSymbolManager::Service {
             if (m_applicationPath == applicationPath)
                 return CommandResult::Ok("No update required");
 
+            if (!m_fileService.DirectoryExists(applicationPath))
+                return CommandResult::Fail("path not found");
+
             m_symbolPath.RemoveDirectory(m_applicationPath);
             
-            if (m_fileService.DirectoryExists(applicationPath) && 
-                !static_cast<bool>(m_symbolPath.AddDirectory(applicationPath))) {
+            if (!static_cast<bool>(m_symbolPath.AddDirectory(applicationPath))) {
                 // Log error here
             }
 

@@ -72,7 +72,12 @@ namespace Shared::ProcessServiceTests {
         ASSERT_NE(0, exitCode.value());
     }
 
+#   ifdef _WIN64
     constexpr auto const CommandExe = R"(c:\windows\system32\cmd.exe)";
+#   else
+    constexpr auto const CommandExe = R"(c:\windows\SysWOW64\cmd.exe)";
+#   endif
+
     TEST(ProcessService, ExitCodeZeroWithGoodCommand) {
         // Assert / Act
         unique_ptr<IProcessService> const service = make_unique<ProcessService>();
@@ -138,6 +143,7 @@ namespace Shared::ProcessServiceTests {
     TEST(ProcessService, GetPathFromRunningPathReturnsCorrectPath) {
         // Arrange
         std::filesystem::path expected(CommandExe);
+
         unique_ptr<IProcessService> const service = make_unique<ProcessService>();
         auto const runningProcess = service->StartProcess(CommandExe, "/c Sleep 1");
 

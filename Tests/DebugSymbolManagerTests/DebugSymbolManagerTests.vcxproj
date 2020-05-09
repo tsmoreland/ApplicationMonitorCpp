@@ -163,6 +163,9 @@
     <ClCompile Include="SymbolPathService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Context.h" />
+    <ClInclude Include="ContextBuilder.h" />
+    <ClInclude Include="ExpectedSetCall.h" />
     <ClInclude Include="MockObjects.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="TestAdapter.h" />

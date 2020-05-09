@@ -40,10 +40,10 @@ namespace Shared::Model {
             return CommandResult(true, std::move(message), std::nullopt);
         }
         static CommandResult Fail(std::string message = "") noexcept {
-            return CommandResult(true, std::move(message), std::nullopt);
+            return CommandResult(false, std::move(message), std::nullopt);
         }
         static CommandResult Error(std::exception exception, std::string message = "") noexcept {
-            return CommandResult(true, std::move(message), std::optional(exception));
+            return CommandResult(false, std::move(message), std::optional(exception));
         }
 
     private:
