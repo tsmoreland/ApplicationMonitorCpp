@@ -13,22 +13,26 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+namespace DebugSymbolManager::Test {
 
-namespace Shared::Infrastructure {
+    struct ExpectedSetCall {
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+        Cardinality Cardinality;
+        std::string Value;
+        bool Success;
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
+        void swap(ExpectedSetCall& other) noexcept {
+            ::swap(Cardinality, other.Cardinality);
+            ::swap(Value, other.Value);
+            ::swap(Success, other.Success);
         }
     };
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
+    void swap(ExpectedSetCall& left, ExpectedSetCall& right) noexcept {
+        left.swap(right);
+    }
+    ExpectedSetCall SuccessfullySetTo(string value, optional<Cardinality> const& cardinality = nullopt) {
+        return { cardinality.value_or(AnyNumber()), move(value), true };
+    }
 
 }

@@ -10,25 +10,33 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
-
+ 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <boost/test/included/unit_test.hpp>
 
-namespace Shared::Infrastructure {
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+using namespace std;
+using namespace testing;
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
+// adapted from https://www.semipol.de/2010/04/13/using-googlemock-with-the-boost-test-library.html
+class BoostTestAdapter: public EmptyTestEventListener {
+public:
+    void OnTestStart(const TestInfo&) override { }
+    void OnTestPartResult(const TestPartResult& testPartResult) override {
+        if (testPartResult.failed()) {
+            stringstream s;
+            s << "Mock test failed (file = '"
+              << testPartResult.file_name()
+              << "', line = "
+              << testPartResult.line_number()
+              << "): "
+              << testPartResult.summary();
+            BOOST_FAIL(s.str());
         }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
+    }
+    void OnTestEnd(const ::testing::TestInfo&) override { }
+};
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
-}

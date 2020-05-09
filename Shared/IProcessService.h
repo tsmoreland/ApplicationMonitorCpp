@@ -13,22 +13,24 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <filesystem>
+#include <optional>
+#include <vector>
+#include <regex>
+#include "IProcess.h"
+#include "Export.h"
+#include "UniqueOwner.h"
 
-namespace Shared::Infrastructure {
+namespace Shared::Service {
+    struct IProcessService {
+        using UniqueProcess = Shared::Infrastructure::UniqueOwner<Shared::Model::IProcess>;
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+        [[nodiscard]] SHARED_DLL virtual UniqueProcess StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<UniqueProcess> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
+        virtual ~IProcessService() = 0 { }
+
     };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
 }
+

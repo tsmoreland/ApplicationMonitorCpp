@@ -14,33 +14,16 @@
 #pragma once
 
 #include <optional>
-#include <memory>
-#include <string_view>
-#include <vector>
-#include <regex>
-#include "IProcess.h"
+#include <string>
 #include "Export.h"
 
-namespace Shared::Services
-{
-    struct IEnvironmentService
-    {
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::unique_ptr<Shared::Model::IProcess>> StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::unique_ptr<Shared::Model::IProcess>> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
+namespace Shared::Infrastructure {
 
+    struct IEnvironmentRepository {
         [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept = 0;
 
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
-
-        SHARED_DLL IEnvironmentService() = default;
-        SHARED_DLL IEnvironmentService(IEnvironmentService const&) = default;
-        SHARED_DLL IEnvironmentService& operator=(IEnvironmentService const&) = default;
-        SHARED_DLL IEnvironmentService(IEnvironmentService&&) noexcept = default;
-        SHARED_DLL IEnvironmentService& operator=(IEnvironmentService&& other) noexcept = default;
-        SHARED_DLL virtual ~IEnvironmentService() = default;
-
+        virtual ~IEnvironmentRepository() = 0 {}
     };
 }
-

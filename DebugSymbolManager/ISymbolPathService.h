@@ -13,22 +13,16 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <string>
+#include "Common.h"
+#include "CommandResult.h"
 
-namespace Shared::Infrastructure {
+namespace DebugSymbolManager::Service {
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
+    struct ISymbolPathService {
+        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual void Reload() const noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual ~ISymbolPathService() = 0 {}
     };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
 
 }

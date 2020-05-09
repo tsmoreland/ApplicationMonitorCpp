@@ -13,22 +13,23 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+class TestFixture {
+public:
+    TestFixture() {
+        InitGoogleMock(
+            &boost::unit_test::framework::master_test_suite().argc,
+            boost::unit_test::framework::master_test_suite().argv);
+        TestEventListeners &listeners = UnitTest::GetInstance()->listeners();
+        // this removes the default error printer
+        delete listeners.Release(listeners.default_result_printer());
+        listeners.Append(new BoostTestAdapter);
 
-namespace Shared::Infrastructure {
+    }
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+    ~TestFixture() {
+        // nothing to tear down
+    }
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
+};
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
-}
+BOOST_GLOBAL_FIXTURE(TestFixture);

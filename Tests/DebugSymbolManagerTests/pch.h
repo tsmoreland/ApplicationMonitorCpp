@@ -13,22 +13,13 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <filesystem>
+#include <optional>
+#include <string>
+#include <vector>
 
-namespace Shared::Infrastructure {
+#include "../../DebugSymbolManager/SymbolPathService.h"
+#include "../../Shared/IFileService.h"
+#include "../../Shared/IEnvironmentRepository.h"
+#include <gmock/gmock.h>
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
-}

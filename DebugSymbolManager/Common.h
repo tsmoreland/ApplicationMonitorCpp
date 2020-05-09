@@ -13,22 +13,8 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
-
-namespace Shared::Infrastructure {
-
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
-}
+#ifdef DEBUG_SYMBOL_MANAGER_DLL_EXPORT
+#   define DEBUG_SYMBOL_MANAGER_DLL __declspec(dllexport)
+#else
+#   define DEBUG_SYMBOL_MANAGER_DLL __declspec(dllimport)
+#endif

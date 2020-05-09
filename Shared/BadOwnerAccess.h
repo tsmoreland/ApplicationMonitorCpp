@@ -13,22 +13,13 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <exception>
 
 namespace Shared::Infrastructure {
-
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
+    class BadOwnerAccess final : public std::exception {
+    public:
+        [[nodiscard]] virtual const char* what() const noexcept override {
+            return "Owner is empty";
         }
     };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
 }

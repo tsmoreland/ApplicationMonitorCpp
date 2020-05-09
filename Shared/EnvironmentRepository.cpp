@@ -11,24 +11,40 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "EnvironmentRepository.h"
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+using std::nullopt;
+using std::optional;
+using std::string;
+
+using extension::string_equal;
+using extension::string_split;
+using extension::string_contains_in_order;
+
+#pragma warning(push)
+#pragma warning(disable:4455)
+using std::literals::string_literals::operator ""s;
+#pragma warning(pop)
 
 namespace Shared::Infrastructure {
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+    optional<string> EnvironmentRepository::GetVariable(std::string const& key) const noexcept {
+        constexpr auto MAX_VARIABLE_NAME_SIZE = 8192;
+        char value[MAX_VARIABLE_NAME_SIZE]{};
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
+        auto const size = GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE);
+        if (size > MAX_VARIABLE_NAME_SIZE || size == 0)
+            return nullopt;
+        return optional(string(value));
+    }
+    bool EnvironmentRepository::SetVariable(string const& key, string const& value) const noexcept {
+        return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
+    }
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
+    bool EnvironmentRepository::RemoveVariable(string const& key) const noexcept {
+        return SetEnvironmentVariableA(key.c_str(), nullptr) == TRUE;
+
+    }
 
 }

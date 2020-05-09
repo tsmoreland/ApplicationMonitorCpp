@@ -9,26 +9,22 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
-
-namespace Shared::Infrastructure {
-
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
+namespace MockObjects {
+    class MockEnviromentRepository final : public Shared::Infrastructure::IEnvironmentRepository {
+    public:
+        MOCK_METHOD(optional<string>, GetVariable, (string const& key), (const, noexcept, override));
+        MOCK_METHOD(bool, SetVariable, (string const& key, string const& value), (const, noexcept, override));
+        MOCK_METHOD(bool, RemoveVariable, (string const& key), (const, noexcept, override));
     };
+    class MockFileService final : public Shared::Service::IFileService {
+    public:
+        MOCK_METHOD(vector<path>, GetFilesFromDirectory, (path const& folder, wregex const& filter), (const, noexcept, override));
+        MOCK_METHOD(bool, DirectoryExists, (std::string_view const path), (const, override));
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
+    };
 }
+

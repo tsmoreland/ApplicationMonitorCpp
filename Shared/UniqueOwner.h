@@ -13,22 +13,42 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <memory>
+#include "Owner.h"
 
 namespace Shared::Infrastructure {
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+    template<typename TINTERFACE>
+    struct UniqueOwnerTraits {
+        using Pointer = std::unique_ptr<TINTERFACE>;
+        using ValueType = TINTERFACE;
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
+        constexpr static Pointer Build(ValueType&& value) {
+            return make_unique<TINTERFACE>(std::forward(value));
         }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
+
+        constexpr static Pointer Build(std::unique_ptr<TINTERFACE>&& value) {
+            return value;
+        }
+        constexpr static bool HasValue(Pointer const& value) {
+            return static_cast<bool>(value);
+        }
+        constexpr static ValueType* Value(Pointer& value) {
+            return value.get();
+        }
+        constexpr static ValueType const* Value(Pointer const& value) {
+            return value.get();
+        }
+
+        constexpr static ValueType* Release(Pointer& value) {
+            return value.release();
+        }
+        constexpr static void Reset(Pointer& value) {
+            value.reset();
         }
     };
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
+    template<typename TINTERFACE>
+    using UniqueOwner = Shared::Infrastructure::Owner<UniqueOwnerTraits<TINTERFACE>>;
 
 }

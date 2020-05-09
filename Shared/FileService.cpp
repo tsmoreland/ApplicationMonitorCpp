@@ -11,24 +11,36 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "FileService.h"
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+namespace filesystem = std::filesystem;
+using std::vector;
 
-namespace Shared::Infrastructure {
+namespace Shared::Service {
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+    vector<filesystem::path> FileService::GetFilesFromDirectory(filesystem::path const& folder, std::wregex const& filter) const noexcept {
+        try {
+            if (!filesystem::exists(folder) || !filesystem::is_directory(folder))
+                return vector<filesystem::path>();
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
+            vector<filesystem::path> matches;
+            auto const files = filesystem::directory_iterator(folder);
+            copy_if(begin(files), end(files), back_inserter(matches),
+                [&filter](auto const& entry) {
+                    return entry.is_regular_file() && regex_match(entry.path().filename().wstring(), filter);
+                });
+
+            return matches;
         }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
+        catch (std::exception const&) {
+            return vector<filesystem::path>();
         }
-    };
+    }
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
+    bool FileService::DirectoryExists(std::string_view const path) const {
+        filesystem::path const folder(path);
+        return filesystem::exists(folder) && filesystem::is_directory(folder);
+    }
 
 }

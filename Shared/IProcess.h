@@ -15,10 +15,9 @@
 
 #include "Export.h"
 
-namespace Shared::Model
-{
-    struct IProcess
-    {
+namespace Shared::Model {
+
+    struct IProcess {
         [[nodiscard]] SHARED_DLL virtual unsigned long GetId() const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual bool IsRunning() const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> ExitCode() const noexcept = 0;
@@ -31,6 +30,5 @@ namespace Shared::Model
         SHARED_DLL IProcess(IProcess&&) = default;
         SHARED_DLL IProcess& operator=(IProcess&&) = default;
         SHARED_DLL virtual ~IProcess() = default;
-
     };
 }

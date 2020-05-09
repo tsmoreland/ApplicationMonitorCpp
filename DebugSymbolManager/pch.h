@@ -13,22 +13,21 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
+#include <string>
+#include <string_view>
+#include <memory>
+#include <optional>
+#include <filesystem>
+#include <vector>
+#include <algorithm>
+#include <regex>
+#include <ranges>
+#include "collection.h"
+#include "string_extensions.h"
+
 #include <windows.h>
 
-namespace Shared::Infrastructure {
+#include "IFileService.h"
+#include "IProcessService.h"
+#include "IEnvironmentRepository.h"
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
-}

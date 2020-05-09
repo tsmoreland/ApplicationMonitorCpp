@@ -13,22 +13,13 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <algorithm>
 
-namespace Shared::Infrastructure {
+namespace collection {
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
+    template <typename TContainer>
+    [[nodiscard]] inline bool contains(TContainer const& container, typename TContainer::value_type const& item) {
+        return std::find(container.begin(), container.end(), item) != container.end();    
+    }
 
 }

@@ -13,22 +13,20 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <filesystem>
+#include <vector>
 
-namespace Shared::Infrastructure {
-
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
+namespace Shared::Tests {
+    template <class PREDICATE>
+    std::vector<std::filesystem::path> PopulateExpectedFiles(std::filesystem::path const& folder, PREDICATE predicate) {
+        std::vector<std::filesystem::path> expected;
+        if (std::filesystem::exists(folder) && std::filesystem::is_directory(folder)) {
+            auto const expectedFiles = std::filesystem::directory_iterator(folder);
+            std::copy_if(begin(expectedFiles), end(expectedFiles), back_inserter(expected), 
+                [predicate](std::filesystem::directory_entry const& entry) {
+                    return entry.is_regular_file() && predicate(entry);
+                });
         }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
-    };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
-
+        return expected;
+    }
 }

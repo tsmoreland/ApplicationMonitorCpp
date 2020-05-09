@@ -13,22 +13,25 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
+#include <filesystem>
+#include "IEnvironmentRepository.h"
 
 namespace Shared::Infrastructure {
 
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
+    class EnvironmentRepository final : public IEnvironmentRepository {
+    public:
 
-        static Pointer Invalid() noexcept {
-            return nullptr;
-        }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
+        [[nodiscard]] SHARED_DLL std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
+        [[nodiscard]] SHARED_DLL bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
+        [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept override;
+
+        SHARED_DLL EnvironmentRepository() = default;
+        SHARED_DLL EnvironmentRepository(const EnvironmentRepository&) = default;
+        SHARED_DLL EnvironmentRepository(EnvironmentRepository&&) noexcept = default;
+        SHARED_DLL EnvironmentRepository& operator=(const EnvironmentRepository&) = default;
+        SHARED_DLL EnvironmentRepository& operator=(EnvironmentRepository&&) noexcept = default;
+        SHARED_DLL ~EnvironmentRepository() override = default;
+
     };
-
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
 
 }
