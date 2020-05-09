@@ -283,7 +283,7 @@ BOOST_AUTO_TEST_CASE(UpdateApplicationPathReturnsSuccess) {
 BOOST_AUTO_TEST_CASE(UpdateReplacesOldApplicationPath) {
     // Arrange
     auto const appPath = R"(C:\Program Files\Application)"s;
-    auto const replacementAppPath = R"(C:\Program Files\Application)"s;
+    auto const replacementAppPath = R"(C:\Program Files (x86)\AlternateApplication)"s;
     auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
     auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementAppPath;
 
@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE(UpdateReplacesOldApplicationPath) {
 BOOST_AUTO_TEST_CASE(UpdateApplicaitonPathWithReplacementReturnsSuccess) {
     // Arrange
     auto const appPath = R"(C:\Program Files\Application)"s;
-    auto const replacementAppPath = R"(C:\Program Files\Application)"s;
+    auto const replacementAppPath = R"(C:\Program Files (x86)\AlternateApplication)"s;
     auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
     auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementAppPath;
 
