@@ -28,6 +28,7 @@ using std::wregex;
 #define BOOST_TEST_MODULE SymbolPathService
 #include <boost/test/included/unit_test.hpp>
 
+#include <type_traits>
 #include "TestAdapter.h"
 #include "TestFixture.h"
 
@@ -193,7 +194,8 @@ namespace {
         }
         template<typename TExpectedSetCall, typename... Args> // could be done with std::initializer_list but I wanted an excuse for varadic template
         ContextBuilder& WithExpectedSetCalls(TExpectedSetCall first, Args... expectedCalls) {
-            static_assert(typeid(TExpectedSetCall) == typeid(ExpectedSetCall), "invalid type, must use ExpectedSetCall");
+            // duck typing would prevent issues here but it's an excuse to use static assert and in this scenario ExpectedSetCall is the only valid type
+            static_assert(std::is_same<TExpectedSetCall, ExpectedSetCall>::value, "invalid type, must use ExpectedSetCall");
             m_context.ExpectedSetCalls.push_back(move(first));
             return WithExpectedSetCalls(expectedCalls...);
         }
@@ -255,8 +257,67 @@ BOOST_AUTO_TEST_CASE(UpdateApplicationPathChangesSymbolPath) {
         .Build();
 
     // Act
+    static_cast<void>(context.Service->UpdateApplicationPath(appPath));
+
+    // Assert
+    // again handled by the arrange and specifically expected set calls
+}
+
+BOOST_AUTO_TEST_CASE(UpdateApplicationPathReturnsSuccess) {
+    // Arrange
+    auto const appPath = R"(C:\Program Files\Application)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
+    auto context = ContextBuilder::Arrange()
+        .WithExpectedSetCalls(SuccessfullySetTo(string(SYMBOL_SERVER) + ";"s + appPath, Exactly(1)))
+        .WithExistingDirectories({appPath})
+        .WithServiceCreated()
+        .Build();
+
+    // Act
     auto const result = context.Service->UpdateApplicationPath(appPath);
 
     // Assert
+    BOOST_ASSERT(result.IsSuccess());
+}
 
+BOOST_AUTO_TEST_CASE(UpdateReplacesOldApplicationPath) {
+    // Arrange
+    auto const appPath = R"(C:\Program Files\Application)"s;
+    auto const replacementAppPath = R"(C:\Program Files\Application)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
+    auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementAppPath;
+
+    auto context = ContextBuilder::Arrange()
+        .WithExpectedSetCalls(SuccessfullySetTo(expectedVariableValue, Exactly(1)), SuccessfullySetTo(replacementExpectedVariableValue, Exactly(1)))
+        .WithExistingDirectories({appPath, replacementAppPath})
+        .WithServiceCreated()
+        .Build();
+    static_cast<void>(context.Service->UpdateApplicationPath(appPath));
+
+    // Act
+    static_cast<void>(context.Service->UpdateApplicationPath(replacementAppPath));
+
+    // Assert
+    // again handled by the arrange and specifically expected set calls
+}
+
+BOOST_AUTO_TEST_CASE(UpdateApplicaitonPathWithReplacementReturnsSuccess) {
+    // Arrange
+    auto const appPath = R"(C:\Program Files\Application)"s;
+    auto const replacementAppPath = R"(C:\Program Files\Application)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
+    auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementAppPath;
+
+    auto context = ContextBuilder::Arrange()
+        .WithExpectedSetCalls(SuccessfullySetTo(expectedVariableValue, Exactly(1)), SuccessfullySetTo(replacementExpectedVariableValue, Exactly(1)))
+        .WithExistingDirectories({appPath, replacementAppPath})
+        .WithServiceCreated()
+        .Build();
+    static_cast<void>(context.Service->UpdateApplicationPath(appPath));
+
+    // Act
+    auto const result = context.Service->UpdateApplicationPath(replacementAppPath);
+
+    // Assert
+    BOOST_ASSERT(result.IsSuccess());
 }
