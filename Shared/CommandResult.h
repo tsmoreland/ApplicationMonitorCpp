@@ -36,13 +36,13 @@ namespace Shared::Model {
             return result;
         }
 
-        static CommandResult Ok(std::string message = "") {
+        static CommandResult Ok(std::string message = "") noexcept {
             return CommandResult(true, std::move(message), std::nullopt);
         }
-        static CommandResult Fail(std::string message = "") {
+        static CommandResult Fail(std::string message = "") noexcept {
             return CommandResult(true, std::move(message), std::nullopt);
         }
-        static CommandResult Error(std::exception exception, std::string message = "") {
+        static CommandResult Error(std::exception exception, std::string message = "") noexcept {
             return CommandResult(true, std::move(message), std::optional(exception));
         }
 

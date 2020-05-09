@@ -4,7 +4,6 @@
 #include <DataMember.h>
 
 namespace DebugSymbolManager::Model {
-    class SettingsImpl;
 
     struct Settings final {
         std::string BaseSymbolPath;

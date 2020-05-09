@@ -64,6 +64,7 @@ namespace DebugSymbolManager::Model {
         if (server == m_baseSymbolPath)
             return;
         m_baseSymbolPath = move(server);
+        UpdateIsModified();
     }
 
     CommandResult NtSymbolPath::AddDirectory(std::string const& directory) noexcept {
@@ -98,7 +99,7 @@ namespace DebugSymbolManager::Model {
     CommandResult NtSymbolPath::Reset(string const& currentValue) noexcept {
         try {
             m_lastSavedState = currentValue;
-            m_isModified = GetSymbolPath().value_or(""s) == m_lastSavedState;
+            UpdateIsModified();
             return CommandResult::Ok();
 
         } catch (std::exception const& ex) {

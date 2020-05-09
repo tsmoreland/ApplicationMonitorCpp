@@ -37,8 +37,10 @@ namespace DebugSymbolManager::Service {
 
             m_symbolPath.RemoveDirectory(m_applicationPath);
             
-            if (m_fileService.DirectoryExists(applicationPath))
-                m_symbolPath.AddDirectory(applicationPath);
+            if (m_fileService.DirectoryExists(applicationPath) && 
+                !static_cast<bool>(m_symbolPath.AddDirectory(applicationPath))) {
+                // Log error here
+            }
 
             m_applicationPath = applicationPath;
             UpdateIfModified();
@@ -60,22 +62,25 @@ namespace DebugSymbolManager::Service {
         , m_symbolPath{fileService}
         , m_fileService(fileService) {
 
-        m_symbolPath.SetBaseSymbolPath(settings.BaseSymbolPath);
         if (!m_symbolPath.Reset(environemntRepository.GetVariable(NtSymbolPath::ENVIRONMENT_KEY).value_or(""s)).IsSuccess()) {
             // Log
         }
 
+        m_symbolPath.SetBaseSymbolPath(settings.BaseSymbolPath);
         UpdateIfModified();
     }
 
     void SymbolPathService::UpdateIfModified() const noexcept {
         if (auto const updatedPath = m_symbolPath.GetSymbolPath(); 
-            m_symbolPath.IsModified() && updatedPath.has_value())
+            m_symbolPath.IsModified() && updatedPath.has_value()) {
+
+            auto const s = updatedPath.value();
 
             if (auto const updated = m_environemntRepository.SetVariable(NtSymbolPath::ENVIRONMENT_KEY, updatedPath.value()); 
                 !updated) {
                 // TODO: log 
             }
+        }
     }
 
 }
