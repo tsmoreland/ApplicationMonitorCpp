@@ -24,6 +24,12 @@ namespace Shared::Infrastructure {
         [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept = 0;
 
-        virtual ~IEnvironmentRepository() = 0 {}
+        SHARED_DLL virtual ~IEnvironmentRepository() = default;
+        IEnvironmentRepository(IEnvironmentRepository&&) noexcept = default;
+        IEnvironmentRepository(IEnvironmentRepository const&) = default;
+
+        IEnvironmentRepository& operator=(IEnvironmentRepository&&) noexcept = default;
+        IEnvironmentRepository& operator=(IEnvironmentRepository const&) = default;
     };
+
 }

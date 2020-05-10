@@ -29,7 +29,11 @@ namespace Shared::Service {
         [[nodiscard]] SHARED_DLL virtual std::vector<UniqueProcess> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
 
-        virtual ~IProcessService() = 0 { }
+        SHARED_DLL virtual ~IProcessService() = default;
+        IProcessService(IProcessService&&) noexcept = default;
+        IProcessService(IProcessService const&) = default;
+        IProcessService& operator=(IProcessService&&) noexcept = default;
+        IProcessService& operator=(IProcessService const&) = default;
 
     };
 }

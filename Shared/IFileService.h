@@ -24,6 +24,10 @@ namespace Shared::Service {
         [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
 
-        virtual ~IFileService() = 0 { };
+        SHARED_DLL virtual ~IFileService() = default;
+        IFileService(IFileService&&) noexcept = default;
+        IFileService(IFileService const&) = default;
+        IFileService& operator=(IFileService&&) noexcept = default;
+        IFileService& operator=(IFileService const&) = default;
     };
 }
