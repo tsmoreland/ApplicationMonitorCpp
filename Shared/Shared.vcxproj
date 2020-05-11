@@ -157,9 +157,10 @@
     <ClInclude Include="BadOwnerAccess.h" />
     <ClInclude Include="CommandResult.h" />
     <ClInclude Include="collection.h" />
+    <ClInclude Include="EnvironmentRepositoryImpl.h" />
+    <ClInclude Include="FileService.h" />
     <ClInclude Include="FileServiceImpl.h" />
     <ClInclude Include="IEnvironmentRepository.h" />
-    <ClInclude Include="IFileService.h" />
     <ClInclude Include="IProcessService.h" />
     <ClInclude Include="Owner.h" />
     <ClInclude Include="Process.h" />
@@ -167,7 +168,6 @@
     <ClInclude Include="SharedOwner.h" />
     <ClInclude Include="UniqueOwner.h" />
     <ClInclude Include="DataMember.h" />
-    <ClInclude Include="EnvironmentRepository.h" />
     <ClInclude Include="Export.h" />
     <ClInclude Include="HandleWithInvalidForEmpty.h" />
     <ClInclude Include="IProcess.h" />

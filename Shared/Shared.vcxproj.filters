@@ -40,6 +40,9 @@
     <Filter Include="Header Files\Services\Impl">
       <UniqueIdentifier>{ca19d149-79cd-4979-82f3-09305469242f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Infrastructure\Impl">
+      <UniqueIdentifier>{c2cdd681-f65a-4716-a75a-0dc4dbd88de5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -84,17 +87,11 @@
     <ClInclude Include="CommandResult.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="IFileService.h">
-      <Filter>Header Files\Services</Filter>
-    </ClInclude>
     <ClInclude Include="IProcessService.h">
       <Filter>Header Files\Services</Filter>
     </ClInclude>
     <ClInclude Include="ProcessService.h">
       <Filter>Header Files\Services\Impl</Filter>
-    </ClInclude>
-    <ClInclude Include="EnvironmentRepository.h">
-      <Filter>Header Files\Infrastructure</Filter>
     </ClInclude>
     <ClInclude Include="IEnvironmentRepository.h">
       <Filter>Header Files\Infrastructure</Filter>
@@ -107,6 +104,12 @@
     </ClInclude>
     <ClInclude Include="FileServiceImpl.h">
       <Filter>Header Files\Services\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="FileService.h">
+      <Filter>Header Files\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentRepositoryImpl.h">
+      <Filter>Header Files\Infrastructure\Impl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -27,7 +27,7 @@
 
 #include <windows.h>
 
-#include "IFileService.h"
+#include "FileService.h"
 #include "IProcessService.h"
 #include "IEnvironmentRepository.h"
 

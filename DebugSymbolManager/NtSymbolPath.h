@@ -16,7 +16,7 @@
 #include <optional>
 #include <vector>
 #include "Settings.h"
-#include "IFileService.h"
+#include "FileService.h"
 #include <CommandResult.h>
 
 namespace DebugSymbolManager::Model {

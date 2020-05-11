@@ -17,7 +17,7 @@
 #include "Settings.h"
 #include "NtSymbolPath.h"
 #include "IEnvironmentRepository.h"
-#include "IFileService.h"
+#include "FileService.h"
 #include <string>
 
 namespace DebugSymbolManager::Service {
