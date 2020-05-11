@@ -32,4 +32,8 @@ namespace Shared::Service {
         SHARED_DLL ~ProcessService() override = default;
     };
 
+    [[nodiscard]] inline SharedProcessService make_shared_process_service() {
+        return std::dynamic_pointer_cast<IProcessService>(std::make_shared<ProcessService>());
+    }
+
 }

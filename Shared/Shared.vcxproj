@@ -157,7 +157,7 @@
     <ClInclude Include="BadOwnerAccess.h" />
     <ClInclude Include="CommandResult.h" />
     <ClInclude Include="collection.h" />
-    <ClInclude Include="FileService.h" />
+    <ClInclude Include="FileServiceImpl.h" />
     <ClInclude Include="IEnvironmentRepository.h" />
     <ClInclude Include="IFileService.h" />
     <ClInclude Include="IProcessService.h" />
@@ -179,7 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnvironmentRepository.cpp" />
-    <ClCompile Include="FileService.cpp" />
+    <ClCompile Include="FileServiceImpl.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="ProcessService.cpp" />

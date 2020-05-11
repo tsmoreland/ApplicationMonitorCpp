@@ -20,7 +20,6 @@ namespace Shared::Infrastructure {
 
     class EnvironmentRepository final : public IEnvironmentRepository {
     public:
-
         [[nodiscard]] SHARED_DLL std::optional<std::string> GetVariable(std::string const& key) const noexcept override;
         [[nodiscard]] SHARED_DLL bool SetVariable(std::string const& key, std::string const& value) const noexcept override;
         [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept override;
@@ -31,7 +30,10 @@ namespace Shared::Infrastructure {
         SHARED_DLL EnvironmentRepository& operator=(const EnvironmentRepository&) = default;
         SHARED_DLL EnvironmentRepository& operator=(EnvironmentRepository&&) noexcept = default;
         SHARED_DLL ~EnvironmentRepository() override = default;
-
     };
+
+    inline SharedEnvironemntRepository make_shared_environemnt_repository() {
+        return std::dynamic_pointer_cast<IEnvironmentRepository>(std::make_shared<EnvironmentRepository>());
+    }
 
 }

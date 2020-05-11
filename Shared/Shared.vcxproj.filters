@@ -90,9 +90,6 @@
     <ClInclude Include="IProcessService.h">
       <Filter>Header Files\Services</Filter>
     </ClInclude>
-    <ClInclude Include="FileService.h">
-      <Filter>Header Files\Services\Impl</Filter>
-    </ClInclude>
     <ClInclude Include="ProcessService.h">
       <Filter>Header Files\Services\Impl</Filter>
     </ClInclude>
@@ -108,13 +105,13 @@
     <ClInclude Include="collection.h">
       <Filter>Header Files\Extensions</Filter>
     </ClInclude>
+    <ClInclude Include="FileServiceImpl.h">
+      <Filter>Header Files\Services\Impl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileService.cpp">
-      <Filter>Source Files\Services</Filter>
     </ClCompile>
     <ClCompile Include="ProcessService.cpp">
       <Filter>Source Files\Services</Filter>
@@ -124,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="EnvironmentRepository.cpp">
       <Filter>Source Files\Infrastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="FileServiceImpl.cpp">
+      <Filter>Source Files\Services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
