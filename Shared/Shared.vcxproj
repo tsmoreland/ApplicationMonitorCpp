@@ -157,11 +157,10 @@
     <ClInclude Include="BadOwnerAccess.h" />
     <ClInclude Include="CommandResult.h" />
     <ClInclude Include="collection.h" />
+    <ClInclude Include="EnvironmentRepository.h" />
     <ClInclude Include="EnvironmentRepositoryImpl.h" />
     <ClInclude Include="FileService.h" />
     <ClInclude Include="FileServiceImpl.h" />
-    <ClInclude Include="IEnvironmentRepository.h" />
-    <ClInclude Include="IProcessService.h" />
     <ClInclude Include="Owner.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessService.h" />
@@ -178,11 +177,11 @@
     <ClInclude Include="UniqueHandle.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnvironmentRepository.cpp" />
+    <ClCompile Include="EnvironmentRepositoryImpl.cpp" />
     <ClCompile Include="FileServiceImpl.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Process.cpp" />
-    <ClCompile Include="ProcessService.cpp" />
+    <ClCompile Include="ProcessServiceImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

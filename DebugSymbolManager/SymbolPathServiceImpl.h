@@ -13,10 +13,10 @@
 
 #pragma once
 
-#include "ISymbolPathService.h"
+#include "SymbolPathService.h"
 #include "Settings.h"
 #include "NtSymbolPath.h"
-#include "IEnvironmentRepository.h"
+#include "EnvironmentRepository.h"
 #include "FileService.h"
 #include <string>
 

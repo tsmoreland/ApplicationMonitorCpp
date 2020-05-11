@@ -28,6 +28,6 @@
 #include <windows.h>
 
 #include "FileService.h"
-#include "IProcessService.h"
-#include "IEnvironmentRepository.h"
+#include "ProcessService.h"
+#include "EnvironmentRepository.h"
 

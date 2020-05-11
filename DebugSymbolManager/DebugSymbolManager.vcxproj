@@ -155,10 +155,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
-    <ClInclude Include="ISymbolPathService.h" />
     <ClInclude Include="NtSymbolpath.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SymbolPathService.h" />
     <ClInclude Include="SymbolPathServiceImpl.h" />
   </ItemGroup>
   <ItemGroup>

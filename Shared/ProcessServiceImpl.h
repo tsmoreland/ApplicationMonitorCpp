@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "IProcessService.h"
+#include "ProcessService.h"
 #include "Export.h"
 
 namespace Shared::Service {

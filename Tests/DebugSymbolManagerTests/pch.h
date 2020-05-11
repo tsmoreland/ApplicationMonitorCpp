@@ -20,6 +20,6 @@
 
 #include "../../DebugSymbolManager/SymbolPathServiceImpl.h"
 #include "../../Shared/FileService.h"
-#include "../../Shared/IEnvironmentRepository.h"
+#include "../../Shared/EnvironmentRepository.h"
 #include <gmock/gmock.h>
 
