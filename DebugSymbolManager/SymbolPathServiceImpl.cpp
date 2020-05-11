@@ -12,7 +12,7 @@
 // 
 
 #include "pch.h"
-#include "SymbolPathService.h"
+#include "SymbolPathServiceImpl.h"
 
 using std::string;
 

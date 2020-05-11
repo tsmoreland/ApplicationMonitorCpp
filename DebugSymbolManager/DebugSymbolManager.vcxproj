@@ -159,12 +159,12 @@
     <ClInclude Include="NtSymbolpath.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="SymbolPathService.h" />
+    <ClInclude Include="SymbolPathServiceImpl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NtSymbolPath.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="SymbolPathService.cpp" />
+    <ClCompile Include="SymbolPathServiceImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-#include "../../DebugSymbolManager/SymbolPathService.h"
+#include "../../DebugSymbolManager/SymbolPathServiceImpl.h"
 #include "../../Shared/FileService.h"
 #include "../../Shared/IEnvironmentRepository.h"
 #include <gmock/gmock.h>

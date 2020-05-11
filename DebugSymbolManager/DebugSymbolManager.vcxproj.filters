@@ -42,11 +42,11 @@
     <ClInclude Include="NtSymbolPath.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="SymbolPathService.h">
-      <Filter>Header Files\Service\Impl</Filter>
-    </ClInclude>
     <ClInclude Include="ISymbolPathService.h">
       <Filter>Header Files\Service</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolPathServiceImpl.h">
+      <Filter>Header Files\Service\Impl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,7 +56,7 @@
     <ClCompile Include="NtSymbolPath.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
-    <ClCompile Include="SymbolPathService.cpp">
+    <ClCompile Include="SymbolPathServiceImpl.cpp">
       <Filter>Source Files\Service</Filter>
     </ClCompile>
   </ItemGroup>
