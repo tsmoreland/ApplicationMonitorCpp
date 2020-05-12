@@ -13,17 +13,24 @@
 
 #pragma once
 
-namespace MockObjects {
-    class MockEnviromentRepository final : public Shared::Infrastructure::IEnvironmentRepository {
+#include "../../Shared/environment_repository.h"
+#include "../../Shared/file_service.h"
+
+namespace mock_objects
+{
+    class mock_environment_repository final : public shared::infrastructure::environment_repository
+    {
     public:
-        MOCK_METHOD(optional<string>, GetVariable, (string const& key), (const, noexcept, override));
-        MOCK_METHOD(bool, SetVariable, (string const& key, string const& value), (const, noexcept, override));
-        MOCK_METHOD(bool, RemoveVariable, (string const& key), (const, noexcept, override));
+        MOCK_METHOD(optional<string>, get_variable, (string const& key), (const, noexcept, override));
+        MOCK_METHOD(bool, set_variable, (string const& key, string const& value), (const, noexcept, override));
+        MOCK_METHOD(bool, remove_variable, (string const& key), (const, noexcept, override));
     };
-    class MockFileService final : public Shared::Service::IFileService {
+
+    class mock_file_service final : public shared::service::file_service
+    {
     public:
-        MOCK_METHOD(vector<path>, GetFilesFromDirectory, (path const& folder, wregex const& filter), (const, noexcept, override));
-        MOCK_METHOD(bool, DirectoryExists, (std::string_view const path), (const, override));
+        MOCK_METHOD(vector<path>, get_files_from_directory, (path const& folder, wregex const& filter), (const, noexcept, override));
+        MOCK_METHOD(bool, directory_exists, (std::string_view const path), (const, override));
 
     };
 }

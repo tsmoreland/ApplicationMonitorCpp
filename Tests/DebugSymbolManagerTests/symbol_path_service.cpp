@@ -29,109 +29,112 @@ using std::wregex;
 #include <boost/test/included/unit_test.hpp>
 
 #include <type_traits>
-#include "TestAdapter.h"
-#include "TestFixture.h"
+#include "test_adapter.h"
 
-using DebugSymbolManager::Model::Settings;
-using DebugSymbolManager::Service::ISymbolPathService;
-using DebugSymbolManager::Service::SymbolPathService;
+using debug_symbol_manager::model::settings;
+using debug_symbol_manager::service::symbol_path_service;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
 using std::literals::string_literals::operator ""s;
 #pragma warning(pop)
 
-#include "ContextBuilder.h"
+#include "context_builder.h"
 
-using namespace DebugSymbolManager::Test;
+using namespace debug_symbol_manager::test;
 
-BOOST_AUTO_TEST_CASE(UpdateApplicationPathChangesSymbolPath) {
-    // Arrange
-    auto const appPath = R"(C:\Program Files\Application)"s;
-    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
-    auto context = ContextBuilder::Arrange()
-        .WithExpectedSetCalls(SuccessfullySetTo(string(SYMBOL_SERVER) + ";"s + appPath, Exactly(1)))
-        .WithExistingDirectories({appPath})
-        .WithServiceCreated()
+BOOST_AUTO_TEST_CASE(update_application_path_changes_symbol_path)
+{
+    // arrange
+    auto const app_path = R"(C:\Program Files\Application)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + app_path;
+    auto context = context_builder::arrange()
+        .with_expected_set_calls(successfully_set_to(string(SYMBOL_SERVER) + ";"s + app_path, Exactly(1)))
+        .with_existing_directories({app_path})
+        .with_service_created()
         .Build();
 
     // Act
-    static_cast<void>(context.Service->UpdateApplicationPath(appPath));
+    static_cast<void>(context.service->update_application_path(app_path));
 
     // Assert
     // again handled by the arrange and specifically expected set calls
 }
 
-BOOST_AUTO_TEST_CASE(UpdateApplicationPathReturnsSuccess) {
-    // Arrange
-    auto const appPath = R"(C:\Program Files\Application)"s;
-    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
-    auto context = ContextBuilder::Arrange()
-        .WithExpectedSetCalls(SuccessfullySetTo(string(SYMBOL_SERVER) + ";"s + appPath, Exactly(1)))
-        .WithExistingDirectories({appPath})
-        .WithServiceCreated()
+BOOST_AUTO_TEST_CASE(update_application_pathReturnsSuccess)
+{
+    // arrange
+    auto const app_path = R"(C:\Program Files\Application)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + app_path;
+    auto context = context_builder::arrange()
+        .with_expected_set_calls(successfully_set_to(string(SYMBOL_SERVER) + ";"s + app_path, Exactly(1)))
+        .with_existing_directories({app_path})
+        .with_service_created()
         .Build();
 
     // Act
-    auto const result = context.Service->UpdateApplicationPath(appPath);
+    auto const result = context.service->update_application_path(app_path);
 
     // Assert
-    BOOST_ASSERT(result.IsSuccess());
+    BOOST_ASSERT(result.is_success());
 }
 
-BOOST_AUTO_TEST_CASE(UpdateReplacesOldApplicationPath) {
-    // Arrange
-    auto const appPath = R"(C:\Program Files\Application)"s;
-    auto const replacementAppPath = R"(C:\Program Files (x86)\AlternateApplication)"s;
-    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
-    auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementAppPath;
+BOOST_AUTO_TEST_CASE(UpdateReplacesOldApplicationPath)
+{
+    // arrange
+    auto const app_path = R"(C:\Program Files\Application)"s;
+    auto const replacementapp_path = R"(C:\Program Files (x86)\AlternateApplication)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + app_path;
+    auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementapp_path;
 
-    auto context = ContextBuilder::Arrange()
-        .WithExpectedSetCalls(SuccessfullySetTo(expectedVariableValue, Exactly(1)), SuccessfullySetTo(replacementExpectedVariableValue, Exactly(1)))
-        .WithExistingDirectories({appPath, replacementAppPath})
-        .WithServiceCreated()
+    auto context = context_builder::arrange()
+        .with_expected_set_calls(successfully_set_to(expectedVariableValue, Exactly(1)), successfully_set_to(replacementExpectedVariableValue, Exactly(1)))
+        .with_existing_directories({app_path, replacementapp_path})
+        .with_service_created()
         .Build();
-    static_cast<void>(context.Service->UpdateApplicationPath(appPath));
+    static_cast<void>(context.service->update_application_path(app_path));
 
     // Act
-    static_cast<void>(context.Service->UpdateApplicationPath(replacementAppPath));
+    static_cast<void>(context.service->update_application_path(replacementapp_path));
 
     // Assert
     // again handled by the arrange and specifically expected set calls
 }
 
-BOOST_AUTO_TEST_CASE(UpdateApplicaitonPathWithReplacementReturnsSuccess) {
-    // Arrange
-    auto const appPath = R"(C:\Program Files\Application)"s;
-    auto const replacementAppPath = R"(C:\Program Files (x86)\AlternateApplication)"s;
-    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
-    auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementAppPath;
+BOOST_AUTO_TEST_CASE(UpdateApplicaitonPathWithReplacementReturnsSuccess)
+{
+    // arrange
+    auto const app_path = R"(C:\Program Files\Application)"s;
+    auto const replacementapp_path = R"(C:\Program Files (x86)\AlternateApplication)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + app_path;
+    auto const replacementExpectedVariableValue = string(SYMBOL_SERVER) + ";"s + replacementapp_path;
 
-    auto context = ContextBuilder::Arrange()
-        .WithExpectedSetCalls(SuccessfullySetTo(expectedVariableValue, Exactly(1)), SuccessfullySetTo(replacementExpectedVariableValue, Exactly(1)))
-        .WithExistingDirectories({appPath, replacementAppPath})
-        .WithServiceCreated()
+    auto context = context_builder::arrange()
+        .with_expected_set_calls(successfully_set_to(expectedVariableValue, Exactly(1)), successfully_set_to(replacementExpectedVariableValue, Exactly(1)))
+        .with_existing_directories({app_path, replacementapp_path})
+        .with_service_created()
         .Build();
-    static_cast<void>(context.Service->UpdateApplicationPath(appPath));
+    static_cast<void>(context.service->update_application_path(app_path));
 
     // Act
-    auto const result = context.Service->UpdateApplicationPath(replacementAppPath);
+    auto const result = context.service->update_application_path(replacementapp_path);
 
     // Assert
-    BOOST_ASSERT(result.IsSuccess());
+    BOOST_ASSERT(result.is_success());
 }
 
-BOOST_AUTO_TEST_CASE(UpdateApplicationPathFailsIfDirectoryDoesNotExist) {
-    // Arrange
-    auto const appPath = R"(C:\Program Files\Application)"s;
-    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + appPath;
-    auto context = ContextBuilder::Arrange()
-        .WithServiceCreated()
+BOOST_AUTO_TEST_CASE(update_application_pathFailsIfDirectoryDoesNotExist)
+{
+    // arrange
+    auto const app_path = R"(C:\Program Files\Application)"s;
+    auto const expectedVariableValue = string(SYMBOL_SERVER) + ";"s + app_path;
+    auto context = context_builder::arrange()
+        .with_service_created()
         .Build();
 
     // Act
-    auto const result = context.Service->UpdateApplicationPath(appPath);
+    auto const result = context.service->update_application_path(app_path);
 
     // Assert
-    BOOST_ASSERT(!result.IsSuccess());
+    BOOST_ASSERT(!result.is_success());
 }

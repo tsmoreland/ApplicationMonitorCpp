@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-#include "../../DebugSymbolManager/SymbolPathServiceImpl.h"
-#include "../../Shared/FileService.h"
-#include "../../Shared/EnvironmentRepository.h"
+#include "../../DebugSymbolManager/symbol_path_service_impl.h"
+#include "../../Shared/file_service.h"
+#include "../../Shared/environment_repository.h"
 #include <gmock/gmock.h>
 

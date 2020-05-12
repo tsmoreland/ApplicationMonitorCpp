@@ -126,7 +126,7 @@ TEST(process_service, ProcessByNameFindsMatch)
 }
 TEST(process_service, no_processes_found_with_empty_process_name)
 {
-    // Arrange
+    // arrange
     unique_ptr<process_service> const service = make_unique<process_service_impl>();
     // Act
     auto const matchingProcesses = service->get_processes_by_name(""s);
@@ -136,7 +136,7 @@ TEST(process_service, no_processes_found_with_empty_process_name)
 
 TEST(process_service, get_path_from_running_path_returns_path)
 {
-    // Arrange
+    // arrange
     unique_ptr<process_service> const service = make_unique<process_service_impl>();
     auto const runningProcess = service->start_process(CommandExe, "/c Sleep 2");
 
@@ -151,7 +151,7 @@ TEST(process_service, get_path_from_running_path_returns_path)
 
 TEST(process_service, get_path_from_running_path_returns_correct_path)
 {
-    // Arrange
+    // arrange
     std::filesystem::path expected(CommandExe);
 
     unique_ptr<process_service> const service = make_unique<process_service_impl>();

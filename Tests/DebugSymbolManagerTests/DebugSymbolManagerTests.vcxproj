@@ -163,7 +163,7 @@
     <ClCompile Include="symbol_path_service.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="context.h" />
+    <ClInclude Include="test_context.h" />
     <ClInclude Include="context_builder.h" />
     <ClInclude Include="expected_set_call.h" />
     <ClInclude Include="mock_objects.h" />

@@ -22,10 +22,12 @@ using namespace std;
 using namespace testing;
 
 // adapted from https://www.semipol.de/2010/04/13/using-googlemock-with-the-boost-test-library.html
-class BoostTestAdapter: public EmptyTestEventListener {
+class boost_test_adapter: public EmptyTestEventListener
+{
 public:
     void OnTestStart(const TestInfo&) override { }
-    void OnTestPartResult(const TestPartResult& testPartResult) override {
+    void OnTestPartResult(const TestPartResult& testPartResult) override
+    {
         if (testPartResult.failed()) {
             stringstream s;
             s << "Mock test failed (file = '"

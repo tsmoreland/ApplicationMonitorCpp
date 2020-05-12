@@ -35,7 +35,7 @@ tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDIC
 
 TEST(file_service, returns_no_files_when_path_is_not_directory)
 {
-    // Arrange
+    // arrange
     auto const windows_directory = path(LR"(C:\windows\system32\cmd.exe)");
     wregex const filter(LR"(.*\.exe$)");
     unique_ptr<file_service> const service(make_unique<file_service_impl>());
@@ -49,7 +49,7 @@ TEST(file_service, returns_no_files_when_path_is_not_directory)
 
 TEST(file_service, returns_all_files_matching_filter)
 {
-    // Arrange
+    // arrange
     auto const windows_directory = path(LR"(C:\windows)");
     unique_ptr<file_service> service;
     vector<path> expected;

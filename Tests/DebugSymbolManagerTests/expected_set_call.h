@@ -13,25 +13,26 @@
 
 #pragma once
 
-namespace DebugSymbolManager::Test {
+namespace debug_symbol_manager::test {
 
-    struct ExpectedSetCall {
+    struct expected_set_call
+    {
+        Cardinality cardinality;
+        std::string value;
+        bool success;
 
-        Cardinality Cardinality;
-        std::string Value;
-        bool Success;
-
-        void swap(ExpectedSetCall& other) noexcept {
-            ::swap(Cardinality, other.Cardinality);
-            ::swap(Value, other.Value);
-            ::swap(Success, other.Success);
+        void swap(expected_set_call& other) noexcept {
+            ::swap(cardinality, other.cardinality);
+            ::swap(value, other.value);
+            ::swap(success, other.success);
         }
     };
 
-    void swap(ExpectedSetCall& left, ExpectedSetCall& right) noexcept {
+    inline void swap(expected_set_call& left, expected_set_call& right) noexcept
+    {
         left.swap(right);
     }
-    ExpectedSetCall SuccessfullySetTo(string value, optional<Cardinality> const& cardinality = nullopt) {
+    inline expected_set_call successfully_set_to(string value, optional<Cardinality> const& cardinality = nullopt) {
         return { cardinality.value_or(AnyNumber()), move(value), true };
     }
 

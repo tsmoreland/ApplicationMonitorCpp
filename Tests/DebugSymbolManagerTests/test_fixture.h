@@ -13,23 +13,26 @@
 
 #pragma once
 
-class TestFixture {
+class test_fixture
+{
 public:
-    TestFixture() {
+    test_fixture()
+    {
         InitGoogleMock(
             &boost::unit_test::framework::master_test_suite().argc,
             boost::unit_test::framework::master_test_suite().argv);
-        TestEventListeners &listeners = UnitTest::GetInstance()->listeners();
+        auto& listeners = UnitTest::GetInstance()->listeners();
         // this removes the default error printer
         delete listeners.Release(listeners.default_result_printer());
-        listeners.Append(new BoostTestAdapter);
+        listeners.Append(new boost_test_adapter);
 
     }
 
-    ~TestFixture() {
+    ~test_fixture()
+    {
         // nothing to tear down
     }
 
 };
 
-BOOST_GLOBAL_FIXTURE(TestFixture);
+BOOST_GLOBAL_FIXTURE(test_fixture);

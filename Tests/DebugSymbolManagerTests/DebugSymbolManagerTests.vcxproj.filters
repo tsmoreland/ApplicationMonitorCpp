@@ -6,12 +6,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="context.h" />
     <ClInclude Include="context_builder.h" />
     <ClInclude Include="expected_set_call.h" />
     <ClInclude Include="mock_objects.h" />
     <ClInclude Include="test_adapter.h" />
     <ClInclude Include="test_fixture.h" />
+    <ClInclude Include="test_context.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.md" />
