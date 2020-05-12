@@ -15,10 +15,12 @@
 
 #include <new>
 
-namespace Shared::Infrastructure {
+namespace shared::infrastructure
+{
 
     template <typename TRAITS>
-    class UniqueHandle final {
+    class unique_handle final
+    {
         using Pointer = typename TRAITS::Pointer;
     public:
         [[nodiscard]] Pointer Get() const noexcept {
@@ -41,23 +43,23 @@ namespace Shared::Infrastructure {
             return value != TRAITS::Invalid();
         }
 
-        explicit UniqueHandle(Pointer value = TRAITS::Invalid()) noexcept
+        explicit unique_handle(Pointer value = TRAITS::Invalid()) noexcept
             : value{value} {
         }
-        UniqueHandle(const UniqueHandle&) = delete;
-        UniqueHandle& operator=(const UniqueHandle&) = delete;
-        UniqueHandle(UniqueHandle&& other) noexcept
+        unique_handle(const unique_handle&) = delete;
+        unique_handle& operator=(const unique_handle&) = delete;
+        unique_handle(unique_handle&& other) noexcept
             : value{std::move(other.Release())} {
         }
-        UniqueHandle& operator=(UniqueHandle&& other) noexcept {
+        unique_handle& operator=(unique_handle&& other) noexcept {
             if (this != &other)
                 Reset(other.Release());
             return *this;
         }
-        ~UniqueHandle() {
+        ~unique_handle() {
             Close();
         }
-        void swap(UniqueHandle<TRAITS>& other) noexcept {
+        void swap(unique_handle<TRAITS>& other) noexcept {
             std::swap(value, other.value);
         }
 
@@ -70,11 +72,11 @@ namespace Shared::Infrastructure {
         }
     };
 
-    template <typename TRAITS> void swap(UniqueHandle<TRAITS>& left, UniqueHandle<TRAITS>& right) noexcept {
+    template <typename TRAITS> void swap(unique_handle<TRAITS>& left, unique_handle<TRAITS>& right) noexcept {
         left.swap(right);
     }
 
-    template <typename TRAITS> bool operator<=>(UniqueHandle<TRAITS> const& left, UniqueHandle<TRAITS> const& right) {
+    template <typename TRAITS> bool operator<=>(unique_handle<TRAITS> const& left, unique_handle<TRAITS> const& right) {
         return left.Get() <=> right.Get();
     }
 

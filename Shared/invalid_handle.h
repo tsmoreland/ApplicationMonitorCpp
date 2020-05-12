@@ -13,21 +13,25 @@
 
 #pragma once
 
-#include "UniqueHandle.h"
+#include "unique_handle.h"
 
-namespace Shared::Infrastructure {
-    struct HandleWithInvalidForEmptyTraits {
+namespace shared::infrastructure
+{
+    struct invalid_handle_traits
+    {
         using Pointer = HANDLE;
 
-        static Pointer Invalid() noexcept {
+        static Pointer Invalid() noexcept
+        {
             return INVALID_HANDLE_VALUE;
         }
-        static void Close(Pointer const value) noexcept {
+        static void Close(Pointer const value) noexcept
+        {
             CloseHandle(value);
         }
     };
 
-    using HandleWithInvalidForEmpty = UniqueHandle<HandleWithInvalidForEmptyTraits>;
+    using invalid_handle = unique_handle<invalid_handle_traits>;
 
 }
 

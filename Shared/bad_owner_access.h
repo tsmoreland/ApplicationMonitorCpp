@@ -13,40 +13,16 @@
 
 #pragma once
 
-#include <memory>
-#include "Owner.h"
+#include <exception>
 
-namespace Shared::Infrastructure {
-
-    template<typename TINTERFACE>
-    struct SharedOwnerTraits {
-        using Pointer = std::shared_ptr<TINTERFACE>;
-        using ValueType = TINTERFACE;
-
-        constexpr static Pointer Build(ValueType&& value) {
-            return make_shared<TINTERFACE>(std::forward(value));
-        }
-        constexpr static Pointer Build(std::shared_ptr<TINTERFACE> value) {
-            return value;
-        }
-        constexpr static bool HasValue(Pointer const& value) {
-            return static_cast<bool>(value);
-        }
-        constexpr static ValueType* Value(Pointer& value) {
-            return value.get();
-        }
-        constexpr static ValueType const* Value(Pointer const& value) {
-            return value.get();
-        }
-        constexpr static void Release(Pointer& value) {
-            value.release();
-        }
-        constexpr static void Reset(Pointer& value) {
-            value.reset();
+namespace shared::infrastructure
+{
+    class bad_owner_access final : public std::exception
+    {
+    public:
+        [[nodiscard]] virtual const char* what() const noexcept override
+        {
+            return "Owner is empty";
         }
     };
-
-    template<typename TINTERFACE>
-    using SharedOwner = Shared::Infrastructure::Owner<SharedOwnerTraits<TINTERFACE>>;
-
 }

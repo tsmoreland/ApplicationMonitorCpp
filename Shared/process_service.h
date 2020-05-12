@@ -13,26 +13,31 @@
 
 #pragma once
 
+#include <filesystem>
 #include <optional>
-#include <string>
-#include "Export.h"
+#include <vector>
+#include <regex>
+#include "process.h"
+#include "export.h"
 
-namespace Shared::Infrastructure {
+namespace shared::service
+{
+    struct process_service
+    {
+        using unique_process = shared::model::unique_process;
 
-    struct IEnvironmentRepository {
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::string> GetVariable(std::string const& key) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool SetVariable(std::string const& key, std::string const& value) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool RemoveVariable(std::string const& key) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual unique_process start_process(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<unique_process> get_processes_by_name(std::string_view const& processName) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> get_path_to_running_process(std::string_view const& processName) const noexcept = 0;
 
-        virtual ~IEnvironmentRepository() = default;
-        IEnvironmentRepository() = default;
-        IEnvironmentRepository(IEnvironmentRepository&&) noexcept = default;
-        IEnvironmentRepository(IEnvironmentRepository const&) = default;
-
-        IEnvironmentRepository& operator=(IEnvironmentRepository&&) noexcept = default;
-        IEnvironmentRepository& operator=(IEnvironmentRepository const&) = default;
+        process_service() = default;
+        virtual ~process_service() = default;
+        process_service(process_service&&) noexcept = default;
+        process_service(process_service const&) = default;
+        process_service& operator=(process_service&&) noexcept = default;
+        process_service& operator=(process_service const&) = default;
     };
 
-    using SharedEnvironemntRepository = std::shared_ptr<IEnvironmentRepository>;
-
+    using shared_process_service = std::shared_ptr<process_service>;
 }
+

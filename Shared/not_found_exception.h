@@ -13,18 +13,20 @@
 
 #pragma once
 
-namespace Shared::Infrastructure
+namespace shared::infrastructure
 {
-    class not_found_exception : public std::exception {
+    class not_found_exception final : public std::exception
+    {
     public:
         explicit not_found_exception(char const * const what)
-            : exception(what) {
+            : exception(what)
+        {
         }
         not_found_exception(not_found_exception const&) = default;
         not_found_exception& operator=(not_found_exception const&) = default;
         not_found_exception(not_found_exception&&) noexcept = default;
         not_found_exception& operator=(not_found_exception&&) noexcept = default;
-        virtual ~not_found_exception() = default;
+        ~not_found_exception() = default;
     };
 
 }

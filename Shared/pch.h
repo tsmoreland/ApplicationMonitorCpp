@@ -28,6 +28,6 @@
 #include <sdkddkver.h>
 #include <processthreadsapi.h>
 
-#include "HandleWithInvalidForEmpty.h"
-#include "HandleWithNullForEmpty.h"
+#include "invalid_handle.h"
+#include "null_handle.h"
 #include "not_found_exception.h"

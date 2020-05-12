@@ -13,13 +13,28 @@
 
 #pragma once
 
-#include <exception>
+#include <optional>
+#include <string>
+#include "export.h"
 
-namespace Shared::Infrastructure {
-    class BadOwnerAccess final : public std::exception {
-    public:
-        [[nodiscard]] virtual const char* what() const noexcept override {
-            return "Owner is empty";
-        }
+namespace shared::infrastructure
+{
+    struct environment_repository
+    {
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::string> get_variable(std::string const& key) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool set_variable(std::string const& key, std::string const& value) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool remove_variable(std::string const& key) const noexcept = 0;
+
+        virtual ~environment_repository() = default;
+        environment_repository() = default;
+        environment_repository(environment_repository&&) noexcept = default;
+        environment_repository(environment_repository const&) = default;
+
+        environment_repository& operator=(environment_repository&&) noexcept = default;
+        environment_repository& operator=(environment_repository const&) = default;
     };
+
+    using shared_environemnt_repository = std::shared_ptr<environment_repository>;
+    using unique_environemnt_repository = std::unique_ptr<environment_repository>;
+
 }

@@ -14,29 +14,24 @@
 #pragma once
 
 #include <filesystem>
-#include <optional>
-#include <vector>
 #include <regex>
-#include "IProcess.h"
-#include "Export.h"
-#include "UniqueOwner.h"
+#include <vector>
+#include "export.h"
 
-namespace Shared::Service {
-    struct IProcessService {
-        using UniqueProcess = Shared::Infrastructure::UniqueOwner<Shared::Model::IProcess>;
+namespace shared::service
+{
+    struct file_service
+    {
+        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool directory_exists(std::string_view const path) const = 0;
 
-        [[nodiscard]] SHARED_DLL virtual UniqueProcess StartProcess(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::vector<UniqueProcess> GetProcessesByName(std::string_view const& processName) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
-
-        IProcessService() = default;
-        virtual ~IProcessService() = default;
-        IProcessService(IProcessService&&) noexcept = default;
-        IProcessService(IProcessService const&) = default;
-        IProcessService& operator=(IProcessService&&) noexcept = default;
-        IProcessService& operator=(IProcessService const&) = default;
+        file_service() = default;
+        virtual ~file_service() = default;
+        file_service(file_service&&) noexcept = default;
+        file_service(file_service const&) = default;
+        file_service& operator=(file_service&&) noexcept = default;
+        file_service& operator=(file_service const&) = default;
     };
 
-    using SharedProcessService = std::shared_ptr<IProcessService>;
+    using shared_file_service = std::shared_ptr<file_service>;
 }
-

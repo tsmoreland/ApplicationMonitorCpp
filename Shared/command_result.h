@@ -18,32 +18,40 @@
 #include <optional>
 #include <string>
 
-namespace Shared::Model {
-
-    class CommandResult {
+namespace shared::model
+{
+    class command_result final
+    {
     public:
-        [[nodiscard]] bool IsSuccess() const noexcept {
+        [[nodiscard]] bool is_success() const noexcept
+        {
             return result;
         }
-        [[nodiscard]] std::string const& GetMessage() const noexcept {
+        [[nodiscard]] std::string const& get_message() const noexcept
+        {
             return message;
         }
-        [[nodiscard]] std::optional<std::exception> const& GetException() const noexcept {
+        [[nodiscard]] std::optional<std::exception> const& get_exception() const noexcept
+        {
             return exception;
         }
 
-        explicit operator bool() const noexcept {
+        explicit operator bool() const noexcept
+        {
             return result;
         }
 
-        static CommandResult Ok(std::string message = "") noexcept {
-            return CommandResult(true, std::move(message), std::nullopt);
+        static command_result ok(std::string message = "") noexcept
+        {
+            return command_result(true, std::move(message), std::nullopt);
         }
-        static CommandResult Fail(std::string message = "") noexcept {
-            return CommandResult(false, std::move(message), std::nullopt);
+        static command_result fail(std::string message = "") noexcept
+        {
+            return command_result(false, std::move(message), std::nullopt);
         }
-        static CommandResult Error(std::exception exception, std::string message = "") noexcept {
-            return CommandResult(false, std::move(message), std::optional(exception));
+        static command_result error(std::exception exception, std::string message = "") noexcept
+        {
+            return command_result(false, std::move(message), std::optional(exception));
         }
 
     private:
@@ -51,10 +59,11 @@ namespace Shared::Model {
         std::string message;
         std::optional<std::exception> exception;
 
-        CommandResult(bool const result, std::string message, std::optional<std::exception> exception = std::nullopt)
+        command_result(bool const result, std::string message, std::optional<std::exception> exception = std::nullopt)
             : result{result}
             , message{std::move(message)}
-            , exception{std::move(exception)} {
+            , exception{std::move(exception)}
+        {
         }
             
     };

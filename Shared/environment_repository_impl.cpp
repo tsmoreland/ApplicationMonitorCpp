@@ -12,7 +12,7 @@
 // 
 
 #include "pch.h"
-#include "EnvironmentRepositoryImpl.h"
+#include "environment_repository_impl.h"
 
 using std::nullopt;
 using std::optional;
@@ -27,24 +27,28 @@ using extension::string_contains_in_order;
 using std::literals::string_literals::operator ""s;
 #pragma warning(pop)
 
-namespace Shared::Infrastructure {
+namespace shared::infrastructure
+{
 
-    optional<string> EnvironmentRepository::GetVariable(std::string const& key) const noexcept {
-        constexpr auto MAX_VARIABLE_NAME_SIZE = 8192;
-        char value[MAX_VARIABLE_NAME_SIZE]{};
+optional<string> environment_repository_impl::get_variable(std::string const& key) const noexcept
+{
+    constexpr auto MAX_VARIABLE_NAME_SIZE = 8192;
+    char value[MAX_VARIABLE_NAME_SIZE]{};
 
-        auto const size = GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE);
-        if (size > MAX_VARIABLE_NAME_SIZE || size == 0)
-            return nullopt;
-        return optional(string(value));
-    }
-    bool EnvironmentRepository::SetVariable(string const& key, string const& value) const noexcept {
-        return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
-    }
+    auto const size = GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE);
+    if (size > MAX_VARIABLE_NAME_SIZE || size == 0)
+        return nullopt;
+    return optional(string(value));
+}
+bool environment_repository_impl::set_variable(string const& key, string const& value) const noexcept
+{
+    return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
+}
 
-    bool EnvironmentRepository::RemoveVariable(string const& key) const noexcept {
-        return SetEnvironmentVariableA(key.c_str(), nullptr) == TRUE;
+bool environment_repository_impl::remove_variable(string const& key) const noexcept
+{
+    return SetEnvironmentVariableA(key.c_str(), nullptr) == TRUE;
 
-    }
+}
 
 }

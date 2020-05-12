@@ -20,13 +20,15 @@
 namespace extension
 {
     template<typename TCHAR>
-    constexpr size_t zstring_length(TCHAR const*const value) {
+    constexpr size_t zstring_length(TCHAR const*const value)
+    {
         return *value ? 1 + zstring_length(value + 1) : 0;
     };
 
     template <typename TCHAR>
     [[nodiscard]] bool string_equal(std::basic_string_view<TCHAR> const left_hand_side, 
-        std::basic_string_view<TCHAR> const right_hand_side, bool const ignoreCase = false) {
+        std::basic_string_view<TCHAR> const right_hand_side, bool const ignoreCase = false)
+    {
         if (&left_hand_side == &right_hand_side)
             return true;
         if (&left_hand_side == nullptr)
@@ -48,7 +50,8 @@ namespace extension
     }
     template <typename TCHAR>
     [[nodiscard]] bool string_equal(std::basic_string<TCHAR> const& left_hand_side, 
-        std::basic_string<TCHAR> const &right_hand_side, bool const ignoreCase = false) {
+        std::basic_string<TCHAR> const &right_hand_side, bool const ignoreCase = false)
+    {
 
         return string_equal(
             std::basic_string_view<TCHAR>(left_hand_side), 
@@ -57,7 +60,8 @@ namespace extension
     }
 
     [[nodiscard]] inline bool string_equal(std::string_view const left_hand_side, 
-        std::wstring_view const right_hand_side, bool const ignoreCase = false) {
+        std::wstring_view const right_hand_side, bool const ignoreCase = false)
+    {
         const auto locale = std::locale();
 
         if (ignoreCase) {
@@ -70,8 +74,7 @@ namespace extension
                 begin(left_hand_side), end(left_hand_side), 
                 begin(right_hand_side), end(right_hand_side), 
                 pred);
-        }
-        else {
+        } else {
             auto pred = [](char const& lhs, wchar_t const& rhs) -> bool {
                 const wchar_t wideLhs = lhs;
                 return wideLhs == rhs;
@@ -84,30 +87,35 @@ namespace extension
         }
     }
     [[nodiscard]] inline bool string_equal(std::wstring_view const left_hand_side, 
-        std::string_view const right_hand_side, bool const ignoreCase = false) {
+        std::string_view const right_hand_side, bool const ignoreCase = false)
+    {
         return string_equal(right_hand_side, left_hand_side, ignoreCase);
     }
 
     [[nodiscard]] inline bool string_equal(std::string const& left_hand_side, 
-        std::wstring const& right_hand_side, bool const ignoreCase = false) {
+        std::wstring const& right_hand_side, bool const ignoreCase = false)
+    {
         std::string_view const leftView(left_hand_side);
         std::wstring_view const rightView(right_hand_side);
         return string_equal(leftView, rightView, ignoreCase);
     }
     [[nodiscard]] inline bool string_equal(std::wstring const& left_hand_side, 
-        std::string const& right_hand_side, bool const ignoreCase = false) {
+        std::string const& right_hand_side, bool const ignoreCase = false)
+    {
         return string_equal(right_hand_side, left_hand_side, ignoreCase);
     }
 
     template <typename TCHAR>
     [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string<TCHAR> const& value, 
-        std::vector<TCHAR> const& seperators) {
+        std::vector<TCHAR> const& seperators)
+    {
         return string_split(std::basic_string_view<TCHAR>(value), seperators);
     }
 
     template <typename TCHAR>
     [[nodiscard]] std::vector<std::basic_string_view<TCHAR>> string_split(std::basic_string_view<TCHAR> const value, 
-        std::vector<TCHAR> const& seperators) {
+        std::vector<TCHAR> const& seperators)
+    {
         if (value.empty())
             return std::vector<std::basic_string_view<TCHAR>>();
         if (seperators.empty())
@@ -135,7 +143,8 @@ namespace extension
         return parts;
     }
     template <typename TCHAR>
-    bool string_contains_in_order(std::basic_string<TCHAR> const value, std::vector<std::basic_string<TCHAR>> const& parts) {
+    bool string_contains_in_order(std::basic_string<TCHAR> const value, std::vector<std::basic_string<TCHAR>> const& parts)
+    {
         std::basic_string_view<TCHAR> view(value);
         std::vector<std::basic_string_view<TCHAR>> parts_view(parts.size());
 
@@ -146,7 +155,8 @@ namespace extension
     }
 
     template <typename TCHAR>
-    bool string_contains_in_order(std::basic_string_view<TCHAR> const value, std::vector<std::basic_string_view<TCHAR>> const& parts) {
+    bool string_contains_in_order(std::basic_string_view<TCHAR> const value, std::vector<std::basic_string_view<TCHAR>> const& parts)
+    {
         size_t start = 0;
         auto const length = value.size();
 

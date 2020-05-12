@@ -13,24 +13,28 @@
 
 #pragma once
 
-#include <filesystem>
-#include <regex>
-#include <vector>
-#include "Export.h"
-#include "UniqueOwner.h"
+#include "file_service.h"
 
-namespace Shared::Service {
-    struct IFileService {
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> GetFilesFromDirectory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool DirectoryExists(std::string_view const path) const = 0;
+namespace shared::service
+{
 
-        IFileService() = default;
-        virtual ~IFileService() = default;
-        IFileService(IFileService&&) noexcept = default;
-        IFileService(IFileService const&) = default;
-        IFileService& operator=(IFileService&&) noexcept = default;
-        IFileService& operator=(IFileService const&) = default;
+    class file_service_impl final : public file_service
+    {
+    public:
+        [[nodiscard]] SHARED_DLL std::vector<std::filesystem::path> get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept override;
+        [[nodiscard]] SHARED_DLL bool directory_exists(std::string_view const path) const override;
+
+        SHARED_DLL file_service_impl() = default;
+        SHARED_DLL file_service_impl(const file_service_impl&) = default;
+        SHARED_DLL file_service_impl(file_service_impl&&) noexcept = default;
+        SHARED_DLL file_service_impl& operator=(const file_service_impl&) = default;
+        SHARED_DLL file_service_impl& operator=(file_service_impl&&) noexcept = default;
+        SHARED_DLL ~file_service_impl() override = default;
     };
 
-    using SharedFileService = std::shared_ptr<IFileService>;
+    [[nodiscard]] inline shared_file_service make_shared_file_service()
+    {
+        return std::dynamic_pointer_cast<file_service>(std::make_shared<file_service_impl>());
+    }
+
 }

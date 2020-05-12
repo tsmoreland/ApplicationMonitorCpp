@@ -13,22 +13,25 @@
 
 #pragma once
 
- #include "UniqueHandle.h" 
-#include <windows.h>
-
-namespace Shared::Infrastructure {
-
-    struct HandleWithNullForEmptyTraits {
-        using Pointer = HANDLE;
-
-        static Pointer Invalid() noexcept {
-            return nullptr;
+namespace shared::infrastructure
+{
+    template<typename OWNER_TYPE, typename VALUE_TYPE>
+    struct data_member
+    {
+        constexpr data_member(VALUE_TYPE OWNER_TYPE::*member, char const*const name)
+            : Member(member), Name(name)
+        {
         }
-        static void Close(Pointer const value) noexcept {
-            CloseHandle(value);
-        }
+        using Type = VALUE_TYPE;
+        VALUE_TYPE OWNER_TYPE::*Member;
+        char const*const Name;
     };
 
-    using HandleWithNullForEmpty = UniqueHandle<HandleWithNullForEmptyTraits>;
+    template<typename OWNER_TYPE, typename VALUE_TYPE>
+    constexpr auto property(VALUE_TYPE OWNER_TYPE::*member, char const*const name)
+    {
+        return data_member(member, name);
+    }
 
 }
+

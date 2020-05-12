@@ -12,49 +12,28 @@
 // 
 
 #pragma once
-#include <TlHelp32.h>
-#include "IProcess.h"
 
-namespace Shared::Model {
+#include <filesystem>
+#include <optional>
+#include "export.h"
 
-    class Process final : public IProcess {
-    public:
-        static std::unique_ptr<Process> Start(std::string_view const& filename, std::string_view const& arguments);
-        static std::vector<std::unique_ptr<Process>> GetProcessesByName(std::string_view const& processName);
+namespace shared::model
+{
+    struct process
+    {
+        [[nodiscard]] SHARED_DLL virtual unsigned long get_id() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool is_running() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> exit_code() const noexcept = 0;
+        SHARED_DLL virtual void wait_for_exit() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> get_path_to_running_process(std::string_view const& processName) const noexcept = 0;
 
-        [[nodiscard]] unsigned long GetId() const noexcept override;
-        [[nodiscard]] bool IsRunning() const noexcept override;
-        [[nodiscard]] std::optional<unsigned long> ExitCode() const noexcept override;
-        void WaitForExit() const noexcept override; 
-        [[nodiscard]] std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept override;
-
-        Process() = default;
-        explicit Process(unsigned long const processId);
-        Process(const Process&) = delete;
-        Process& operator=(const Process&) = delete;
-        Process(Process&& other) noexcept;
-        Process& operator=(Process&& other) noexcept;
-        ~Process();
-
-        [[nodiscard]] bool Equals(Process const& other) const noexcept;
-    private:
-        bool processLaunched{};
-        unsigned long processId{};
-        unsigned long processThreadId{};
-        Shared::Infrastructure::HandleWithNullForEmpty processHandle{};
-        Shared::Infrastructure::HandleWithNullForEmpty processThreadHandle{};
-
-        explicit Process(PROCESS_INFORMATION const& processInformation);
-        static bool CreateProcessAdapter(std::string_view const& filename, std::string_view const& arguments, STARTUPINFOA * const startupInfo, PROCESS_INFORMATION * const processInfo);
-        static std::tuple<bool, unsigned long> GetRunningDetails(HANDLE processHandle);
-
-        static std::optional<PROCESSENTRY32> GetProcessByName(std::string_view const& processName) noexcept;
-        static std::vector<PROCESSENTRY32> GetProcessEntries() noexcept;
-        static std::optional<MODULEENTRY32> GetModuleByIdAndName(unsigned long const processId, std::string_view const& processName) noexcept;
-        static std::vector<MODULEENTRY32> GetModuleEntries(unsigned long const processId) noexcept;
+        SHARED_DLL process() = default;
+        process(const process&) = delete;
+        process& operator=(const process&) = delete;
+        SHARED_DLL process(process&&) = default;
+        SHARED_DLL process& operator=(process&&) = default;
+        SHARED_DLL virtual ~process() = default;
     };
 
-    bool operator==(Process const& leftHandSide, Process const& rightHandSide);
-
+    using unique_process = std::unique_ptr<process>;
 }
-

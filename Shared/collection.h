@@ -15,10 +15,11 @@
 
 #include <algorithm>
 
-namespace collection {
-
+namespace collection
+{
     template <typename TContainer>
-    [[nodiscard]] inline bool contains(TContainer const& container, typename TContainer::value_type const& item) {
+    [[nodiscard]] inline bool contains(TContainer const& container, typename TContainer::value_type const& item)
+    {
         return std::find(container.begin(), container.end(), item) != container.end();    
     }
 
