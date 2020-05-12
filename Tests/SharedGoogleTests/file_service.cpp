@@ -28,50 +28,51 @@ using std::wregex;
 using shared::service::file_service;
 using shared::service::file_service_impl;
 
-namespace Shared::FileServiceTests {
+namespace shared::file_service_tests {
 
-    template <class PREDICATE>
-    tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
+template <class PREDICATE>
+tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
 
-    TEST(file_service, returns_no_files_when_path_is_not_directory)
-    {
-        // Arrange
-        auto const windows_directory = path(LR"(C:\windows\system32\cmd.exe)");
-        wregex const filter(LR"(.*\.exe$)");
-        unique_ptr<file_service> const service(make_unique<file_service_impl>());
+TEST(file_service, returns_no_files_when_path_is_not_directory)
+{
+    // Arrange
+    auto const windows_directory = path(LR"(C:\windows\system32\cmd.exe)");
+    wregex const filter(LR"(.*\.exe$)");
+    unique_ptr<file_service> const service(make_unique<file_service_impl>());
 
-        // Act
-        auto const files = service->get_files_from_directory(windows_directory, filter);
+    // Act
+    auto const files = service->get_files_from_directory(windows_directory, filter);
 
-        // Assert
-        ASSERT_EQ(0ULL, files.size());
-    }
+    // Assert
+    ASSERT_EQ(0ULL, files.size());
+}
 
-    TEST(file_service, returns_all_files_matching_filter)
-    {
-        // Arrange
-        auto const windows_directory = path(LR"(C:\windows)");
-        unique_ptr<file_service> service;
-        vector<path> expected;
-        wregex const filter(LR"(.*\.exe$)");
-        tie(service, expected) = Arrange(windows_directory, 
-            [&filter](directory_entry const& entry) {
-               return regex_match(entry.path().wstring(), filter);
-            });
+TEST(file_service, returns_all_files_matching_filter)
+{
+    // Arrange
+    auto const windows_directory = path(LR"(C:\windows)");
+    unique_ptr<file_service> service;
+    vector<path> expected;
+    wregex const filter(LR"(.*\.exe$)");
+    tie(service, expected) = Arrange(windows_directory, 
+        [&filter](directory_entry const& entry) {
+           return regex_match(entry.path().wstring(), filter);
+        });
 
-        // Act
-        auto const files = service->get_files_from_directory(windows_directory, filter);
+    // Act
+    auto const files = service->get_files_from_directory(windows_directory, filter);
 
-        // Assert
-        ASSERT_TRUE(equal(begin(expected), end(expected), begin(files)));
-    }
+    // Assert
+    ASSERT_TRUE(equal(begin(expected), end(expected), begin(files)));
+}
 
 
 
-    template <class PREDICATE>
-    tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate)
-    {
-        unique_ptr<file_service> service = make_unique<file_service_impl>();
-        return tuple<unique_ptr<file_service>, vector<path>>(service.release(), Tests::PopulateExpectedFiles(folder, predicate));
-    }
+template <class PREDICATE>
+tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate)
+{
+    unique_ptr<file_service> service = make_unique<file_service_impl>();
+    return tuple<unique_ptr<file_service>, vector<path>>(service.release(), tests::populate_expected_files(folder, predicate));
+}
+
 }

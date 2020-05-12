@@ -15,41 +15,42 @@
 
 #include <optional>
 #include <vector>
-#include "Settings.h"
-#include "FileService.h"
-#include <CommandResult.h>
+#include "settings.h"
+#include "file_service.h"
+#include <command_result.h>
 
-namespace DebugSymbolManager::Model {
-
-    class NtSymbolPath final {
+namespace debug_symbol_manager::model
+{
+    class nt_symbol_path final
+    {
     public:
-        [[nodiscard]] std::optional<std::string> GetSymbolPath() const noexcept;
+        [[nodiscard]] std::optional<std::string> get_symbol_path() const noexcept;
 
-        [[nodiscard]] std::string const& GetBaseSymbolPath() const noexcept;
-        void SetBaseSymbolPath(std::string server) noexcept;
+        [[nodiscard]] std::string const& get_base_symbol_path() const noexcept;
+        void set_base_symbol_path(std::string const& server) noexcept;
 
-        [[nodiscard]] Shared::Model::CommandResult AddDirectory(std::string const& directory) noexcept;
-        void RemoveDirectory(std::string const& directory) noexcept;
+        [[nodiscard]] shared::model::command_result add_directory(std::string const& directory) noexcept;
+        void remove_directory(std::string const& directory) noexcept;
 
-        [[nodiscard]] bool IsModified() const noexcept;
-        [[nodiscard]] Shared::Model::CommandResult Reset(std::string const& currentValue) noexcept;
+        [[nodiscard]] bool is_modified() const noexcept;
+        [[nodiscard]] shared::model::command_result reset(std::string const& currentValue) noexcept;
 
-        explicit NtSymbolPath(Shared::Service::IFileService const& fileService);
-        NtSymbolPath(NtSymbolPath const&) = default;
-        NtSymbolPath(NtSymbolPath&&) noexcept = default;
-        ~NtSymbolPath() = default;
+        explicit nt_symbol_path(shared::service::file_service const& file_service);
+        nt_symbol_path(nt_symbol_path const&) = default;
+        nt_symbol_path(nt_symbol_path&&) noexcept = default;
+        ~nt_symbol_path() = default;
 
-        NtSymbolPath& operator=(NtSymbolPath const&) = delete;
-        NtSymbolPath& operator=(NtSymbolPath&&) = delete;
+        nt_symbol_path& operator=(nt_symbol_path const&) = delete;
+        nt_symbol_path& operator=(nt_symbol_path&&) = delete;
 
         constexpr static auto ENVIRONMENT_KEY = "_NT_SYMBOL_PATH";
     private:
-        std::string m_lastSavedState{};
-        bool m_isModified{false};
-        std::string m_baseSymbolPath;
-        Shared::Service::IFileService const& m_fileService;
-        std::vector<std::string> m_additionalPaths;
+        std::string m_last_saved_state{};
+        bool m_is_modified{false};
+        std::string m_base_symbol_path{};
+        shared::service::file_service const& m_file_service;
+        std::vector<std::string> m_additional_paths{};
 
-        void UpdateIsModified() noexcept;
+        void update_is_modified() noexcept;
     };
 }

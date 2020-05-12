@@ -14,14 +14,15 @@
 #pragma once
 
 #include <string>
-#include "Common.h"
-#include "CommandResult.h"
+#include "common.h"
+#include "command_result.h"
 
-namespace DebugSymbolManager::Service {
-
-    struct ISymbolPathService {
-        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL virtual Shared::Model::CommandResult UpdateApplicationPath(std::string const& applicationPath) noexcept = 0;
-        DEBUG_SYMBOL_MANAGER_DLL virtual void Reload() const noexcept = 0;
+namespace debug_symbol_manager::service
+{
+    struct ISymbolPathService
+    {
+        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL virtual shared::model::command_result update_application_path(std::string const& application_path) noexcept = 0;
+        DEBUG_SYMBOL_MANAGER_DLL virtual void reload() const noexcept = 0;
 
         DEBUG_SYMBOL_MANAGER_DLL ISymbolPathService() = default;
         DEBUG_SYMBOL_MANAGER_DLL ISymbolPathService(ISymbolPathService const&) = default;

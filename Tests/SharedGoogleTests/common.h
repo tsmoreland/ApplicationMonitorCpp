@@ -16,17 +16,21 @@
 #include <filesystem>
 #include <vector>
 
-namespace Shared::Tests {
-    template <class PREDICATE>
-    std::vector<std::filesystem::path> PopulateExpectedFiles(std::filesystem::path const& folder, PREDICATE predicate) {
-        std::vector<std::filesystem::path> expected;
-        if (std::filesystem::exists(folder) && std::filesystem::is_directory(folder)) {
-            auto const expectedFiles = std::filesystem::directory_iterator(folder);
-            std::copy_if(begin(expectedFiles), end(expectedFiles), back_inserter(expected), 
-                [predicate](std::filesystem::directory_entry const& entry) {
-                    return entry.is_regular_file() && predicate(entry);
-                });
-        }
-        return expected;
+namespace shared::tests
+{
+
+template <class PREDICATE>
+std::vector<std::filesystem::path> populate_expected_files(std::filesystem::path const& folder, PREDICATE predicate)
+{
+    std::vector<std::filesystem::path> expected;
+    if (std::filesystem::exists(folder) && std::filesystem::is_directory(folder)) {
+        auto const expectedFiles = std::filesystem::directory_iterator(folder);
+        std::copy_if(begin(expectedFiles), end(expectedFiles), back_inserter(expected), 
+            [predicate](std::filesystem::directory_entry const& entry) {
+                return entry.is_regular_file() && predicate(entry);
+            });
     }
+    return expected;
+}
+
 }

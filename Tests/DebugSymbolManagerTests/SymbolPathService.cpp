@@ -25,7 +25,7 @@ using std::unique_ptr;
 using std::vector;
 using std::wregex;
 
-#define BOOST_TEST_MODULE SymbolPathService
+#define BOOST_TEST_MODULE symbol_path_service
 #include <boost/test/included/unit_test.hpp>
 
 #include <type_traits>

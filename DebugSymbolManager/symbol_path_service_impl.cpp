@@ -12,15 +12,15 @@
 // 
 
 #include "pch.h"
-#include "SymbolPathServiceImpl.h"
+#include "symbol_path_service_impl.h"
 
 using std::string;
 
-using DebugSymbolManager::Model::Settings;
-using DebugSymbolManager::Model::NtSymbolPath;
-using Shared::Infrastructure::IEnvironmentRepository;
-using Shared::Model::CommandResult;
-using Shared::Service::IFileService;
+using debug_symbol_manager::model::settings;
+using debug_symbol_manager::model::nt_symbol_path;
+using shared::infrastructure::environment_repository;
+using shared::model::command_result;
+using shared::service::file_service;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
@@ -28,64 +28,68 @@ using std::literals::string_literals::operator ""s;
 using std::literals::chrono_literals::operator ""s;
 #pragma warning(pop)
 
-namespace DebugSymbolManager::Service {
+namespace debug_symbol_manager::service
+{
 
-    CommandResult SymbolPathService::UpdateApplicationPath(string const& applicationPath) noexcept {
-        try {
-            if (m_applicationPath == applicationPath)
-                return CommandResult::Ok("No update required");
+command_result symbol_path_service::update_application_path(string const& application_path) noexcept
+{
+    try {
+        if (m_application_path == application_path)
+            return command_result::ok("No update required");
 
-            if (!m_fileService.DirectoryExists(applicationPath))
-                return CommandResult::Fail("path not found");
+        if (!m_file_service.directory_exists(application_path))
+            return command_result::fail("path not found");
 
-            m_symbolPath.RemoveDirectory(m_applicationPath);
-            
-            if (!static_cast<bool>(m_symbolPath.AddDirectory(applicationPath))) {
-                // Log error here
+        m_symbol_path.remove_directory(m_application_path);
+        
+        if (!static_cast<bool>(m_symbol_path.add_directory(application_path))) {
+            // Log error here
+        }
+
+        m_application_path = application_path;
+        update_if_modified();
+
+        return command_result::ok();
+
+    } catch (std::exception const& ex) {
+        return command_result::fail(ex.what());
+    }
+}
+
+
+void symbol_path_service::reload() const noexcept
+{
+    update_if_modified();
+}
+
+symbol_path_service::symbol_path_service(settings const& settings, environment_repository const& environemnt_repository, file_service const& file_service)
+    : m_environemnt_repository(environemnt_repository)
+    , m_symbol_path{file_service}
+    , m_file_service(file_service) {
+
+    if (!m_symbol_path.reset(environemnt_repository.get_variable(nt_symbol_path::ENVIRONMENT_KEY).value_or(""s)).is_success()) {
+        // Log
+    }
+
+    m_symbol_path.set_base_symbol_path(settings.base_symbol_path);
+    update_if_modified();
+}
+
+void symbol_path_service::update_if_modified() const noexcept
+{
+    try {
+        if (auto const updated_path = m_symbol_path.get_symbol_path(); 
+            m_symbol_path.is_modified() && updated_path.has_value()) {
+
+            if (auto const updated = m_environemnt_repository.set_variable(nt_symbol_path::ENVIRONMENT_KEY, updated_path.value()); 
+                !updated) {
+                // TODO: log 
             }
-
-            m_applicationPath = applicationPath;
-            UpdateIfModified();
-
-            return CommandResult::Ok();
-
-        } catch (std::exception const& ex) {
-            return CommandResult::Fail(ex.what());
         }
     }
-
-
-    void SymbolPathService::Reload() const noexcept {
-        UpdateIfModified();
+    catch (std::bad_optional_access const&) {
+        // should never occur because we check has_value() first but here to silence warning
     }
-
-    SymbolPathService::SymbolPathService(Settings const& settings, IEnvironmentRepository const& environemntRepository, IFileService const& fileService)
-        : m_environemntRepository(environemntRepository)
-        , m_symbolPath{fileService}
-        , m_fileService(fileService) {
-
-        if (!m_symbolPath.Reset(environemntRepository.GetVariable(NtSymbolPath::ENVIRONMENT_KEY).value_or(""s)).IsSuccess()) {
-            // Log
-        }
-
-        m_symbolPath.SetBaseSymbolPath(settings.BaseSymbolPath);
-        UpdateIfModified();
-    }
-
-    void SymbolPathService::UpdateIfModified() const noexcept {
-        try {
-            if (auto const updatedPath = m_symbolPath.GetSymbolPath(); 
-                m_symbolPath.IsModified() && updatedPath.has_value()) {
-
-                if (auto const updated = m_environemntRepository.SetVariable(NtSymbolPath::ENVIRONMENT_KEY, updatedPath.value()); 
-                    !updated) {
-                    // TODO: log 
-                }
-            }
-        }
-        catch (std::bad_optional_access const&) {
-            // should never occur because we check has_value() first but here to silence warning
-        }
-    }
+}
 
 }

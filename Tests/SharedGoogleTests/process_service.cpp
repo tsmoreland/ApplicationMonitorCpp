@@ -34,141 +34,142 @@ using std::literals::string_literals::operator ""s;
 using std::literals::chrono_literals::operator ""s;
 #pragma warning(pop)
 
-namespace Shared::ProcessServiceTests {
+namespace Shared::ProcessServiceTests
+{
 
-    template <class PREDICATE>
-    tuple<unique_ptr<process_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
+template <class PREDICATE>
+tuple<unique_ptr<process_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
 
-    TEST(process_service, start_throws_when_file_not_found)
-    {
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
+TEST(process_service, start_throws_when_file_not_found)
+{
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
 
-        auto const process = service->start_process(""s, ""s);
+    auto const process = service->start_process(""s, ""s);
 
-        ASSERT_EQ(process, nullptr);
-    }
+    ASSERT_EQ(process, nullptr);
+}
 
-    TEST(ProcessService, returns_process_value_when_file_found)
-    {
-        auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
+TEST(ProcessService, returns_process_value_when_file_found)
+{
+    auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
 
-        auto const process = service->start_process(xcopyExe, ""s);
+    auto const process = service->start_process(xcopyExe, ""s);
 
-        ASSERT_NE(process, nullptr);
-        process->wait_for_exit();
-    }
+    ASSERT_NE(process, nullptr);
+    process->wait_for_exit();
+}
 
-    TEST(process_service, exit_code_non_zero_with_bad_command)
-    {
-        auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
+TEST(process_service, exit_code_non_zero_with_bad_command)
+{
+    auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
 
-        auto const process = service->start_process(xcopyExe, ""s);
+    auto const process = service->start_process(xcopyExe, ""s);
 
-        EXPECT_TRUE(process != nullptr);
-        process->wait_for_exit();
+    EXPECT_TRUE(process != nullptr);
+    process->wait_for_exit();
 
-        auto const exitCode = process->exit_code();
-        EXPECT_TRUE(exitCode.has_value());
+    auto const exitCode = process->exit_code();
+    EXPECT_TRUE(exitCode.has_value());
 
-        ASSERT_NE(0, exitCode.value());
-    }
+    ASSERT_NE(0, exitCode.value());
+}
 
 #   ifdef _WIN64
-    constexpr auto const CommandExe = R"(c:\windows\system32\cmd.exe)";
+constexpr auto const CommandExe = R"(c:\windows\system32\cmd.exe)";
 #   else
-    constexpr auto const CommandExe = R"(c:\windows\SysWOW64\cmd.exe)";
+constexpr auto const CommandExe = R"(c:\windows\SysWOW64\cmd.exe)";
 #   endif
 
-    TEST(process_service, exit_code_zero_with_good_command)
-    {
-        // Assert / Act
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
-        auto const process = service->start_process(CommandExe, "/c echo \"Test\"");
+TEST(process_service, exit_code_zero_with_good_command)
+{
+    // Assert / Act
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const process = service->start_process(CommandExe, "/c echo \"Test\"");
 
-        EXPECT_TRUE(process != nullptr);
-        process->wait_for_exit();
+    EXPECT_TRUE(process != nullptr);
+    process->wait_for_exit();
 
-        auto const exitCode = process->exit_code();
-        EXPECT_TRUE(exitCode.has_value());
+    auto const exitCode = process->exit_code();
+    EXPECT_TRUE(exitCode.has_value());
 
-        // Assert
-        ASSERT_EQ(0, exitCode.value());
-    }
+    // Assert
+    ASSERT_EQ(0, exitCode.value());
+}
 
-    TEST(process_service, waits_for_process_to_end)
-    {
-        auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
-        auto const start = steady_clock::now();
+TEST(process_service, waits_for_process_to_end)
+{
+    auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const start = steady_clock::now();
 
-        auto const process = service->start_process(CommandExe, "/c Sleep 1");
-        process->wait_for_exit();
+    auto const process = service->start_process(CommandExe, "/c Sleep 1");
+    process->wait_for_exit();
 
-        auto const end = steady_clock::now();
-        ASSERT_GE(duration<double>(end - start).count(), 1.0);
-    }
-
-
-    TEST(process_service, ProcessByNameFindsMatch)
-    {
-        // Assert / Act
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
-        auto const process = service->start_process(CommandExe, "/c Sleep 1");
-        auto const matchingProcesses = service->get_processes_by_name("cmd.exe");
-
-        process->wait_for_exit();
-
-        // Assert
-        ASSERT_GE(matchingProcesses.size(), 0UL);
-    }
-    TEST(process_service, no_processes_found_with_empty_process_name)
-    {
-        // Arrange
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
-        // Act
-        auto const matchingProcesses = service->get_processes_by_name(""s);
-        // Assert
-        ASSERT_EQ(matchingProcesses.size(), 0);
-    }
-
-    TEST(process_service, get_path_from_running_path_returns_path)
-    {
-        // Arrange
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
-        auto const runningProcess = service->start_process(CommandExe, "/c Sleep 2");
-
-        // Act
-        auto const path = service->get_path_to_running_process("cmd.exe");
-        runningProcess->wait_for_exit();
-
-        // Assert
-        ASSERT_TRUE(path.has_value());
-
-    }
-
-    TEST(process_service, get_path_from_running_path_returns_correct_path)
-    {
-        // Arrange
-        std::filesystem::path expected(CommandExe);
-
-        unique_ptr<process_service> const service = make_unique<process_service_impl>();
-        auto const runningProcess = service->start_process(CommandExe, "/c Sleep 2");
-
-        // Act
-        auto const path = service->get_path_to_running_process("cmd.exe");
-
-        // Assert
-        ASSERT_EQ(expected, path);
-    }
+    auto const end = steady_clock::now();
+    ASSERT_GE(duration<double>(end - start).count(), 1.0);
+}
 
 
-    template <class PREDICATE>
-    tuple<unique_ptr<process_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate)
-    {
-        unique_ptr<process_service> service = make_unique<process_service_impl>();
-        return tuple<unique_ptr<process_service>, vector<path>>(service.release(), Tests::PopulateExpectedFiles(folder, predicate));
-    }
+TEST(process_service, ProcessByNameFindsMatch)
+{
+    // Assert / Act
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const process = service->start_process(CommandExe, "/c Sleep 1");
+    auto const matchingProcesses = service->get_processes_by_name("cmd.exe");
+
+    process->wait_for_exit();
+
+    // Assert
+    ASSERT_GE(matchingProcesses.size(), 0UL);
+}
+TEST(process_service, no_processes_found_with_empty_process_name)
+{
+    // Arrange
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    // Act
+    auto const matchingProcesses = service->get_processes_by_name(""s);
+    // Assert
+    ASSERT_EQ(matchingProcesses.size(), 0);
+}
+
+TEST(process_service, get_path_from_running_path_returns_path)
+{
+    // Arrange
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const runningProcess = service->start_process(CommandExe, "/c Sleep 2");
+
+    // Act
+    auto const path = service->get_path_to_running_process("cmd.exe");
+    runningProcess->wait_for_exit();
+
+    // Assert
+    ASSERT_TRUE(path.has_value());
+
+}
+
+TEST(process_service, get_path_from_running_path_returns_correct_path)
+{
+    // Arrange
+    std::filesystem::path expected(CommandExe);
+
+    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const runningProcess = service->start_process(CommandExe, "/c Sleep 2");
+
+    // Act
+    auto const path = service->get_path_to_running_process("cmd.exe");
+
+    // Assert
+    ASSERT_EQ(expected, path);
+}
+
+
+template <class PREDICATE>
+tuple<unique_ptr<process_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate)
+{
+    unique_ptr<process_service> service = make_unique<process_service_impl>();
+    return tuple<unique_ptr<process_service>, vector<path>>(service.release(), Tests::PopulateExpectedFiles(folder, predicate));
+}
 
 }
