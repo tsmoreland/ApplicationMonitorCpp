@@ -154,17 +154,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Common.h" />
-    <ClInclude Include="NtSymbolpath.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="nt_symbol_path.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Settings.h" />
-    <ClInclude Include="SymbolPathService.h" />
-    <ClInclude Include="SymbolPathServiceImpl.h" />
+    <ClInclude Include="settings.h" />
+    <ClInclude Include="symbol_path_service.h" />
+    <ClInclude Include="symbol_path_service_impl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NtSymbolPath.cpp" />
+    <ClCompile Include="nt_symbol_path.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="SymbolPathServiceImpl.cpp" />
+    <ClCompile Include="symbol_path_service_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
