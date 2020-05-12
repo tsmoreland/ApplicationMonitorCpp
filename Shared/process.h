@@ -13,22 +13,27 @@
 
 #pragma once
 
-#include "Export.h"
+#include <filesystem>
+#include <optional>
+#include "export.h"
 
-namespace Shared::Model {
+namespace shared::model
+{
+    struct process
+    {
+        [[nodiscard]] SHARED_DLL virtual unsigned long get_id() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool is_running() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> exit_code() const noexcept = 0;
+        SHARED_DLL virtual void wait_for_exit() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> get_path_to_running_process(std::string_view const& processName) const noexcept = 0;
 
-    struct IProcess {
-        [[nodiscard]] SHARED_DLL virtual unsigned long GetId() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool IsRunning() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> ExitCode() const noexcept = 0;
-        SHARED_DLL virtual void WaitForExit() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> GetPathToRunningProcess(std::string_view const& processName) const noexcept = 0;
-
-        SHARED_DLL IProcess() = default;
-        IProcess(const IProcess&) = delete;
-        IProcess& operator=(const IProcess&) = delete;
-        SHARED_DLL IProcess(IProcess&&) = default;
-        SHARED_DLL IProcess& operator=(IProcess&&) = default;
-        SHARED_DLL virtual ~IProcess() = default;
+        SHARED_DLL process() = default;
+        process(const process&) = delete;
+        process& operator=(const process&) = delete;
+        SHARED_DLL process(process&&) = default;
+        SHARED_DLL process& operator=(process&&) = default;
+        SHARED_DLL virtual ~process() = default;
     };
+
+    using unique_process = std::unique_ptr<process>;
 }
