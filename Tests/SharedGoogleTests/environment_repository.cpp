@@ -12,9 +12,9 @@
 // 
 
 #include "pch.h"
-#include "EnvironmentRepositoryImpl.h"
+#include "environment_repository_impl.h"
 
-using Shared::Infrastructure::EnvironmentRepository;
+using shared::infrastructure::environment_repository_impl;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
@@ -25,40 +25,40 @@ using std::literals::chrono_literals::operator ""s;
 namespace Shared::Tests {
 
 
-    TEST(EnvironmentRepository, PathVariableHasValue) {
-
-        EnvironmentRepository const repository{};
-
-        auto const pathVariable = repository.GetVariable("PATH");
-
-        ASSERT_FALSE(pathVariable->empty());
+    TEST(environment_repository, path_variable_has_value)
+    {
+        environment_repository_impl const repository{};
+        auto const path_variable = repository.get_variable("PATH");
+        ASSERT_FALSE(path_variable->empty());
     }
 
-    TEST(EnvironmentRepository, VariableIsUpdated) {
-        EnvironmentRepository const repository{};
+    TEST(environment_repository, VariableIsUpdated)
+    {
+        environment_repository_impl const repository{};
         auto const key = "SET_ENV_TEST"s;
 
-        EXPECT_TRUE(repository.SetVariable(key, "ALPHA"s));
-        EXPECT_TRUE(repository.GetVariable(key) == "ALPHA"s);
+        EXPECT_TRUE(repository.set_variable(key, "ALPHA"s));
+        EXPECT_TRUE(repository.get_variable(key) == "ALPHA"s);
 
-        ASSERT_TRUE(repository.SetVariable(key, "BETA"s));
-        ASSERT_TRUE(repository.GetVariable(key) == "BETA"s);
+        ASSERT_TRUE(repository.set_variable(key, "BETA"s));
+        ASSERT_TRUE(repository.get_variable(key) == "BETA"s);
 
-        static_cast<void>(repository.RemoveVariable(key));
+        static_cast<void>(repository.remove_variable(key));
     }
 
-    TEST(EnvironmentRepository, VariableIsRemoved) {
-        EnvironmentRepository const repository{};
+    TEST(environment_repository, variable_is_removed)
+    {
+        environment_repository_impl const repository{};
 
         auto const key = "DEL_ENV_TEST"s;
 
-        static_cast<void>(repository.RemoveVariable(key));
-        EXPECT_FALSE(repository.GetVariable(key).has_value());
+        static_cast<void>(repository.remove_variable(key));
+        EXPECT_FALSE(repository.get_variable(key).has_value());
 
-        EXPECT_TRUE(repository.SetVariable(key, "ALPHA"s));
-        EXPECT_TRUE(repository.GetVariable(key) == "ALPHA"s);
+        EXPECT_TRUE(repository.set_variable(key, "ALPHA"s));
+        EXPECT_TRUE(repository.get_variable(key) == "ALPHA"s);
 
-        ASSERT_TRUE(repository.RemoveVariable(key));
+        ASSERT_TRUE(repository.remove_variable(key));
     }
 
 }

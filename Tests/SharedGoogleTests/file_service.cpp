@@ -12,7 +12,7 @@
 // 
 
 #include "pch.h"
-#include <FileServiceImpl.h>
+#include <file_service_impl.h>
 #include "Common.h"
 
 using std::filesystem::directory_entry;
@@ -25,40 +25,42 @@ using std::unique_ptr;
 using std::vector;
 using std::wregex;
 
-using Shared::Service::IFileService;
-using Shared::Service::FileService;
+using shared::service::file_service;
+using shared::service::file_service_impl;
 
 namespace Shared::FileServiceTests {
 
     template <class PREDICATE>
-    tuple<unique_ptr<IFileService>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
+    tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
 
-    TEST(FileService, ReturnsNoFilesWhenPathIsNotDirectory) {
+    TEST(file_service, returns_no_files_when_path_is_not_directory)
+    {
         // Arrange
-        auto const windowsDirectory = path(LR"(C:\windows\system32\cmd.exe)");
+        auto const windows_directory = path(LR"(C:\windows\system32\cmd.exe)");
         wregex const filter(LR"(.*\.exe$)");
-        unique_ptr<IFileService> const service(make_unique<FileService>());
+        unique_ptr<file_service> const service(make_unique<file_service_impl>());
 
         // Act
-        auto const files = service->GetFilesFromDirectory(windowsDirectory, filter);
+        auto const files = service->get_files_from_directory(windows_directory, filter);
 
         // Assert
         ASSERT_EQ(0ULL, files.size());
     }
 
-    TEST(FileService, ReturnsAllFilesMatchingFilter) {
+    TEST(file_service, returns_all_files_matching_filter)
+    {
         // Arrange
-        auto const windowsDirectory = path(LR"(C:\windows)");
-        unique_ptr<IFileService> service;
+        auto const windows_directory = path(LR"(C:\windows)");
+        unique_ptr<file_service> service;
         vector<path> expected;
         wregex const filter(LR"(.*\.exe$)");
-        tie(service, expected) = Arrange(windowsDirectory, 
+        tie(service, expected) = Arrange(windows_directory, 
             [&filter](directory_entry const& entry) {
                return regex_match(entry.path().wstring(), filter);
             });
 
         // Act
-        auto const files = service->GetFilesFromDirectory(windowsDirectory, filter);
+        auto const files = service->get_files_from_directory(windows_directory, filter);
 
         // Assert
         ASSERT_TRUE(equal(begin(expected), end(expected), begin(files)));
@@ -67,8 +69,9 @@ namespace Shared::FileServiceTests {
 
 
     template <class PREDICATE>
-    tuple<unique_ptr<IFileService>, vector<path>> Arrange(path const& folder, PREDICATE predicate) {
-        unique_ptr<IFileService> service = make_unique<FileService>();
-        return tuple<unique_ptr<IFileService>, vector<path>>(service.release(), Tests::PopulateExpectedFiles(folder, predicate));
+    tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate)
+    {
+        unique_ptr<file_service> service = make_unique<file_service_impl>();
+        return tuple<unique_ptr<file_service>, vector<path>>(service.release(), Tests::PopulateExpectedFiles(folder, predicate));
     }
 }
