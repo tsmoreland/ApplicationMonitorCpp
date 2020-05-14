@@ -27,7 +27,7 @@ namespace debug_symbol_manager::model
         [[nodiscard]] std::optional<std::string> get_symbol_path() const noexcept;
 
         [[nodiscard]] std::string const& get_base_symbol_path() const noexcept;
-        void set_base_symbol_path(std::string const& server) noexcept;
+        void set_base_symbol_path(std::string const& server);
 
         [[nodiscard]] shared::model::command_result add_directory(std::string const& directory) noexcept;
         void remove_directory(std::string const& directory) noexcept;
@@ -48,7 +48,7 @@ namespace debug_symbol_manager::model
         std::string m_last_saved_state{};
         bool m_is_modified{false};
         std::string m_base_symbol_path{};
-        shared::service::shared_const_file_service const& m_file_service;
+        shared::service::shared_const_file_service m_file_service;
         std::vector<std::string> m_additional_paths{};
 
         void update_is_modified() noexcept;

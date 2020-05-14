@@ -64,7 +64,7 @@ std::string const& nt_symbol_path::get_base_symbol_path() const noexcept
     return m_base_symbol_path;
 }
 
-void nt_symbol_path::set_base_symbol_path(std::string const& server) noexcept
+void nt_symbol_path::set_base_symbol_path(std::string const& server)
 {
     if (server == m_base_symbol_path)
         return;
