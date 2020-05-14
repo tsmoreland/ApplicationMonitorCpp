@@ -75,7 +75,7 @@ namespace debug_symbol_manager::test
 
         std::unique_ptr<mock_objects::mock_environment_repository> repository{};
         std::unique_ptr<mock_objects::mock_file_service> file_service{};
-        std::unique_ptr<symbol_path_service> service{};
+        std::unique_ptr<symbol_path_service_impl> service{};
 
         settings settings{SYMBOL_SERVER};
         std::string application_path{};

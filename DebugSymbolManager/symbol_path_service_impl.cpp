@@ -31,7 +31,7 @@ using std::literals::chrono_literals::operator ""s;
 namespace debug_symbol_manager::service
 {
 
-command_result symbol_path_service::update_application_path(string const& application_path) noexcept
+command_result symbol_path_service_impl::update_application_path(string const& application_path) noexcept
 {
     try {
         if (m_application_path == application_path)
@@ -57,12 +57,12 @@ command_result symbol_path_service::update_application_path(string const& applic
 }
 
 
-void symbol_path_service::reload() const noexcept
+void symbol_path_service_impl::reload() const noexcept
 {
     update_if_modified();
 }
 
-symbol_path_service::symbol_path_service(settings const& settings, environment_repository const& environemnt_repository, file_service const& file_service)
+symbol_path_service_impl::symbol_path_service_impl(settings const& settings, environment_repository const& environemnt_repository, file_service const& file_service)
     : m_environemnt_repository(environemnt_repository)
     , m_symbol_path{file_service}
     , m_file_service(file_service) {
@@ -75,7 +75,7 @@ symbol_path_service::symbol_path_service(settings const& settings, environment_r
     update_if_modified();
 }
 
-void symbol_path_service::update_if_modified() const noexcept
+void symbol_path_service_impl::update_if_modified() const noexcept
 {
     try {
         if (auto const updated_path = m_symbol_path.get_symbol_path(); 

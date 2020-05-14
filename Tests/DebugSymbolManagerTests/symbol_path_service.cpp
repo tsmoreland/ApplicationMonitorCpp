@@ -32,7 +32,7 @@ using std::wregex;
 #include "test_adapter.h"
 
 using debug_symbol_manager::model::settings;
-using debug_symbol_manager::service::symbol_path_service;
+using debug_symbol_manager::service::symbol_path_service_impl;
 
 #pragma warning(push)
 #pragma warning(disable:4455)

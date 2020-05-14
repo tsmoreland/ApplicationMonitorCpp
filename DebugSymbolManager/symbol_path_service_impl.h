@@ -22,18 +22,18 @@
 
 namespace debug_symbol_manager::service
 {
-    class symbol_path_service final : public ISymbolPathService
+    class symbol_path_service_impl final : public ISymbolPathService
     {
     public:
         [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL shared::model::command_result update_application_path(std::string const& application_path) noexcept override;
         DEBUG_SYMBOL_MANAGER_DLL virtual void reload() const noexcept override;
 
-        DEBUG_SYMBOL_MANAGER_DLL explicit symbol_path_service(debug_symbol_manager::model::settings const& settings, shared::infrastructure::environment_repository const& environemnt_repository, shared::service::file_service const& file_service);
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service const&) = default;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service&&) noexcept = default;
-        DEBUG_SYMBOL_MANAGER_DLL ~symbol_path_service() override = default;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service const&) = delete;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service&&) noexcept = delete;
+        DEBUG_SYMBOL_MANAGER_DLL explicit symbol_path_service_impl(debug_symbol_manager::model::settings const& settings, shared::infrastructure::environment_repository const& environemnt_repository, shared::service::file_service const& file_service);
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl const&) = default;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl&&) noexcept = default;
+        DEBUG_SYMBOL_MANAGER_DLL ~symbol_path_service_impl() override = default;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl& operator=(symbol_path_service_impl const&) = delete;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl& operator=(symbol_path_service_impl&&) noexcept = delete;
     private:
         shared::infrastructure::environment_repository const& m_environemnt_repository;
         debug_symbol_manager::model::nt_symbol_path m_symbol_path;

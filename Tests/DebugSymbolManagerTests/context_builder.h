@@ -117,7 +117,7 @@ namespace debug_symbol_manager::test
         {
             return update_object(
                 [](auto& context) {
-                    auto service = make_unique<symbol_path_service>(context.settings, *context.repository, *context.file_service);
+                    auto service = make_unique<symbol_path_service_impl>(context.settings, *context.repository, *context.file_service);
                     context.service  = move(service);
                 });
         }
