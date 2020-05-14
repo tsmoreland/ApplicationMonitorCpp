@@ -34,7 +34,10 @@ namespace shared::infrastructure
         environment_repository& operator=(environment_repository const&) = default;
     };
 
-    using shared_environemnt_repository = std::shared_ptr<environment_repository>;
+    using shared_environment_repository = std::shared_ptr<environment_repository>;
+    using shared_const_environment_repository = std::shared_ptr<environment_repository const>;
+
     using unique_environemnt_repository = std::unique_ptr<environment_repository>;
+    using unique_const_environemnt_repository = std::unique_ptr<environment_repository const>;
 
 }

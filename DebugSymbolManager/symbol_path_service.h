@@ -19,18 +19,21 @@
 
 namespace debug_symbol_manager::service
 {
-    struct ISymbolPathService
+    struct symbol_path_service
     {
         [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL virtual shared::model::command_result update_application_path(std::string const& application_path) noexcept = 0;
         DEBUG_SYMBOL_MANAGER_DLL virtual void reload() const noexcept = 0;
 
-        DEBUG_SYMBOL_MANAGER_DLL ISymbolPathService() = default;
-        DEBUG_SYMBOL_MANAGER_DLL ISymbolPathService(ISymbolPathService const&) = default;
-        DEBUG_SYMBOL_MANAGER_DLL ISymbolPathService(ISymbolPathService&&) noexcept = default;
-        DEBUG_SYMBOL_MANAGER_DLL virtual ~ISymbolPathService() = default;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service() = default;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service const&) = default;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service&&) noexcept = default;
+        DEBUG_SYMBOL_MANAGER_DLL virtual ~symbol_path_service() = default;
 
-        DEBUG_SYMBOL_MANAGER_DLL ISymbolPathService& operator=(ISymbolPathService const&) = default;
-        DEBUG_SYMBOL_MANAGER_DLL ISymbolPathService& operator=(ISymbolPathService&&) noexcept = default;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service const&) = default;
+        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service&&) noexcept = default;
     };
+
+    using shared_symbol_path_service = std::shared_ptr<symbol_path_service>;
+    using unique_symbol_path_service = std::unique_ptr<symbol_path_service>;
 
 }

@@ -35,7 +35,7 @@ using std::literals::string_literals::operator""s;
 namespace debug_symbol_manager::model
 {
 
-nt_symbol_path::nt_symbol_path(shared::service::file_service const& file_service)
+nt_symbol_path::nt_symbol_path(shared::service::shared_const_file_service const& file_service)
     : m_file_service(file_service)
 {
 }
@@ -75,7 +75,7 @@ void nt_symbol_path::set_base_symbol_path(std::string const& server) noexcept
 command_result nt_symbol_path::add_directory(std::string const& directory) noexcept
 {
     try {
-        if (directory.empty() || !m_file_service.directory_exists(directory))
+        if (directory.empty() || !m_file_service->directory_exists(directory))
             return command_result::fail("Directory not found");
 
         if (contains(m_additional_paths, directory))

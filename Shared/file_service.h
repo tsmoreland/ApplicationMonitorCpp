@@ -34,4 +34,9 @@ namespace shared::service
     };
 
     using shared_file_service = std::shared_ptr<file_service>;
+    using shared_const_file_service = std::shared_ptr<file_service const>;
+
+    using unique_file_service = std::unique_ptr<file_service>;
+    using unique_const_file_service = std::unique_ptr<file_service const>;
+
 }

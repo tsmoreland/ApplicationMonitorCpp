@@ -35,7 +35,7 @@ namespace debug_symbol_manager::model
         [[nodiscard]] bool is_modified() const noexcept;
         [[nodiscard]] shared::model::command_result reset(std::string const& currentValue) noexcept;
 
-        explicit nt_symbol_path(shared::service::file_service const& file_service);
+        explicit nt_symbol_path(shared::service::shared_const_file_service const& file_service);
         nt_symbol_path(nt_symbol_path const&) = default;
         nt_symbol_path(nt_symbol_path&&) noexcept = default;
         ~nt_symbol_path() = default;
@@ -48,7 +48,7 @@ namespace debug_symbol_manager::model
         std::string m_last_saved_state{};
         bool m_is_modified{false};
         std::string m_base_symbol_path{};
-        shared::service::file_service const& m_file_service;
+        shared::service::shared_const_file_service const& m_file_service;
         std::vector<std::string> m_additional_paths{};
 
         void update_is_modified() noexcept;

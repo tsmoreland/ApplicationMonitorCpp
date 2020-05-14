@@ -25,14 +25,12 @@ namespace debug_symbol_manager::test
     {
         test_context()
         {
-            repository = make_unique<mock_objects::mock_environment_repository>();
-            file_service = make_unique<mock_objects::mock_file_service>();
+            repository = std::make_shared<mock_objects::mock_environment_repository>();
+            file_service = std::make_shared<mock_objects::mock_file_service>();
         }
         test_context(test_context const&) = delete;
         test_context(test_context&& other) noexcept
-            : repository(other.repository.release())
-            , file_service(other.file_service.release())
-            , service(other.service.release())
+            : service(other.service.release())
             , application_path(move(other.application_path))
             , initial_symbol_path(move(other.initial_symbol_path))
             , expected_symbol_path(move(other.expected_symbol_path))
@@ -40,6 +38,8 @@ namespace debug_symbol_manager::test
             , expected_set_calls(move(other.expected_set_calls)) 
             , existing_directories(move(other.existing_directories))
         {
+            ::swap(repository, other.repository);
+            ::swap(file_service, other.file_service);
             other.reset();
         }
         test_context& operator=(test_context const& other) = delete;
@@ -65,17 +65,17 @@ namespace debug_symbol_manager::test
 
         void reset() noexcept
         {
-            repository = make_unique<mock_objects::mock_environment_repository>();
-            file_service = make_unique<mock_objects::mock_file_service>();
+            repository = make_shared<mock_objects::mock_environment_repository>();
+            file_service = make_shared<mock_objects::mock_file_service>();
             settings = ::settings{SYMBOL_SERVER};
             number_of_get_calls = AnyNumber();
             expected_set_calls.clear();
             existing_directories.clear();
         }
 
-        std::unique_ptr<mock_objects::mock_environment_repository> repository{};
-        std::unique_ptr<mock_objects::mock_file_service> file_service{};
-        std::unique_ptr<symbol_path_service_impl> service{};
+        std::shared_ptr<mock_objects::mock_environment_repository> repository{};
+        std::shared_ptr<mock_objects::mock_file_service> file_service{};
+        std::unique_ptr<debug_symbol_manager::service::symbol_path_service_impl> service{};
 
         settings settings{SYMBOL_SERVER};
         std::string application_path{};

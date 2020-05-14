@@ -18,9 +18,9 @@ using std::string;
 
 using debug_symbol_manager::model::settings;
 using debug_symbol_manager::model::nt_symbol_path;
-using shared::infrastructure::environment_repository;
+using shared::infrastructure::shared_const_environment_repository;
 using shared::model::command_result;
-using shared::service::file_service;
+using shared::service::shared_const_file_service;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
@@ -37,7 +37,7 @@ command_result symbol_path_service_impl::update_application_path(string const& a
         if (m_application_path == application_path)
             return command_result::ok("No update required");
 
-        if (!m_file_service.directory_exists(application_path))
+        if (!m_file_service->directory_exists(application_path))
             return command_result::fail("path not found");
 
         m_symbol_path.remove_directory(m_application_path);
@@ -62,12 +62,18 @@ void symbol_path_service_impl::reload() const noexcept
     update_if_modified();
 }
 
-symbol_path_service_impl::symbol_path_service_impl(settings const& settings, environment_repository const& environemnt_repository, file_service const& file_service)
-    : m_environemnt_repository(environemnt_repository)
+symbol_path_service_impl::symbol_path_service_impl(settings const& settings, shared_const_environment_repository const& environemnt_repository, shared_const_file_service const& file_service)
+    : m_environment_repository(environemnt_repository)
     , m_symbol_path{file_service}
     , m_file_service(file_service) {
 
-    if (!m_symbol_path.reset(environemnt_repository.get_variable(nt_symbol_path::ENVIRONMENT_KEY).value_or(""s)).is_success()) {
+    if (!m_environment_repository)
+        throw std::invalid_argument("environment_repository is null");
+
+    if (!m_file_service)
+        throw std::invalid_argument("file_service is null");
+
+    if (!m_symbol_path.reset(environemnt_repository->get_variable(nt_symbol_path::ENVIRONMENT_KEY).value_or(""s)).is_success()) {
         // Log
     }
 
@@ -81,7 +87,7 @@ void symbol_path_service_impl::update_if_modified() const noexcept
         if (auto const updated_path = m_symbol_path.get_symbol_path(); 
             m_symbol_path.is_modified() && updated_path.has_value()) {
 
-            if (auto const updated = m_environemnt_repository.set_variable(nt_symbol_path::ENVIRONMENT_KEY, updated_path.value()); 
+            if (auto const updated = m_environment_repository->set_variable(nt_symbol_path::ENVIRONMENT_KEY, updated_path.value()); 
                 !updated) {
                 // TODO: log 
             }
