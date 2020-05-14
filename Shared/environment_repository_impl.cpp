@@ -11,22 +11,44 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "environment_repository_impl.h"
+
+using std::nullopt;
+using std::optional;
+using std::string;
+
+using extension::string_equal;
+using extension::string_split;
+using extension::string_contains_in_order;
+
+#pragma warning(push)
+#pragma warning(disable:4455)
+using std::literals::string_literals::operator ""s;
+#pragma warning(pop)
 
 namespace shared::infrastructure
 {
-    class not_found_exception final : public std::exception
-    {
-    public:
-        explicit not_found_exception(char const * const what)
-            : exception(what)
-        {
-        }
-        not_found_exception(not_found_exception const&) = default;
-        not_found_exception& operator=(not_found_exception const&) = default;
-        not_found_exception(not_found_exception&&) noexcept = default;
-        not_found_exception& operator=(not_found_exception&&) noexcept = default;
-        ~not_found_exception() = default;
-    };
+
+optional<string> environment_repository_impl::get_variable(std::string const& key) const noexcept
+{
+    constexpr auto MAX_VARIABLE_NAME_SIZE = 8192;
+    char value[MAX_VARIABLE_NAME_SIZE]{};
+
+    auto const size = GetEnvironmentVariableA(key.c_str(), value, MAX_VARIABLE_NAME_SIZE);
+    if (size > MAX_VARIABLE_NAME_SIZE || size == 0)
+        return nullopt;
+    return optional(string(value));
+}
+bool environment_repository_impl::set_variable(string const& key, string const& value) const noexcept
+{
+    return SetEnvironmentVariableA(key.c_str(), value.c_str()) == TRUE;
+}
+
+bool environment_repository_impl::remove_variable(string const& key) const noexcept
+{
+    return SetEnvironmentVariableA(key.c_str(), nullptr) == TRUE;
+
+}
 
 }

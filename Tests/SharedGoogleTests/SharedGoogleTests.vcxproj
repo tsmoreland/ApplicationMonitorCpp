@@ -33,20 +33,20 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClInclude Include="Common.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="string_extensions_common.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnvironmentRepository.cpp" />
-    <ClCompile Include="FileService.cpp" />
+    <ClCompile Include="environment_repository.cpp" />
+    <ClCompile Include="file_service.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ProcessService.cpp" />
+    <ClCompile Include="process_service.cpp" />
     <ClCompile Include="string_extentions.cpp" />
     <ClCompile Include="wstring_extensions.cpp" />
   </ItemGroup>

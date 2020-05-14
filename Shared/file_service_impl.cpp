@@ -11,23 +11,38 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
+#include "pch.h"
+#include "file_service_impl.h"
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+using std::vector;
 
-#include "string_extensions.h"
+namespace shared::service
+{
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+vector<std::filesystem::path> file_service_impl::get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept
+{
+    try {
+        if (!std::filesystem::exists(folder) || !std::filesystem::is_directory(folder))
+            return vector<std::filesystem::path>();
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+        vector<std::filesystem::path> matches;
+        auto const files = std::filesystem::directory_iterator(folder);
+        copy_if(begin(files), end(files), back_inserter(matches),
+            [&filter](auto const& entry) {
+                return entry.is_regular_file() && regex_match(entry.path().filename().wstring(), filter);
+            });
+
+        return matches;
+    }
+    catch (std::exception const&) {
+        return vector<std::filesystem::path>();
+    }
+}
+
+bool file_service_impl::directory_exists(std::string_view const path) const
+{
+    std::filesystem::path const folder(path);
+    return std::filesystem::exists(folder) && std::filesystem::is_directory(folder);
+}
+
+}

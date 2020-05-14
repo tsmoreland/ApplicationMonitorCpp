@@ -10,24 +10,35 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
-
+ 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+#include <boost/test/included/unit_test.hpp>
 
-#include "string_extensions.h"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+using namespace std;
+using namespace testing;
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+// adapted from https://www.semipol.de/2010/04/13/using-googlemock-with-the-boost-test-library.html
+class boost_test_adapter: public EmptyTestEventListener
+{
+public:
+    void OnTestStart(const TestInfo&) override { }
+    void OnTestPartResult(const TestPartResult& testPartResult) override
+    {
+        if (testPartResult.failed()) {
+            stringstream s;
+            s << "Mock test failed (file = '"
+              << testPartResult.file_name()
+              << "', line = "
+              << testPartResult.line_number()
+              << "): "
+              << testPartResult.summary();
+            BOOST_FAIL(s.str());
+        }
+    }
+    void OnTestEnd(const ::testing::TestInfo&) override { }
+};
+
