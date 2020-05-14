@@ -13,21 +13,26 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+class test_fixture
+{
+public:
+    test_fixture()
+    {
+        InitGoogleMock(
+            &boost::unit_test::framework::master_test_suite().argc,
+            boost::unit_test::framework::master_test_suite().argv);
+        auto& listeners = UnitTest::GetInstance()->listeners();
+        // this removes the default error printer
+        delete listeners.Release(listeners.default_result_printer());
+        listeners.Append(new boost_test_adapter);
 
-#include "string_extensions.h"
+    }
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+    ~test_fixture()
+    {
+        // nothing to tear down
+    }
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+};
+
+BOOST_GLOBAL_FIXTURE(test_fixture);

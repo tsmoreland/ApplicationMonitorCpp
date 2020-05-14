@@ -154,35 +154,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BadOwnerAccess.h" />
-    <ClInclude Include="CommandResult.h" />
+    <ClInclude Include="bad_owner_access.h" />
     <ClInclude Include="collection.h" />
-    <ClInclude Include="FileService.h" />
-    <ClInclude Include="IEnvironmentRepository.h" />
-    <ClInclude Include="IFileService.h" />
-    <ClInclude Include="IProcessService.h" />
-    <ClInclude Include="Owner.h" />
-    <ClInclude Include="Process.h" />
-    <ClInclude Include="ProcessService.h" />
-    <ClInclude Include="SharedOwner.h" />
-    <ClInclude Include="UniqueOwner.h" />
-    <ClInclude Include="DataMember.h" />
-    <ClInclude Include="EnvironmentRepository.h" />
-    <ClInclude Include="Export.h" />
-    <ClInclude Include="HandleWithInvalidForEmpty.h" />
-    <ClInclude Include="IProcess.h" />
-    <ClInclude Include="HandleWithNullForEmpty.h" />
+    <ClInclude Include="command_result.h" />
+    <ClInclude Include="data_member.h" />
+    <ClInclude Include="environment_repository.h" />
+    <ClInclude Include="environment_repository_impl.h" />
+    <ClInclude Include="export.h" />
+    <ClInclude Include="file_service.h" />
+    <ClInclude Include="file_service_impl.h" />
+    <ClInclude Include="invalid_handle.h" />
+    <ClInclude Include="null_handle.h" />
+    <ClInclude Include="process.h" />
+    <ClInclude Include="process_impl.h" />
+    <ClInclude Include="process_service.h" />
+    <ClInclude Include="process_service_impl.h" />
     <ClInclude Include="not_found_exception.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="string_extensions.h" />
-    <ClInclude Include="UniqueHandle.h" />
+    <ClInclude Include="unique_handle.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnvironmentRepository.cpp" />
-    <ClCompile Include="FileService.cpp" />
+    <ClCompile Include="environment_repository_impl.cpp" />
+    <ClCompile Include="file_service_impl.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Process.cpp" />
-    <ClCompile Include="ProcessService.cpp" />
+    <ClCompile Include="process_impl.cpp" />
+    <ClCompile Include="process_service_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

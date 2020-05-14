@@ -13,21 +13,25 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+namespace shared::infrastructure
+{
+    template<typename OWNER_TYPE, typename VALUE_TYPE>
+    struct data_member
+    {
+        constexpr data_member(VALUE_TYPE OWNER_TYPE::*member, char const*const name)
+            : Member(member), Name(name)
+        {
+        }
+        using Type = VALUE_TYPE;
+        VALUE_TYPE OWNER_TYPE::*Member;
+        char const*const Name;
+    };
 
-#include "string_extensions.h"
+    template<typename OWNER_TYPE, typename VALUE_TYPE>
+    constexpr auto property(VALUE_TYPE OWNER_TYPE::*member, char const*const name)
+    {
+        return data_member(member, name);
+    }
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+}
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"

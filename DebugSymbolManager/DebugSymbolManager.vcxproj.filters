@@ -19,13 +19,13 @@
     <Filter Include="Source Files\Model">
       <UniqueIdentifier>{efedf68d-bedd-4efe-817b-024944dc80a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Service">
-      <UniqueIdentifier>{17405cc1-7bd5-4e68-a4e3-81364530587d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Service">
       <UniqueIdentifier>{b2072946-6854-471b-aebd-7315105033b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Service\Impl">
+    <Filter Include="Header Files\service">
+      <UniqueIdentifier>{17405cc1-7bd5-4e68-a4e3-81364530587d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\service\impl">
       <UniqueIdentifier>{dccef1b7-4483-4918-968a-aec461a9bc0c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -33,31 +33,31 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Settings.h">
+    <ClInclude Include="symbol_path_service_impl.h">
+      <Filter>Header Files\service\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="symbol_path_service.h">
+      <Filter>Header Files\service</Filter>
+    </ClInclude>
+    <ClInclude Include="nt_symbol_path.h">
       <Filter>Header Files\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
+    <ClInclude Include="settings.h">
+      <Filter>Header Files\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NtSymbolPath.h">
-      <Filter>Header Files\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="SymbolPathService.h">
-      <Filter>Header Files\Service\Impl</Filter>
-    </ClInclude>
-    <ClInclude Include="ISymbolPathService.h">
-      <Filter>Header Files\Service</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NtSymbolPath.cpp">
-      <Filter>Source Files\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="SymbolPathService.cpp">
+    <ClCompile Include="symbol_path_service_impl.cpp">
       <Filter>Source Files\Service</Filter>
+    </ClCompile>
+    <ClCompile Include="nt_symbol_path.cpp">
+      <Filter>Source Files\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

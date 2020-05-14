@@ -2,16 +2,16 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="SymbolPathService.cpp" />
+    <ClCompile Include="symbol_path_service.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="TestAdapter.h" />
-    <ClInclude Include="TestFixture.h" />
-    <ClInclude Include="MockObjects.h" />
-    <ClInclude Include="Context.h" />
-    <ClInclude Include="ExpectedSetCall.h" />
-    <ClInclude Include="ContextBuilder.h" />
+    <ClInclude Include="context_builder.h" />
+    <ClInclude Include="expected_set_call.h" />
+    <ClInclude Include="mock_objects.h" />
+    <ClInclude Include="test_adapter.h" />
+    <ClInclude Include="test_fixture.h" />
+    <ClInclude Include="test_context.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.md" />

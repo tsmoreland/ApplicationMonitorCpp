@@ -14,28 +14,30 @@
 #pragma once
 
 
-namespace Shared::Tests
+namespace shared::tests
 {
-    template<typename TCHAR>
-    void SplitReturnsCorrectNumberOfParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, size_t const expected) {
-        // Act
-        auto const parts = extension::string_split<TCHAR>(value, seperators);;
+template<typename TCHAR>
+void split_returns_correct_number_of_parts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, size_t const expected)
+{
+    // Act
+    auto const parts = extension::string_split<TCHAR>(value, seperators);;
 
-        // Assert
-        ASSERT_EQ(expected, parts.size());
-    }
+    // Assert
+    ASSERT_EQ(expected, parts.size());
+}
 
-    template <typename TCHAR>
-    void SplitReturnsCorrectCorrectParts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, std::vector<std::basic_string<TCHAR>> const& expected_parts) {
-        // Act
-        auto const parts = extension::string_split<TCHAR>(value, seperators);;
+template <typename TCHAR>
+void split_returns_correct_parts(std::basic_string<TCHAR> value, std::vector<TCHAR> seperators, std::vector<std::basic_string<TCHAR>> const& expected_parts)
+{
+    // Act
+    auto const parts = extension::string_split<TCHAR>(value, seperators);;
 
-        // Assert
-        ASSERT_TRUE(equal(begin(expected_parts), end(expected_parts), begin(parts), 
-            [](auto const& lhs, auto const& rhs) { 
-                return equal(begin(lhs), end(lhs), begin(rhs));
-            }));
-    }
+    // Assert
+    ASSERT_TRUE(equal(begin(expected_parts), end(expected_parts), begin(parts), 
+        [](auto const& lhs, auto const& rhs) { 
+            return equal(begin(lhs), end(lhs), begin(rhs));
+        }));
+}
 
 }
 

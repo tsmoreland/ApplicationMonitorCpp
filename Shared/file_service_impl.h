@@ -13,21 +13,28 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+#include "file_service.h"
 
-#include "string_extensions.h"
+namespace shared::service
+{
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+    class file_service_impl final : public file_service
+    {
+    public:
+        [[nodiscard]] SHARED_DLL std::vector<std::filesystem::path> get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept override;
+        [[nodiscard]] SHARED_DLL bool directory_exists(std::string_view const path) const override;
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+        SHARED_DLL file_service_impl() = default;
+        SHARED_DLL file_service_impl(const file_service_impl&) = default;
+        SHARED_DLL file_service_impl(file_service_impl&&) noexcept = default;
+        SHARED_DLL file_service_impl& operator=(const file_service_impl&) = default;
+        SHARED_DLL file_service_impl& operator=(file_service_impl&&) noexcept = default;
+        SHARED_DLL ~file_service_impl() override = default;
+    };
+
+    [[nodiscard]] inline shared_file_service make_shared_file_service()
+    {
+        return std::dynamic_pointer_cast<file_service>(std::make_shared<file_service_impl>());
+    }
+
+}

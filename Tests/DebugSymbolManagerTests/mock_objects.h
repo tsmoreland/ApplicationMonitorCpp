@@ -9,25 +9,29 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
+//
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+#include "../../Shared/environment_repository.h"
+#include "../../Shared/file_service.h"
 
-#include "string_extensions.h"
+namespace mock_objects
+{
+    class mock_environment_repository final : public shared::infrastructure::environment_repository
+    {
+    public:
+        MOCK_METHOD(optional<string>, get_variable, (string const& key), (const, noexcept, override));
+        MOCK_METHOD(bool, set_variable, (string const& key, string const& value), (const, noexcept, override));
+        MOCK_METHOD(bool, remove_variable, (string const& key), (const, noexcept, override));
+    };
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+    class mock_file_service final : public shared::service::file_service
+    {
+    public:
+        MOCK_METHOD(vector<path>, get_files_from_directory, (path const& folder, wregex const& filter), (const, noexcept, override));
+        MOCK_METHOD(bool, directory_exists, (std::string_view const path), (const, override));
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+    };
+}
+

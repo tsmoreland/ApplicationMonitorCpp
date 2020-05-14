@@ -13,21 +13,27 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+namespace debug_symbol_manager::test {
 
-#include "string_extensions.h"
+    struct expected_set_call
+    {
+        Cardinality cardinality;
+        std::string value;
+        bool success;
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+        void swap(expected_set_call& other) noexcept {
+            ::swap(cardinality, other.cardinality);
+            ::swap(value, other.value);
+            ::swap(success, other.success);
+        }
+    };
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+    inline void swap(expected_set_call& left, expected_set_call& right) noexcept
+    {
+        left.swap(right);
+    }
+    inline expected_set_call successfully_set_to(string value, optional<Cardinality> const& cardinality = nullopt) {
+        return { cardinality.value_or(AnyNumber()), move(value), true };
+    }
+
+}

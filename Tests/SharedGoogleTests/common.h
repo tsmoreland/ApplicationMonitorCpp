@@ -13,21 +13,24 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
 #include <filesystem>
 #include <vector>
-#include <algorithm>
-#include <regex>
 
-#include "string_extensions.h"
+namespace shared::tests
+{
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+template <class PREDICATE>
+std::vector<std::filesystem::path> populate_expected_files(std::filesystem::path const& folder, PREDICATE predicate)
+{
+    std::vector<std::filesystem::path> expected;
+    if (std::filesystem::exists(folder) && std::filesystem::is_directory(folder)) {
+        auto const expectedFiles = std::filesystem::directory_iterator(folder);
+        std::copy_if(begin(expectedFiles), end(expectedFiles), back_inserter(expected), 
+            [predicate](std::filesystem::directory_entry const& entry) {
+                return entry.is_regular_file() && predicate(entry);
+            });
+    }
+    return expected;
+}
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+}

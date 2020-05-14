@@ -13,21 +13,31 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
 #include <filesystem>
+#include <optional>
 #include <vector>
-#include <algorithm>
 #include <regex>
+#include "process.h"
+#include "export.h"
 
-#include "string_extensions.h"
+namespace shared::service
+{
+    struct process_service
+    {
+        using unique_process = shared::model::unique_process;
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+        [[nodiscard]] SHARED_DLL virtual unique_process start_process(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<unique_process> get_processes_by_name(std::string_view const& processName) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> get_path_to_running_process(std::string_view const& processName) const noexcept = 0;
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+        process_service() = default;
+        virtual ~process_service() = default;
+        process_service(process_service&&) noexcept = default;
+        process_service(process_service const&) = default;
+        process_service& operator=(process_service&&) noexcept = default;
+        process_service& operator=(process_service const&) = default;
+    };
+
+    using shared_process_service = std::shared_ptr<process_service>;
+}
+

@@ -13,21 +13,30 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
 #include <filesystem>
-#include <vector>
-#include <algorithm>
 #include <regex>
+#include <vector>
+#include "export.h"
 
-#include "string_extensions.h"
+namespace shared::service
+{
+    struct file_service
+    {
+        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool directory_exists(std::string_view const path) const = 0;
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+        file_service() = default;
+        virtual ~file_service() = default;
+        file_service(file_service&&) noexcept = default;
+        file_service(file_service const&) = default;
+        file_service& operator=(file_service&&) noexcept = default;
+        file_service& operator=(file_service const&) = default;
+    };
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+    using shared_file_service = std::shared_ptr<file_service>;
+    using shared_const_file_service = std::shared_ptr<file_service const>;
+
+    using unique_file_service = std::unique_ptr<file_service>;
+    using unique_const_file_service = std::unique_ptr<file_service const>;
+
+}

@@ -13,21 +13,25 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+#include "unique_handle.h"
 
-#include "string_extensions.h"
+namespace shared::infrastructure
+{
+    struct invalid_handle_traits
+    {
+        using Pointer = HANDLE;
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+        static Pointer Invalid() noexcept
+        {
+            return INVALID_HANDLE_VALUE;
+        }
+        static void Close(Pointer const value) noexcept
+        {
+            CloseHandle(value);
+        }
+    };
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+    using invalid_handle = unique_handle<invalid_handle_traits>;
+
+}
+

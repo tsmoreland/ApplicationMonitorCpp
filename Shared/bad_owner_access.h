@@ -13,21 +13,16 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
-#include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
+#include <exception>
 
-#include "string_extensions.h"
-
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
-
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+namespace shared::infrastructure
+{
+    class bad_owner_access final : public std::exception
+    {
+    public:
+        [[nodiscard]] virtual const char* what() const noexcept override
+        {
+            return "Owner is empty";
+        }
+    };
+}

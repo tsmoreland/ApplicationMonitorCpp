@@ -4,14 +4,14 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="string_extentions.cpp" />
     <ClCompile Include="wstring_extensions.cpp" />
-    <ClCompile Include="EnvironmentRepository.cpp" />
-    <ClCompile Include="ProcessService.cpp" />
-    <ClCompile Include="FileService.cpp" />
+    <ClCompile Include="environment_repository.cpp" />
+    <ClCompile Include="file_service.cpp" />
+    <ClCompile Include="process_service.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="string_extensions_common.h" />
-    <ClInclude Include="Common.h" />
+    <ClInclude Include="common.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
