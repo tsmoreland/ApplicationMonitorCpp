@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Source Files\Infrastructure">
       <UniqueIdentifier>{4ade6450-0135-423d-90ff-f443c42c9b77}</UniqueIdentifier>
     </Filter>
@@ -21,9 +17,6 @@
     </Filter>
     <Filter Include="Source Files\Services">
       <UniqueIdentifier>{cd3867cc-2de6-4139-b697-54fb2790485e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Extensions">
-      <UniqueIdentifier>{f1e67477-8041-4920-acdf-b0fbb33927d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\model">
       <UniqueIdentifier>{a93efb25-6e6c-4963-a8d0-f6c4f3f60eb7}</UniqueIdentifier>
@@ -48,21 +41,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="environment_repository_impl.h">
-      <Filter>Header Files\infrastructure\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="process_impl.h">
-      <Filter>Header Files\model\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="process_service_impl.h">
-      <Filter>Header Files\services\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="file_service_impl.h">
-      <Filter>Header Files\services\impl</Filter>
-    </ClInclude>
     <ClInclude Include="$(SolutionDir)\include\shared\collection.h">
       <Filter>Header Files\extensions</Filter>
     </ClInclude>
@@ -102,28 +80,43 @@
     <ClInclude Include="$(SolutionDir)\include\shared\shared_export.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\shared\process_service.h">
-      <Filter>Header Files\services</Filter>
+    <ClInclude Include="$(SolutionDir)\include\shared\process_service.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\shared\environment_repository_impl.h">
+      <Filter>Header Files\infrastructure\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\shared\process_impl.h">
+      <Filter>Header Files\model\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\shared\process_service_impl.h">
+      <Filter>Header Files\services\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\shared\file_service_impl.h">
+      <Filter>Header Files\services\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\shared\pch.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="environment_repository_impl.cpp">
+    <ClCompile Include="$(SolutionDir)\src\shared\environment_repository_impl.cpp">
       <Filter>Source Files\Infrastructure</Filter>
     </ClCompile>
-    <ClCompile Include="process_impl.cpp">
+    <ClCompile Include="$(SolutionDir)\src\shared\process_impl.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
-    <ClCompile Include="process_service_impl.cpp">
+    <ClCompile Include="$(SolutionDir)\src\shared\process_service_impl.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
-    <ClCompile Include="file_service_impl.cpp">
+    <ClCompile Include="$(SolutionDir)\src\shared\file_service_impl.cpp">
       <Filter>Source Files\Services</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\src\shared\pch.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
+    <None Include="$(SolutionDir)\src\shared\cpp.hint" />
   </ItemGroup>
 </Project>

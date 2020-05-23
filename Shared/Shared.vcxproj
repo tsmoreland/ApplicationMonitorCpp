@@ -91,7 +91,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;$(SolutionDir)\src\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,7 +107,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;$(SolutionDir)\src\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +125,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;$(SolutionDir)\src\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,7 +145,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\3rdParty\inc;$(SolutionDir)\include;$(SolutionDir)\src\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,29 +161,29 @@
     <ClInclude Include="$(SolutionDir)\include\shared\data_member.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\environment_repository.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\process_service.h" />
-    <ClInclude Include="environment_repository_impl.h" />
+    <ClInclude Include="$(SolutionDir)\src\shared\environment_repository_impl.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\shared_export.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\file_service.h" />
-    <ClInclude Include="file_service_impl.h" />
+    <ClInclude Include="$(SolutionDir)\src\shared\file_service_impl.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\invalid_handle.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\null_handle.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\process.h" />
-    <ClInclude Include="process_impl.h" />
-    <ClInclude Include="process_service_impl.h" />
+    <ClInclude Include="$(SolutionDir)\src\shared\process_impl.h" />
+    <ClInclude Include="$(SolutionDir)\src\shared\process_service_impl.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\not_found_exception.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="$(SolutionDir)\src\shared\pch.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\string_extensions.h" />
     <ClInclude Include="$(SolutionDir)\include\shared\unique_handle.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="environment_repository_impl.cpp" />
-    <ClCompile Include="file_service_impl.cpp" />
-    <ClCompile Include="pch.cpp" />
-    <ClCompile Include="process_impl.cpp" />
-    <ClCompile Include="process_service_impl.cpp" />
+    <ClCompile Include="$(SolutionDir)\src\shared\environment_repository_impl.cpp" />
+    <ClCompile Include="$(SolutionDir)\src\shared\file_service_impl.cpp" />
+    <ClCompile Include="$(SolutionDir)\src\shared\pch.cpp" />
+    <ClCompile Include="$(SolutionDir)\src\shared\process_impl.cpp" />
+    <ClCompile Include="$(SolutionDir)\src\shared\process_service_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
+    <None Include="$(SolutionDir)\src\shared\cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
