@@ -15,7 +15,7 @@
 
 #include <optional>
 #include <string>
-#include "export.h"
+#include "shared/shared_export.h"
 
 namespace shared::infrastructure
 {

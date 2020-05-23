@@ -12,7 +12,7 @@
 // 
 
 #include "pch.h"
-#include "string_extensions.h"
+#include "shared/string_extensions.h"
 #include "string_extensions_common.h"
 
 using std::basic_string;

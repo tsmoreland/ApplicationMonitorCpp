@@ -13,30 +13,25 @@
 
 #pragma once
 
-#include <filesystem>
-#include <regex>
-#include <vector>
-#include "export.h"
+#include "shared/unique_handle.h"
 
-namespace shared::service
+namespace shared::infrastructure
 {
-    struct file_service
+    struct invalid_handle_traits
     {
-        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool directory_exists(std::string_view const path) const = 0;
+        using Pointer = HANDLE;
 
-        file_service() = default;
-        virtual ~file_service() = default;
-        file_service(file_service&&) noexcept = default;
-        file_service(file_service const&) = default;
-        file_service& operator=(file_service&&) noexcept = default;
-        file_service& operator=(file_service const&) = default;
+        static Pointer Invalid() noexcept
+        {
+            return INVALID_HANDLE_VALUE;
+        }
+        static void Close(Pointer const value) noexcept
+        {
+            CloseHandle(value);
+        }
     };
 
-    using shared_file_service = std::shared_ptr<file_service>;
-    using shared_const_file_service = std::shared_ptr<file_service const>;
-
-    using unique_file_service = std::unique_ptr<file_service>;
-    using unique_const_file_service = std::unique_ptr<file_service const>;
+    using invalid_handle = unique_handle<invalid_handle_traits>;
 
 }
+

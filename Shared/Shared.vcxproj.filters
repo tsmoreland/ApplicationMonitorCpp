@@ -51,32 +51,11 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="string_extensions.h">
-      <Filter>Header Files\extensions</Filter>
-    </ClInclude>
-    <ClInclude Include="not_found_exception.h">
-      <Filter>Header Files\infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="collection.h">
-      <Filter>Header Files\extensions</Filter>
-    </ClInclude>
     <ClInclude Include="environment_repository_impl.h">
       <Filter>Header Files\infrastructure\impl</Filter>
     </ClInclude>
-    <ClInclude Include="command_result.h">
-      <Filter>Header Files\model</Filter>
-    </ClInclude>
-    <ClInclude Include="process.h">
-      <Filter>Header Files\model</Filter>
-    </ClInclude>
     <ClInclude Include="process_impl.h">
       <Filter>Header Files\model\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="file_service.h">
-      <Filter>Header Files\services</Filter>
-    </ClInclude>
-    <ClInclude Include="process_service.h">
-      <Filter>Header Files\services</Filter>
     </ClInclude>
     <ClInclude Include="process_service_impl.h">
       <Filter>Header Files\services\impl</Filter>
@@ -84,26 +63,47 @@
     <ClInclude Include="file_service_impl.h">
       <Filter>Header Files\services\impl</Filter>
     </ClInclude>
-    <ClInclude Include="export.h">
+    <ClInclude Include="$(SolutionDir)\include\shared\collection.h">
+      <Filter>Header Files\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\string_extensions.h">
+      <Filter>Header Files\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\bad_owner_access.h">
+      <Filter>Header Files\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\file_service.h">
+      <Filter>Header Files\services</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\process.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\data_member.h">
+      <Filter>Header Files\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\environment_repository.h">
+      <Filter>Header Files\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\invalid_handle.h">
+      <Filter>Header Files\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\command_result.h">
+      <Filter>Header Files\model</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\not_found_exception.h">
+      <Filter>Header Files\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\null_handle.h">
+      <Filter>Header Files\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\unique_handle.h">
+      <Filter>Header Files\infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\shared_export.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bad_owner_access.h">
-      <Filter>Header Files\infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="data_member.h">
-      <Filter>Header Files\infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="environment_repository.h">
-      <Filter>Header Files\infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="invalid_handle.h">
-      <Filter>Header Files\infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="null_handle.h">
-      <Filter>Header Files\infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="unique_handle.h">
-      <Filter>Header Files\infrastructure</Filter>
+    <ClInclude Include="..\include\shared\process_service.h">
+      <Filter>Header Files\services</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

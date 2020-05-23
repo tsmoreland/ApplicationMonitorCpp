@@ -13,7 +13,7 @@
 
 #pragma once
 #include <TlHelp32.h>
-#include "process.h"
+#include "shared/process.h"
 
 namespace shared::model
 {

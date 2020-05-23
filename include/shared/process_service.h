@@ -15,25 +15,29 @@
 
 #include <filesystem>
 #include <optional>
-#include "export.h"
+#include <vector>
+#include <regex>
+#include "shared/process.h"
+#include "shared/shared_export.h"
 
-namespace shared::model
+namespace shared::service
 {
-    struct process
+    struct process_service
     {
-        [[nodiscard]] SHARED_DLL virtual unsigned long get_id() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool is_running() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> exit_code() const noexcept = 0;
-        SHARED_DLL virtual void wait_for_exit() const noexcept = 0;
+        using unique_process = shared::model::unique_process;
+
+        [[nodiscard]] SHARED_DLL virtual unique_process start_process(std::string_view const& filename, std::string_view const& arguments) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<unique_process> get_processes_by_name(std::string_view const& processName) const noexcept = 0;
         [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> get_path_to_running_process(std::string_view const& processName) const noexcept = 0;
 
-        SHARED_DLL process() = default;
-        process(const process&) = delete;
-        process& operator=(const process&) = delete;
-        SHARED_DLL process(process&&) = default;
-        SHARED_DLL process& operator=(process&&) = default;
-        SHARED_DLL virtual ~process() = default;
+        process_service() = default;
+        virtual ~process_service() = default;
+        process_service(process_service&&) noexcept = default;
+        process_service(process_service const&) = default;
+        process_service& operator=(process_service&&) noexcept = default;
+        process_service& operator=(process_service const&) = default;
     };
 
-    using unique_process = std::unique_ptr<process>;
+    using shared_process_service = std::shared_ptr<process_service>;
 }
+

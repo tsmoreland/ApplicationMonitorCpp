@@ -22,12 +22,12 @@
 #include <algorithm>
 #include <regex>
 
-#include "string_extensions.h"
+#include "shared/string_extensions.h"
 
 #include <Windows.h>
 #include <sdkddkver.h>
 #include <processthreadsapi.h>
 
-#include "invalid_handle.h"
-#include "null_handle.h"
-#include "not_found_exception.h"
+#include "shared/invalid_handle.h"
+#include "shared/null_handle.h"
+#include "shared/not_found_exception.h"

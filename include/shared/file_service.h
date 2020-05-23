@@ -14,26 +14,29 @@
 #pragma once
 
 #include <filesystem>
-#include <optional>
-#include "export.h"
+#include <regex>
+#include <vector>
+#include "shared/shared_export.h"
 
-namespace shared::model
+namespace shared::service
 {
-    struct process
+    struct file_service
     {
-        [[nodiscard]] SHARED_DLL virtual unsigned long get_id() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual bool is_running() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> exit_code() const noexcept = 0;
-        SHARED_DLL virtual void wait_for_exit() const noexcept = 0;
-        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> get_path_to_running_process(std::string_view const& processName) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::vector<std::filesystem::path> get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool directory_exists(std::string_view const path) const = 0;
 
-        SHARED_DLL process() = default;
-        process(const process&) = delete;
-        process& operator=(const process&) = delete;
-        SHARED_DLL process(process&&) = default;
-        SHARED_DLL process& operator=(process&&) = default;
-        SHARED_DLL virtual ~process() = default;
+        file_service() = default;
+        virtual ~file_service() = default;
+        file_service(file_service&&) noexcept = default;
+        file_service(file_service const&) = default;
+        file_service& operator=(file_service&&) noexcept = default;
+        file_service& operator=(file_service const&) = default;
     };
 
-    using unique_process = std::unique_ptr<process>;
+    using shared_file_service = std::shared_ptr<file_service>;
+    using shared_const_file_service = std::shared_ptr<file_service const>;
+
+    using unique_file_service = std::unique_ptr<file_service>;
+    using unique_const_file_service = std::unique_ptr<file_service const>;
+
 }

@@ -13,8 +13,8 @@
 
 #pragma once
 
-#include "process_service.h"
-#include "export.h"
+#include "shared/process_service.h"
+#include "shared/shared_export.h"
 
 namespace shared::service {
 

@@ -13,25 +13,27 @@
 
 #pragma once
 
-#include "unique_handle.h"
+#include <filesystem>
+#include <optional>
+#include "shared/shared_export.h"
 
-namespace shared::infrastructure
+namespace shared::model
 {
-    struct invalid_handle_traits
+    struct process
     {
-        using Pointer = HANDLE;
+        [[nodiscard]] SHARED_DLL virtual unsigned long get_id() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual bool is_running() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<unsigned long> exit_code() const noexcept = 0;
+        SHARED_DLL virtual void wait_for_exit() const noexcept = 0;
+        [[nodiscard]] SHARED_DLL virtual std::optional<std::filesystem::path> get_path_to_running_process(std::string_view const& processName) const noexcept = 0;
 
-        static Pointer Invalid() noexcept
-        {
-            return INVALID_HANDLE_VALUE;
-        }
-        static void Close(Pointer const value) noexcept
-        {
-            CloseHandle(value);
-        }
+        SHARED_DLL process() = default;
+        process(const process&) = delete;
+        process& operator=(const process&) = delete;
+        SHARED_DLL process(process&&) = default;
+        SHARED_DLL process& operator=(process&&) = default;
+        SHARED_DLL virtual ~process() = default;
     };
 
-    using invalid_handle = unique_handle<invalid_handle_traits>;
-
+    using unique_process = std::unique_ptr<process>;
 }
-

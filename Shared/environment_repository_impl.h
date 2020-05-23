@@ -14,7 +14,7 @@
 #pragma once
 
 #include <filesystem>
-#include "environment_repository.h"
+#include "shared/environment_repository.h"
 
 namespace shared::infrastructure {
 
