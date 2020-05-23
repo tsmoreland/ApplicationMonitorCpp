@@ -17,9 +17,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugSymbolManager", "Debug
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugSymbolManagerTests", "Tests\DebugSymbolManagerTests\DebugSymbolManagerTests.vcxproj", "{180681D8-C44B-445A-9378-83776A91827F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TaskManager", "proj\TaskManager\TaskManager.vcxproj", "{4884AF11-BD8A-405B-899A-62CF2E6288BE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task_manager", "task_manager", "{C4225B83-0C5E-48A4-9830-A67C6AD0FFC4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TaskManager", "TaskManager", "{C4225B83-0C5E-48A4-9830-A67C6AD0FFC4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "task_manager", "proj\task_manager\task_manager.vcxproj", "{4884AF11-BD8A-405B-899A-62CF2E6288BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
