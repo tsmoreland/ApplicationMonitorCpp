@@ -11,17 +11,4 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
 
-#pragma once
-
-#include <filesystem>
-#include <optional>
-#include <string>
-#include <vector>
-#include <type_traits>
-
-#include <gmock/gmock.h>
-
-#include "../../DebugSymbolManager/symbol_path_service_impl.h"
-#include "../../Shared/file_service.h"
-#include "../../Shared/environment_repository.h"
-
+#include "pch.h"

@@ -13,15 +13,17 @@
 
 #pragma once
 
-#include <filesystem>
-#include <optional>
 #include <string>
+#include <string_view>
+#include <memory>
+#include <optional>
+#include <filesystem>
 #include <vector>
-#include <type_traits>
+#include <algorithm>
+#include <regex>
 
-#include <gmock/gmock.h>
 
-#include "../../DebugSymbolManager/symbol_path_service_impl.h"
-#include "../../Shared/file_service.h"
-#include "../../Shared/environment_repository.h"
 
+#include <Windows.h>
+#include <sdkddkver.h>
+#include <processthreadsapi.h>
