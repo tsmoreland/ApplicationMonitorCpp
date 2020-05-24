@@ -160,12 +160,12 @@
     <ClInclude Include="$(SolutionDir)src\symbol_manager\pch.h" />
     <ClInclude Include="$(SolutionDir)include\symbol_manager\settings.h" />
     <ClInclude Include="$(SolutionDir)include\symbol_manager\symbol_path_service.h" />
-    <ClInclude Include="$(SolutionDir)src\symbol_managersymbol_path_service_impl.h" />
+    <ClInclude Include="$(SolutionDir)src\symbol_manager\symbol_path_service_impl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(SolutionDir)src\symbol_managernt_symbol_path.cpp" />
-    <ClCompile Include="$(SolutionDir)src\symbol_managerpch.cpp" />
-    <ClCompile Include="$(SolutionDir)src\symbol_managersymbol_path_service_impl.cpp" />
+    <ClCompile Include="$(SolutionDir)src\symbol_manager\nt_symbol_path.cpp" />
+    <ClCompile Include="$(SolutionDir)src\symbol_manager\pch.cpp" />
+    <ClCompile Include="$(SolutionDir)src\symbol_manager\symbol_path_service_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
