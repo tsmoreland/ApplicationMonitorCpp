@@ -13,23 +13,43 @@
 
 #pragma once
 
-#include <memory>
+#include <chrono>
+#include <tasks/task_state.h>
+#include <tasks/tasks_export.h>
+#include <future>
 
 namespace tasks
 {
-    /// <summary>
-    /// Represents a repeatble asynchronous operation with state that determines whether the operation can be run
-    /// </summary>
-    class task
+
+    /// <summary>Represents a repeatble asynchronous operation with state that determines whether the operation can be run</summary>
+    /// <remarks>not intended for direct use but serving as a base class and basis for a task concept</remarks>
+    class task  
     {
     public:
+        TASKS_DLL task(task const&) = default;
+        TASKS_DLL task(task&&) noexcept = default;
+        TASKS_DLL virtual ~task() = default;
 
-        
+        TASKS_DLL task& operator=(task const&) = default;
+        TASKS_DLL task& operator=(task&&) noexcept = default;
+
+        TASKS_DLL virtual void process() = 0;
+
+        [[nodiscard]] TASKS_DLL task_state get_current_state() const noexcept;
+        [[nodiscard]] TASKS_DLL std::chrono::milliseconds get_estimated_time_remaining() const noexcept;
+
+    protected:
+        TASKS_DLL explicit task() = default;
+
+        TASKS_DLL void update_task_state(task_state const value);
+        TASKS_DLL void update_time_remaining(task_state const value);
+
+    private:
+        task_state m_current_state{task_state::PENDING};
+        std::chrono::milliseconds m_time_remaining{};
     };
     
-    using shared_task = std::shared_ptr<task>;
-    using shared_const_task = std::shared_ptr<task const>;
-    using unique_task = std::unique_ptr<task>;
-    using unique_const_task = std::unique_ptr<task const>;
+    template <typename TASK>
+    concept Task = std::is_base_of<task, TASK>::value;
 
 }
