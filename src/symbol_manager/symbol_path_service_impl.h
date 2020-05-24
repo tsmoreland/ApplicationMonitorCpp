@@ -13,30 +13,30 @@
 
 #pragma once
 
-#include "symbol_path_service.h"
-#include "settings.h"
-#include "nt_symbol_path.h"
-#include "environment_repository.h"
-#include "file_service.h"
+#include <symbol_manager/symbol_path_service.h>
+#include <symbol_manager/settings.h>
+#include <symbol_manager/nt_symbol_path.h>
+#include <shared/environment_repository.h>
+#include <shared/file_service.h>
 #include <string>
 
-namespace debug_symbol_manager::service
+namespace symbol_manager::service
 {
     class symbol_path_service_impl final : public symbol_path_service
     {
     public:
-        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL shared::model::command_result update_application_path(std::string const& application_path) noexcept override;
-        DEBUG_SYMBOL_MANAGER_DLL virtual void reload() const noexcept override;
+        [[nodiscard]] SYMBOL_MANAGER_DLL shared::model::command_result update_application_path(std::string const& application_path) noexcept override;
+        SYMBOL_MANAGER_DLL virtual void reload() const noexcept override;
 
-        DEBUG_SYMBOL_MANAGER_DLL explicit symbol_path_service_impl(debug_symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environemnt_repository, shared::service::shared_const_file_service const& file_service);
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl const&) = default;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl&&) noexcept = default;
-        DEBUG_SYMBOL_MANAGER_DLL ~symbol_path_service_impl() override = default;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl& operator=(symbol_path_service_impl const&) = delete;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service_impl& operator=(symbol_path_service_impl&&) noexcept = delete;
+        SYMBOL_MANAGER_DLL explicit symbol_path_service_impl(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environemnt_repository, shared::service::shared_const_file_service const& file_service);
+        SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl const&) = default;
+        SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl&&) noexcept = default;
+        SYMBOL_MANAGER_DLL ~symbol_path_service_impl() override = default;
+        SYMBOL_MANAGER_DLL symbol_path_service_impl& operator=(symbol_path_service_impl const&) = delete;
+        SYMBOL_MANAGER_DLL symbol_path_service_impl& operator=(symbol_path_service_impl&&) noexcept = delete;
     private:
         shared::infrastructure::shared_const_environment_repository m_environment_repository;
-        debug_symbol_manager::model::nt_symbol_path m_symbol_path;
+        symbol_manager::model::nt_symbol_path m_symbol_path;
         std::string m_application_path;
         shared::service::shared_const_file_service m_file_service;
 

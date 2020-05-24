@@ -16,10 +16,10 @@
 #include <optional>
 #include <vector>
 #include "settings.h"
-#include "file_service.h"
-#include <command_result.h>
+#include <shared/file_service.h>
+#include <shared/command_result.h>
 
-namespace debug_symbol_manager::model
+namespace symbol_manager::model
 {
     class nt_symbol_path final
     {
@@ -35,7 +35,7 @@ namespace debug_symbol_manager::model
         [[nodiscard]] bool is_modified() const noexcept;
         [[nodiscard]] shared::model::command_result reset(std::string const& currentValue) noexcept;
 
-        explicit nt_symbol_path(shared::service::shared_const_file_service const& file_service);
+        explicit nt_symbol_path(shared::service::shared_const_file_service file_service);
         nt_symbol_path(nt_symbol_path const&) = default;
         nt_symbol_path(nt_symbol_path&&) noexcept = default;
         ~nt_symbol_path() = default;

@@ -14,35 +14,24 @@
 #include "pch.h"
 #include <process_service_impl.h>
 #include <chrono>
-#include "Common.h"
 
 using std::chrono::duration;
 using std::chrono::steady_clock;
 using std::filesystem::path;
-using std::make_unique;
-using std::tie;
-using std::tuple;
-using std::unique_ptr;
-using std::vector;
 
-using shared::service::process_service;
-using shared::service::process_service_impl;
+using shared::service::make_unique_process_service;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
 using std::literals::string_literals::operator ""s;
-using std::literals::chrono_literals::operator ""s;
 #pragma warning(pop)
 
 namespace Shared::ProcessServiceTests
 {
 
-template <class PREDICATE>
-tuple<unique_ptr<process_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
-
 TEST(process_service, start_throws_when_file_not_found)
 {
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
 
     auto const process = service->start_process(""s, ""s);
 
@@ -52,7 +41,7 @@ TEST(process_service, start_throws_when_file_not_found)
 TEST(ProcessService, returns_process_value_when_file_found)
 {
     auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
 
     auto const process = service->start_process(xcopyExe, ""s);
 
@@ -63,7 +52,7 @@ TEST(ProcessService, returns_process_value_when_file_found)
 TEST(process_service, exit_code_non_zero_with_bad_command)
 {
     auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
 
     auto const process = service->start_process(xcopyExe, ""s);
 
@@ -85,7 +74,7 @@ constexpr auto const CommandExe = R"(c:\windows\SysWOW64\cmd.exe)";
 TEST(process_service, exit_code_zero_with_good_command)
 {
     // Assert / Act
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
     auto const process = service->start_process(CommandExe, "/c echo \"Test\"");
 
     EXPECT_TRUE(process != nullptr);
@@ -101,7 +90,7 @@ TEST(process_service, exit_code_zero_with_good_command)
 TEST(process_service, waits_for_process_to_end)
 {
     auto const xcopyExe = R"(c:\windows\system32\xcopy.exe)"s;
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
     auto const start = steady_clock::now();
 
     auto const process = service->start_process(CommandExe, "/c Sleep 1");
@@ -115,7 +104,7 @@ TEST(process_service, waits_for_process_to_end)
 TEST(process_service, ProcessByNameFindsMatch)
 {
     // Assert / Act
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
     auto const process = service->start_process(CommandExe, "/c Sleep 1");
     auto const matchingProcesses = service->get_processes_by_name("cmd.exe");
 
@@ -127,7 +116,7 @@ TEST(process_service, ProcessByNameFindsMatch)
 TEST(process_service, no_processes_found_with_empty_process_name)
 {
     // arrange
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
     // Act
     auto const matchingProcesses = service->get_processes_by_name(""s);
     // Assert
@@ -137,7 +126,7 @@ TEST(process_service, no_processes_found_with_empty_process_name)
 TEST(process_service, get_path_from_running_path_returns_path)
 {
     // arrange
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
     auto const runningProcess = service->start_process(CommandExe, "/c Sleep 2");
 
     // Act
@@ -154,7 +143,7 @@ TEST(process_service, get_path_from_running_path_returns_correct_path)
     // arrange
     std::filesystem::path expected(CommandExe);
 
-    unique_ptr<process_service> const service = make_unique<process_service_impl>();
+    auto const service = make_unique_process_service();
     auto const runningProcess = service->start_process(CommandExe, "/c Sleep 2");
 
     // Act
@@ -162,14 +151,6 @@ TEST(process_service, get_path_from_running_path_returns_correct_path)
 
     // Assert
     ASSERT_EQ(expected, path);
-}
-
-
-template <class PREDICATE>
-tuple<unique_ptr<process_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate)
-{
-    unique_ptr<process_service> service = make_unique<process_service_impl>();
-    return tuple<unique_ptr<process_service>, vector<path>>(service.release(), Tests::PopulateExpectedFiles(folder, predicate));
 }
 
 }

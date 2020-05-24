@@ -21,7 +21,7 @@
 
 #include <gmock/gmock.h>
 
-#include "../../DebugSymbolManager/symbol_path_service_impl.h"
-#include "../../Shared/file_service.h"
-#include "../../Shared/environment_repository.h"
+#include "../../src/symbol_manager/symbol_path_service_impl.h"
+#include <shared/file_service.h>
+#include <shared/environment_repository.h>
 

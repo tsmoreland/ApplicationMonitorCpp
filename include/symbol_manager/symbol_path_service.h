@@ -14,23 +14,23 @@
 #pragma once
 
 #include <string>
-#include "common.h"
-#include "command_result.h"
+#include "symbol_manager/symbol_manager_export.h"
+#include "shared/command_result.h"
 
-namespace debug_symbol_manager::service
+namespace symbol_manager::service
 {
     struct symbol_path_service
     {
-        [[nodiscard]] DEBUG_SYMBOL_MANAGER_DLL virtual shared::model::command_result update_application_path(std::string const& application_path) noexcept = 0;
-        DEBUG_SYMBOL_MANAGER_DLL virtual void reload() const noexcept = 0;
+        [[nodiscard]] SYMBOL_MANAGER_DLL virtual shared::model::command_result update_application_path(std::string const& application_path) noexcept = 0;
+        SYMBOL_MANAGER_DLL virtual void reload() const noexcept = 0;
 
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service() = default;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service const&) = default;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service&&) noexcept = default;
-        DEBUG_SYMBOL_MANAGER_DLL virtual ~symbol_path_service() = default;
+        SYMBOL_MANAGER_DLL symbol_path_service() = default;
+        SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service const&) = default;
+        SYMBOL_MANAGER_DLL symbol_path_service(symbol_path_service&&) noexcept = default;
+        SYMBOL_MANAGER_DLL virtual ~symbol_path_service() = default;
 
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service const&) = default;
-        DEBUG_SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service&&) noexcept = default;
+        SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service const&) = default;
+        SYMBOL_MANAGER_DLL symbol_path_service& operator=(symbol_path_service&&) noexcept = default;
     };
 
     using shared_symbol_path_service = std::shared_ptr<symbol_path_service>;

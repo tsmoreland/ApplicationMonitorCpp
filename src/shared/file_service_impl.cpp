@@ -19,6 +19,24 @@ using std::vector;
 namespace shared::service
 {
 
+shared_file_service make_file_service()
+{
+    return std::make_shared<file_service_impl>();
+}
+shared_const_file_service make_const_file_service()
+{
+    return std::make_shared<file_service_impl const>();
+}
+
+unique_file_service make_unique_file_service()
+{
+    return std::make_unique<file_service_impl>();
+}
+unique_const_file_service make_unique_const_file_service()
+{
+    return std::make_unique<file_service_impl const>();
+}
+
 vector<std::filesystem::path> file_service_impl::get_files_from_directory(std::filesystem::path const& folder, std::wregex const& filter) const noexcept
 {
     try {

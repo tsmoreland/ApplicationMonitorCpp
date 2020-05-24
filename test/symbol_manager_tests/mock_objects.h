@@ -13,8 +13,8 @@
 
 #pragma once
 
-#include "../../Shared/environment_repository.h"
-#include "../../Shared/file_service.h"
+#include <shared/environment_repository.h>
+#include <shared/file_service.h>
 
 namespace mock_objects
 {

@@ -39,4 +39,10 @@ namespace shared::service
     using unique_file_service = std::unique_ptr<file_service>;
     using unique_const_file_service = std::unique_ptr<file_service const>;
 
+    [[nodiscard]] SHARED_DLL shared_file_service make_file_service();
+    [[nodiscard]] SHARED_DLL shared_const_file_service make_const_file_service();
+
+    [[nodiscard]] SHARED_DLL unique_file_service make_unique_file_service();
+    [[nodiscard]] SHARED_DLL unique_const_file_service make_unique_const_file_service();
+
 }

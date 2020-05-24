@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
-#include <data_member.h>
+#include <shared/data_member.h>
 
-namespace debug_symbol_manager::model
+namespace symbol_manager::model
 {
 
     struct settings final

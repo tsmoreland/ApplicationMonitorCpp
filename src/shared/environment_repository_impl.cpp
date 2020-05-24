@@ -18,17 +18,17 @@ using std::nullopt;
 using std::optional;
 using std::string;
 
-using extension::string_equal;
-using extension::string_split;
-using extension::string_contains_in_order;
-
-#pragma warning(push)
-#pragma warning(disable:4455)
-using std::literals::string_literals::operator ""s;
-#pragma warning(pop)
-
 namespace shared::infrastructure
 {
+shared_const_environment_repository make_const_environment_repository()
+{
+    return std::make_shared<environment_repository_impl const>();
+}
+
+shared_environment_repository make_environment_repository()
+{
+    return std::make_shared<environment_repository_impl>();
+}
 
 optional<string> environment_repository_impl::get_variable(std::string const& key) const noexcept
 {

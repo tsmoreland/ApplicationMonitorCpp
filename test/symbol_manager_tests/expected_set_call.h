@@ -13,7 +13,7 @@
 
 #pragma once
 
-namespace debug_symbol_manager::test {
+namespace symbol_manager::test {
 
     struct expected_set_call
     {

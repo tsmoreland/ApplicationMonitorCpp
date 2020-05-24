@@ -16,8 +16,8 @@
 
 using std::string;
 
-using debug_symbol_manager::model::settings;
-using debug_symbol_manager::model::nt_symbol_path;
+using symbol_manager::model::settings;
+using symbol_manager::model::nt_symbol_path;
 using shared::infrastructure::shared_const_environment_repository;
 using shared::model::command_result;
 using shared::service::shared_const_file_service;
@@ -28,7 +28,7 @@ using std::literals::string_literals::operator ""s;
 using std::literals::chrono_literals::operator ""s;
 #pragma warning(pop)
 
-namespace debug_symbol_manager::service
+namespace symbol_manager::service
 {
 
 command_result symbol_path_service_impl::update_application_path(string const& application_path) noexcept

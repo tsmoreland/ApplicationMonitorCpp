@@ -16,7 +16,7 @@
 #include "mock_objects.h"
 #include "expected_set_call.h"
 
-namespace debug_symbol_manager::test
+namespace symbol_manager::test
 {
     constexpr auto SYMBOL_PATH_VAR = "_NT_SYMBOL_PATH";
     constexpr auto SYMBOL_SERVER = "*SRV";
@@ -75,7 +75,7 @@ namespace debug_symbol_manager::test
 
         std::shared_ptr<mock_objects::mock_environment_repository> repository{};
         std::shared_ptr<mock_objects::mock_file_service> file_service{};
-        std::unique_ptr<debug_symbol_manager::service::symbol_path_service_impl> service{};
+        std::unique_ptr<symbol_manager::service::symbol_path_service_impl> service{};
 
         settings settings{SYMBOL_SERVER};
         std::string application_path{};

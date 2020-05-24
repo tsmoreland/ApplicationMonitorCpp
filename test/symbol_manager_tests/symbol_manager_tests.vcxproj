@@ -170,6 +170,11 @@
   <ItemGroup>
     <None Include="Readme.md" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\symbol_manager\symbol_manager.vcxproj">
+      <Project>{262e86ed-58e2-4e79-8c1e-1d77681766f6}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

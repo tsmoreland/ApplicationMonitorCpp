@@ -80,9 +80,6 @@
     <ClInclude Include="$(SolutionDir)\include\shared\shared_export.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SolutionDir)\include\shared\process_service.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SolutionDir)\src\shared\environment_repository_impl.h">
       <Filter>Header Files\infrastructure\impl</Filter>
     </ClInclude>
@@ -98,6 +95,9 @@
     <ClInclude Include="$(SolutionDir)\src\shared\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SolutionDir)\include\shared\process_service.h">
+      <Filter>Header Files\services</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SolutionDir)\src\shared\environment_repository_impl.cpp">
@@ -106,14 +106,14 @@
     <ClCompile Include="$(SolutionDir)\src\shared\process_impl.cpp">
       <Filter>Source Files\Model</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)\src\shared\process_service_impl.cpp">
-      <Filter>Source Files\Services</Filter>
+    <ClCompile Include="$(SolutionDir)\src\shared\pch.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SolutionDir)\src\shared\file_service_impl.cpp">
       <Filter>Source Files\Services</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)\src\shared\pch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="$(SolutionDir)\src\shared\process_service_impl.cpp">
+      <Filter>Source Files\Services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

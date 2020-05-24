@@ -16,22 +16,26 @@
 #include "process_impl.h"
 
 using std::back_inserter;
-using std::copy_if;
-using std::make_unique;
 using std::move;
 using std::optional;
-using std::regex_match;
 using std::string_view;
 using std::transform;
-using std::unique_ptr;
 using std::vector;
 
-using shared::model::process;
 using shared::model::process_impl;
 using shared::model::unique_process;
 
 namespace shared::service
 {
+
+shared_process_service make_process_service()
+{
+    return std::make_shared<process_service_impl>();
+}
+unique_process_service make_unique_process_service()
+{
+    return std::make_unique<process_service_impl>();
+}
 
 unique_process process_service_impl::start_process(string_view const& filename, string_view const& arguments) const noexcept
 {

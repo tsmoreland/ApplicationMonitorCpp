@@ -39,5 +39,10 @@ namespace shared::service
     };
 
     using shared_process_service = std::shared_ptr<process_service>;
+    using unique_process_service = std::unique_ptr<process_service>;
+
+    [[nodiscard]] SHARED_DLL shared_process_service make_process_service();
+    [[nodiscard]] SHARED_DLL unique_process_service make_unique_process_service();
+
 }
 

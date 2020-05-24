@@ -22,12 +22,12 @@
 #include <algorithm>
 #include <regex>
 #include <ranges>
-#include "collection.h"
-#include "string_extensions.h"
+#include <shared/collection.h>
+#include <shared/string_extensions.h>
 
 #include <windows.h>
 
-#include "file_service.h"
-#include "process_service.h"
-#include "environment_repository.h"
+#include <shared/file_service.h>
+#include <shared/process_service.h>
+#include <shared/environment_repository.h>
 

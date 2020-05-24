@@ -15,7 +15,7 @@
 
 #include "test_context.h"
 
-namespace debug_symbol_manager::test
+namespace symbol_manager::test
 {
     class context_builder
     {
@@ -117,7 +117,7 @@ namespace debug_symbol_manager::test
         {
             return update_object(
                 [](test_context& context) {
-                    auto service = make_unique<debug_symbol_manager::service::symbol_path_service_impl>(context.settings, context.repository, context.file_service);
+                    auto service = make_unique<symbol_manager::service::symbol_path_service_impl>(context.settings, context.repository, context.file_service);
                     context.service  = move(service);
                 });
         }

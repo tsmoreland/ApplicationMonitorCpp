@@ -12,12 +12,10 @@
 // 
 
 #include "pch.h"
-#include "nt_symbol_path.h"
+#include <symbol_manager/nt_symbol_path.h>
 #include <sstream>
+#include <utility>
 
-using std::filesystem::path;
-using std::find;
-using std::move;
 using std::nullopt;
 using std::optional;
 using std::string;
@@ -32,11 +30,11 @@ using collection::contains;
 using std::literals::string_literals::operator""s;
 #pragma warning(pop)
 
-namespace debug_symbol_manager::model
+namespace symbol_manager::model
 {
 
-nt_symbol_path::nt_symbol_path(shared::service::shared_const_file_service const& file_service)
-    : m_file_service(file_service)
+nt_symbol_path::nt_symbol_path(shared::service::shared_const_file_service file_service)
+    : m_file_service(std::move(file_service))
 {
 }
 

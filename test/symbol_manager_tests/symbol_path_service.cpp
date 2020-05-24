@@ -31,8 +31,8 @@ using std::wregex;
 #include <type_traits>
 #include "test_adapter.h"
 
-using debug_symbol_manager::model::settings;
-using debug_symbol_manager::service::symbol_path_service_impl;
+using symbol_manager::model::settings;
+using symbol_manager::service::symbol_path_service_impl;
 
 #pragma warning(push)
 #pragma warning(disable:4455)
@@ -41,7 +41,7 @@ using std::literals::string_literals::operator ""s;
 
 #include "context_builder.h"
 
-using namespace debug_symbol_manager::test;
+using namespace symbol_manager::test;
 
 BOOST_AUTO_TEST_CASE(update_application_path_changes_symbol_path)
 {
