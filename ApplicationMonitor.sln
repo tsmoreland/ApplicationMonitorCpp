@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Console", "Console\Console.vcxproj", "{DBA99313-075B-4183-843A-A06A1E209D97}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shared", "Shared\Shared.vcxproj", "{DF70D038-5DEC-4957-B2B8-289F083C5294}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "src\shared\shared.vcxproj", "{DF70D038-5DEC-4957-B2B8-289F083C5294}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKernel", "{4E0D613F-A5A6-44EE-B45D-6970E17D59DF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{4E0D613F-A5A6-44EE-B45D-6970E17D59DF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SharedGoogleTests", "Tests\SharedGoogleTests\SharedGoogleTests.vcxproj", "{C6526452-C280-41A2-AEAE-DBCEFA5B8EA5}"
 EndProject
@@ -19,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugSymbolManagerTests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "task_manager", "task_manager", "{C4225B83-0C5E-48A4-9830-A67C6AD0FFC4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "task_manager", "proj\task_manager\task_manager.vcxproj", "{4884AF11-BD8A-405B-899A-62CF2E6288BE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "task_manager", "src\task_manager\task_manager.vcxproj", "{4884AF11-BD8A-405B-899A-62CF2E6288BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
