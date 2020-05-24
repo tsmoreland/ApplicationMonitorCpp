@@ -169,12 +169,10 @@
     <ClInclude Include="..\..\include\tasks\task_action.h" />
     <ClInclude Include="..\..\include\tasks\task_state.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="task_impl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="task.cpp" />
-    <ClCompile Include="task_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
