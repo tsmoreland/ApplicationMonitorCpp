@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(update_application_pathReturnsSuccess)
     BOOST_ASSERT(result.is_success());
 }
 
-BOOST_AUTO_TEST_CASE(UpdateReplacesOldApplicationPath)
+BOOST_AUTO_TEST_CASE(update_replaces_old_application_path)
 {
     // arrange
     auto const app_path = R"(C:\Program Files\Application)"s;
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(UpdateReplacesOldApplicationPath)
     // again handled by the arrange and specifically expected set calls
 }
 
-BOOST_AUTO_TEST_CASE(UpdateApplicaitonPathWithReplacementReturnsSuccess)
+BOOST_AUTO_TEST_CASE(update_applicaiton_path_with_replacement_returns_success)
 {
     // arrange
     auto const app_path = R"(C:\Program Files\Application)"s;

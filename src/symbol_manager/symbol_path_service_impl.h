@@ -28,7 +28,7 @@ namespace symbol_manager::service
         [[nodiscard]] SYMBOL_MANAGER_DLL shared::model::command_result update_application_path(std::string const& application_path) noexcept override;
         SYMBOL_MANAGER_DLL virtual void reload() const noexcept override;
 
-        SYMBOL_MANAGER_DLL explicit symbol_path_service_impl(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environemnt_repository, shared::service::shared_const_file_service const& file_service);
+        SYMBOL_MANAGER_DLL explicit symbol_path_service_impl(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service);
         SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl const&) = default;
         SYMBOL_MANAGER_DLL symbol_path_service_impl(symbol_path_service_impl&&) noexcept = default;
         SYMBOL_MANAGER_DLL ~symbol_path_service_impl() override = default;

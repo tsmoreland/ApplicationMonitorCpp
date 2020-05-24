@@ -20,14 +20,24 @@ using std::string;
 
 namespace shared::infrastructure
 {
-shared_const_environment_repository make_const_environment_repository()
+
+unique_const_environment_repository make_unique_const_environment_repository()
 {
-    return std::make_shared<environment_repository_impl const>();
+    return std::make_unique<environment_repository_impl const>();
+}
+unique_environment_repository make_unique_environment_repository()
+{
+    return std::make_unique<environment_repository_impl>();
 }
 
-shared_environment_repository make_environment_repository()
+shared_const_environment_repository make_shared_const_environment_repository()
 {
-    return std::make_shared<environment_repository_impl>();
+    return std::dynamic_pointer_cast<environment_repository const>(std::make_shared<environment_repository_impl const>());
+}
+
+shared_environment_repository make_shared_environment_repository()
+{
+    return std::dynamic_pointer_cast<environment_repository>(std::make_shared<environment_repository_impl>());
 }
 
 optional<string> environment_repository_impl::get_variable(std::string const& key) const noexcept

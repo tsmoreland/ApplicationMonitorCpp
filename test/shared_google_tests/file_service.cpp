@@ -13,32 +13,32 @@
 
 #include "pch.h"
 #include <file_service_impl.h>
-#include "Common.h"
+#include "common.h"
 
 using std::filesystem::directory_entry;
 using std::filesystem::path;
-using std::make_unique;
 using std::regex_match;
 using std::tie;
 using std::tuple;
-using std::unique_ptr;
 using std::vector;
 using std::wregex;
 
-using shared::service::file_service;
-using shared::service::file_service_impl;
+using shared::service::unique_file_service;
 
-namespace shared::file_service_tests {
+using shared::service::make_unique_file_service;
+
+namespace shared::file_service_tests
+{
 
 template <class PREDICATE>
-tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate);
+tuple<unique_file_service, vector<path>> arrange(path const& folder, PREDICATE predicate);
 
 TEST(file_service, returns_no_files_when_path_is_not_directory)
 {
     // arrange
     auto const windows_directory = path(LR"(C:\windows\system32\cmd.exe)");
     wregex const filter(LR"(.*\.exe$)");
-    unique_ptr<file_service> const service(make_unique<file_service_impl>());
+    auto const service = make_unique_file_service();
 
     // Act
     auto const files = service->get_files_from_directory(windows_directory, filter);
@@ -51,10 +51,8 @@ TEST(file_service, returns_all_files_matching_filter)
 {
     // arrange
     auto const windows_directory = path(LR"(C:\windows)");
-    unique_ptr<file_service> service;
-    vector<path> expected;
     wregex const filter(LR"(.*\.exe$)");
-    tie(service, expected) = Arrange(windows_directory, 
+    auto [service, expected] = arrange(windows_directory, 
         [&filter](directory_entry const& entry) {
            return regex_match(entry.path().wstring(), filter);
         });
@@ -69,10 +67,10 @@ TEST(file_service, returns_all_files_matching_filter)
 
 
 template <class PREDICATE>
-tuple<unique_ptr<file_service>, vector<path>> Arrange(path const& folder, PREDICATE predicate)
+tuple<unique_file_service, vector<path>> arrange(path const& folder, PREDICATE predicate)
 {
-    unique_ptr<file_service> service = make_unique<file_service_impl>();
-    return tuple<unique_ptr<file_service>, vector<path>>(service.release(), tests::populate_expected_files(folder, predicate));
+    auto service = make_unique_file_service();
+    return tuple<unique_file_service, vector<path>>(service.release(), tests::populate_expected_files(folder, predicate));
 }
 
 }

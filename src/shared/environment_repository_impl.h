@@ -33,9 +33,4 @@ namespace shared::infrastructure {
         SHARED_DLL ~environment_repository_impl() override = default;
     };
 
-    inline shared_environment_repository make_shared_environemnt_repository()
-    {
-        return std::dynamic_pointer_cast<environment_repository>(std::make_shared<environment_repository_impl>());
-    }
-
 }

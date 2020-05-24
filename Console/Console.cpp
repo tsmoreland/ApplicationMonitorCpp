@@ -7,13 +7,13 @@
 using std::cout;
 using std::endl;
 
-using shared::infrastructure::make_const_environment_repository;
+using shared::infrastructure::make_shared_const_environment_repository;
 using shared::service::make_process_service;
 
 int main()
 {
     try {
-        auto const environment = make_const_environment_repository();
+        auto const environment = make_shared_const_environment_repository();
         auto const processService = make_process_service();
 
         if (!environment->set_variable("Hello", "World"))

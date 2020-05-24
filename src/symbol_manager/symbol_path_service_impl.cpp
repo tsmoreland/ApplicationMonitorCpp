@@ -31,6 +31,24 @@ using std::literals::chrono_literals::operator ""s;
 namespace symbol_manager::service
 {
 
+shared_symbol_path_service make_shared_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service)
+{
+    return std::make_shared<symbol_path_service_impl>(settings, environment_repository, file_service);
+}
+shared_const_symbol_path_service make_shared_const_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service)
+{
+    return std::make_shared<symbol_path_service_impl const>(settings, environment_repository, file_service);
+}
+
+unique_symbol_path_service make_unique_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service)
+{
+    return std::make_unique<symbol_path_service_impl>(settings, environment_repository, file_service);
+}
+unique_const_symbol_path_service make_unique_const_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service)
+{
+    return std::make_unique<symbol_path_service_impl const>(settings, environment_repository, file_service);
+}
+
 command_result symbol_path_service_impl::update_application_path(string const& application_path) noexcept
 {
     try {
@@ -62,8 +80,8 @@ void symbol_path_service_impl::reload() const noexcept
     update_if_modified();
 }
 
-symbol_path_service_impl::symbol_path_service_impl(settings const& settings, shared_const_environment_repository const& environemnt_repository, shared_const_file_service const& file_service)
-    : m_environment_repository(environemnt_repository)
+symbol_path_service_impl::symbol_path_service_impl(settings const& settings, shared_const_environment_repository const& environment_repository, shared_const_file_service const& file_service)
+    : m_environment_repository(environment_repository)
     , m_symbol_path{file_service}
     , m_file_service(file_service) {
 
@@ -73,7 +91,7 @@ symbol_path_service_impl::symbol_path_service_impl(settings const& settings, sha
     if (!m_file_service)
         throw std::invalid_argument("file_service is null");
 
-    if (!m_symbol_path.reset(environemnt_repository->get_variable(nt_symbol_path::ENVIRONMENT_KEY).value_or(""s)).is_success()) {
+    if (!m_symbol_path.reset(environment_repository->get_variable(nt_symbol_path::ENVIRONMENT_KEY).value_or(""s)).is_success()) {
         // Log
     }
 

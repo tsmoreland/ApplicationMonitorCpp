@@ -37,10 +37,13 @@ namespace shared::infrastructure
     using shared_environment_repository = std::shared_ptr<environment_repository>;
     using shared_const_environment_repository = std::shared_ptr<environment_repository const>;
 
-    using unique_environemnt_repository = std::unique_ptr<environment_repository>;
-    using unique_const_environemnt_repository = std::unique_ptr<environment_repository const>;
+    using unique_environment_repository = std::unique_ptr<environment_repository>;
+    using unique_const_environment_repository = std::unique_ptr<environment_repository const>;
 
-    [[nodiscard]] SHARED_DLL shared_const_environment_repository make_const_environment_repository();
-    [[nodiscard]] SHARED_DLL shared_environment_repository make_environment_repository();
+    [[nodiscard]] SHARED_DLL unique_const_environment_repository make_unique_const_environment_repository();
+    [[nodiscard]] SHARED_DLL unique_environment_repository make_unique_environment_repository();
+
+    [[nodiscard]] SHARED_DLL shared_const_environment_repository make_shared_const_environment_repository();
+    [[nodiscard]] SHARED_DLL shared_environment_repository make_shared_environment_repository();
 
 }

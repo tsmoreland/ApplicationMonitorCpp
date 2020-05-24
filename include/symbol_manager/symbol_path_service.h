@@ -14,8 +14,11 @@
 #pragma once
 
 #include <string>
-#include "symbol_manager/symbol_manager_export.h"
-#include "shared/command_result.h"
+#include <symbol_manager/symbol_manager_export.h>
+#include <symbol_manager/settings.h>
+#include <shared/environment_repository.h>
+#include <shared/command_result.h>
+#include <shared/file_service.h>
 
 namespace symbol_manager::service
 {
@@ -34,6 +37,15 @@ namespace symbol_manager::service
     };
 
     using shared_symbol_path_service = std::shared_ptr<symbol_path_service>;
+    using shared_const_symbol_path_service = std::shared_ptr<symbol_path_service const>;
+
     using unique_symbol_path_service = std::unique_ptr<symbol_path_service>;
+    using unique_const_symbol_path_service = std::unique_ptr<symbol_path_service const>;
+
+    [[nodiscard]] SYMBOL_MANAGER_DLL shared_symbol_path_service make_shared_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service);
+    [[nodiscard]] SYMBOL_MANAGER_DLL shared_const_symbol_path_service make_shared_const_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service);
+
+    [[nodiscard]] SYMBOL_MANAGER_DLL unique_symbol_path_service make_unique_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service);
+    [[nodiscard]] SYMBOL_MANAGER_DLL unique_const_symbol_path_service make_unique_const_symbol_path_service(symbol_manager::model::settings const& settings, shared::infrastructure::shared_const_environment_repository const& environment_repository, shared::service::shared_const_file_service const& file_service);
 
 }
