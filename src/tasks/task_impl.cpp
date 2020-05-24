@@ -12,3 +12,9 @@
 // 
 
 #include "pch.h"
+#include "task_impl.h"
+
+namespace tasks
+{
+
+}

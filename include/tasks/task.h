@@ -13,17 +13,23 @@
 
 #pragma once
 
-#include <string>
-#include <string_view>
 #include <memory>
-#include <optional>
-#include <filesystem>
-#include <vector>
-#include <algorithm>
-#include <regex>
 
+namespace tasks
+{
+    /// <summary>
+    /// Represents a repeatble asynchronous operation with state that determines whether the operation can be run
+    /// </summary>
+    class task
+    {
+    public:
 
+        
+    };
+    
+    using shared_task = std::shared_ptr<task>;
+    using shared_const_task = std::shared_ptr<task const>;
+    using unique_task = std::unique_ptr<task>;
+    using unique_const_task = std::unique_ptr<task const>;
 
-#include <Windows.h>
-#include <sdkddkver.h>
-#include <processthreadsapi.h>
+}
