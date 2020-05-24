@@ -57,7 +57,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Shared.vcxproj">
+    <ProjectReference Include="..\..\src\shared\shared.vcxproj">
       <Project>{df70d038-5dec-4957-b2b8-289f083c5294}</Project>
     </ProjectReference>
   </ItemGroup>
