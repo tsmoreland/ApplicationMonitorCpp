@@ -14,9 +14,6 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\tasks\task.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\tasks\task_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -41,12 +38,15 @@
     <ClInclude Include="..\..\include\tasks\task_action.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\tasks\task_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="task.cpp">
+    <ClCompile Include="task_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -22,16 +22,16 @@ namespace tasks
 {
 
     /// <summary>Represents a repeatble asynchronous operation with state that determines whether the operation can be run</summary>
-    /// <remarks>not intended for direct use but serving as a base class and basis for a task concept</remarks>
-    class task  
+    /// <remarks>not intended for direct use but serving as a base class and basis for a task_base concept</remarks>s
+    class task_base  
     {
     public:
-        TASKS_DLL task(task const&) = default;
-        TASKS_DLL task(task&&) noexcept = default;
-        TASKS_DLL virtual ~task() = default;
+        TASKS_DLL task_base(task_base const&) = default;
+        TASKS_DLL task_base(task_base&&) noexcept = default;
+        TASKS_DLL virtual ~task_base() = default;
 
-        TASKS_DLL task& operator=(task const&) = default;
-        TASKS_DLL task& operator=(task&&) noexcept = default;
+        TASKS_DLL task_base& operator=(task_base const&) = default;
+        TASKS_DLL task_base& operator=(task_base&&) noexcept = default;
 
         TASKS_DLL virtual void process() = 0;
 
@@ -39,7 +39,7 @@ namespace tasks
         [[nodiscard]] TASKS_DLL std::chrono::milliseconds get_estimated_time_remaining() const noexcept;
 
     protected:
-        TASKS_DLL explicit task() = default;
+        TASKS_DLL explicit task_base() = default;
 
         TASKS_DLL void update_task_state(task_state const value);
         TASKS_DLL void update_time_remaining(task_state const value);
@@ -50,6 +50,6 @@ namespace tasks
     };
     
     template <typename TASK>
-    concept Task = std::is_base_of<task, TASK>::value;
+    concept Task = std::is_base_of<task_base, TASK>::value;
 
 }

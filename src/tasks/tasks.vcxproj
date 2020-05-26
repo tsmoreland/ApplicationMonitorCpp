@@ -164,7 +164,7 @@
     <ClInclude Include="..\..\include\tasks\pending_task.h" />
     <ClInclude Include="..\..\include\tasks\ready_task.h" />
     <ClInclude Include="..\..\include\tasks\running_task.h" />
-    <ClInclude Include="..\..\include\tasks\task.h" />
+    <ClInclude Include="..\..\include\tasks\task_base.h" />
     <ClInclude Include="..\..\include\tasks\tasks_export.h" />
     <ClInclude Include="..\..\include\tasks\task_action.h" />
     <ClInclude Include="..\..\include\tasks\task_state.h" />
@@ -172,7 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="task.cpp" />
+    <ClCompile Include="task_base.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -12,26 +12,26 @@
 // 
 
 #include "pch.h"
-#include <tasks/task.h>
+#include <tasks/task_base.h>
 
 namespace tasks
 {
 
-task_state task::get_current_state() const noexcept
+task_state task_base::get_current_state() const noexcept
 {
     return m_current_state;
 }
-std::chrono::milliseconds task::get_estimated_time_remaining() const noexcept
+std::chrono::milliseconds task_base::get_estimated_time_remaining() const noexcept
 {
     return m_time_remaining;
 }
 
-inline void task::update_task_state(task_state const value)
+inline void task_base::update_task_state(task_state const value)
 {
     m_current_state = value;
 }
 
-inline void task::update_time_remaining(task_state const value)
+inline void task_base::update_time_remaining(task_state const value)
 {
     m_current_state = value;
 }
