@@ -164,6 +164,7 @@
     <ClInclude Include="..\..\include\tasks\pending_task.h" />
     <ClInclude Include="..\..\include\tasks\ready_task.h" />
     <ClInclude Include="..\..\include\tasks\running_task.h" />
+    <ClInclude Include="..\..\include\tasks\task.h" />
     <ClInclude Include="..\..\include\tasks\task_base.h" />
     <ClInclude Include="..\..\include\tasks\tasks_export.h" />
     <ClInclude Include="..\..\include\tasks\task_action.h" />

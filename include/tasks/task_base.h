@@ -17,6 +17,7 @@
 #include <tasks/task_state.h>
 #include <tasks/tasks_export.h>
 #include <future>
+#include <optional>
 
 namespace tasks
 {
@@ -33,7 +34,7 @@ namespace tasks
         TASKS_DLL task_base& operator=(task_base const&) = default;
         TASKS_DLL task_base& operator=(task_base&&) noexcept = default;
 
-        TASKS_DLL virtual void process() = 0;
+        TASKS_DLL virtual std::optional<std::chrono::milliseconds> process() = 0;
 
         [[nodiscard]] TASKS_DLL task_state get_current_state() const noexcept;
         [[nodiscard]] TASKS_DLL std::chrono::milliseconds get_estimated_time_remaining() const noexcept;

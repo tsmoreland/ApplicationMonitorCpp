@@ -13,30 +13,14 @@
 
 #pragma once
 
-#include <chrono>
 #include <future>
-#include <tasks/task_state.h>
 
-namespace tasks
+namespace extension
 {
-    /// <summary>worker method for task, represents a current state and provides process used to transition to the next state (if ready)</summary>
-    class task_action
+    template <typename T>
+    [[nodiscard]] bool is_ready(std::future<T> const& future)
     {
-        task_action(task_action const&) = default;
-        task_action(task_action&&) noexcept = default;
-        task_action& operator=(task_action const&) = default;
-        task_action& operator=(task_action&&) noexcept = default;
-
-        virtual ~task_action() = default;
-        virtual std::future<std::pair<task_state, std::chrono::milliseconds>> process_async() = 0;
-    };
-
-    /*
-    template<typename TASK_ACTION>
-    concept TaskAction = requires(TASK_ACTION a) {
-        requires std::is_same<std::future<std::pair<task_state, std::chrono::milliseconds>>, decltype(std::declval<TASK_ACTION>().process_async())>::value;
-    };
-    */
-
+        return future.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready;
+    }
     
 }
