@@ -16,7 +16,6 @@
 #include <chrono>
 #include <tasks/task_state.h>
 #include <tasks/tasks_export.h>
-#include <future>
 #include <optional>
 
 namespace tasks

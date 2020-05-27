@@ -19,50 +19,45 @@
 #include <tasks/task_action.h>
 #include <shared/future.h>
 
+#pragma warning(push)
+#pragma warning(disable:4455)
 using std::chrono_literals::operator ""ms;
+#pragma warning(pop)
 
 namespace tasks
 {
 
     using future_state = std::future<task_state>;
-    
-    template<typename TASK_ACTION>
-    concept TaskAction = requires(TASK_ACTION a, task_state state) {
-        requires std::is_same<std::pair<future_state, std::chrono::milliseconds>, decltype(std::declval<TASK_ACTION>().process_async(state))>::value;
-        requires std::is_same<std::chrono::milliseconds, decltype(std::declval<TASK_ACTION>().get_time_remaining())>::value;
-    };
 
-    template <TaskAction TASK_ACTION>
+    template <typename TASK_ACTION>
     class task final : public task_base
     {
     public:
-        explicit task(TASK_ACTION action)
+        explicit task()
             : task_base()
-            , m_action(std::move(action))
+            , m_action(this)
         {
         }
 
         std::optional<std::chrono::milliseconds> process() final
         {
-            if (has_pending_state(m_pending_state)) {
-                auto [maybe_state, remaining] = process_pending_state();
-                if (!maybe_state.has_value()) 
-                    return remaining;
-
-                update_task_state(maybe_state.value());
-                m_pending_state = std::nullopt;
-
-                return 0ms;
-
-            } else {
+            if (!has_pending_state(m_pending_state)) {
                 auto [state, remaining] = m_action.process_async(get_current_state());
                 m_pending_state = state;
                 return remaining;
             }
+            auto [maybe_state, remaining] = process_pending_state();
+            if (!maybe_state.has_value()) 
+                return remaining;
+
+            update_task_state(maybe_state.value());
+            m_pending_state = std::nullopt;
+
+            return 0ms;
         }
 
     private:
-        TASK_ACTION const m_action{};
+        TASK_ACTION m_action{};
         std::optional<future_state> m_pending_state{};
 
         [[nodiscard]] static bool has_pending_state(std::optional<future_state> const& state)
