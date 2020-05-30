@@ -17,7 +17,7 @@
 namespace tasks
 {
 
-bool task_base::is_complete() const
+bool task_base::is_done() const
 {
     return m_current_state == task_status::COMPLETE;
 }

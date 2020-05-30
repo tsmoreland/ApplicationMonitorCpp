@@ -39,8 +39,18 @@ namespace tasks
         /// </summary>
         virtual void process() = 0;
 
-        [[nodiscard]] TASKS_DLL bool is_complete() const;
+        /// <summary>
+        /// returns true if task is complete or failed 
+        /// </summary>
+        [[nodiscard]] TASKS_DLL bool is_done() const;
+        /// <summary>
+        /// returns the current task_status value
+        /// </summary>
         [[nodiscard]] TASKS_DLL task_status get_current_state() const noexcept;
+        /// <summary>
+        /// returns an optional time in milliseconds representing the estimated time remaining in milliseconds for the task in its current state
+        /// </summary>
+        /// <remarks>the time is provided is only meaningful for the current state, it represents how long before the next state is reached</remarks>
         [[nodiscard]] TASKS_DLL optional_remaining_milliseconds get_estimated_time_remaining() const noexcept;
 
     protected:
