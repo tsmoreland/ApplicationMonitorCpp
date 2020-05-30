@@ -63,8 +63,5 @@ namespace tasks
         task_status m_current_state{task_status::PENDING};
         optional_remaining_milliseconds m_time_remaining{};
     };
-    
-    template <typename TASK>
-    concept Task = std::is_base_of<task_base, TASK>::value;
 
 }

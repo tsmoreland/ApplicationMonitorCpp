@@ -24,17 +24,18 @@ using std::chrono_literals::operator ""ms;
 
 namespace tasks
 {
+    template <class TASK_STATE_BASE>
+    using unique_task_state = std::unique_ptr<TASK_STATE_BASE>;
 
     template <class TASK_STATE_BASE>
     class task final : public task_base
     {
-        using unique_task_state = std::unique_ptr<TASK_STATE_BASE>;
     public:
         task()
             : task(TASK_STATE_BASE::initialize())
         {
         }
-        explicit task(unique_task_state base_state)
+        explicit task(unique_task_state<TASK_STATE_BASE> base_state)
             : task_base()
             , m_state(base_state.release())
         {
@@ -57,7 +58,7 @@ namespace tasks
             update_time_remaining(m_state->get_time_remaining().value_or(0ms));
             update_task_status(m_state->get_task_status());
         }
-        [[nodiscard]] bool equals(task const& other)
+        [[nodiscard]] bool equals(task const& other) const
         {
             return
                 m_state.get() == other.m_state.get() || 
@@ -86,7 +87,7 @@ namespace tasks
         friend bool operator==(task const& left, task const& right);
         friend bool operator!=(task const& left, task const& right);
     private:
-        unique_task_state m_state;
+        unique_task_state<TASK_STATE_BASE> m_state;
     };
 
     template <class TASK_STATE_BASE>
@@ -105,6 +106,12 @@ namespace tasks
     void swap(task<TASK_STATE_BASE>& left, task<TASK_STATE_BASE>& right) noexcept
     {
         left.swap(right);
+    }
+
+    template <class TASK_STATE_BASE, class... ARGUMENTS>
+    unique_task_state<TASK_STATE_BASE> make_unique_task(ARGUMENTS&&... args)
+    {
+        return std::make_unique<task<TASK_STATE_BASE>>(std::forward<ARGUMENTS>(args)...);
     }
 
 
