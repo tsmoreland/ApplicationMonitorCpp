@@ -17,23 +17,27 @@
 namespace tasks
 {
 
-task_state task_base::get_current_state() const noexcept
+bool task_base::is_complete() const
+{
+    return m_current_state == task_status::COMPLETE;
+}
+task_status task_base::get_current_state() const noexcept
 {
     return m_current_state;
 }
-std::chrono::milliseconds task_base::get_estimated_time_remaining() const noexcept
+optional_remaining_milliseconds task_base::get_estimated_time_remaining() const noexcept
 {
     return m_time_remaining;
 }
 
-inline void task_base::update_task_state(task_state const value)
+inline void task_base::update_task_status(task_status const value)
 {
     m_current_state = value;
 }
 
-inline void task_base::update_time_remaining(task_state const value)
+inline void task_base::update_time_remaining(optional_remaining_milliseconds const value)
 {
-    m_current_state = value;
+    m_time_remaining = value;
 }
 
 }

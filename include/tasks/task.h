@@ -16,8 +16,6 @@
 #include <memory>
 #include <optional>
 #include <tasks/task_base.h>
-#include <tasks/task_action.h>
-#include <shared/future.h>
 
 #pragma warning(push)
 #pragma warning(disable:4455)
@@ -27,49 +25,87 @@ using std::chrono_literals::operator ""ms;
 namespace tasks
 {
 
-    using future_state = std::future<task_state>;
-
-    template <typename TASK_ACTION>
+    template <class TASK_STATE_BASE>
     class task final : public task_base
     {
+        using unique_task_state = std::unique_ptr<TASK_STATE_BASE>;
     public:
-        explicit task()
+        task()
+            : task(TASK_STATE_BASE::initialize())
+        {
+        }
+        explicit task(unique_task_state base_state)
             : task_base()
-            , m_action(this)
+            , m_state(base_state.release())
         {
         }
-
-        std::optional<std::chrono::milliseconds> process() final
+        task(task&& other) noexcept
+            : m_state(other.m_state.release())
         {
-            if (!has_pending_state(m_pending_state)) {
-                auto [state, remaining] = m_action.process_async(get_current_state());
-                m_pending_state = state;
-                return remaining;
-            }
-            auto [maybe_state, remaining] = process_pending_state();
-            if (!maybe_state.has_value()) 
-                return remaining;
-
-            update_task_state(maybe_state.value());
-            m_pending_state = std::nullopt;
-
-            return 0ms;
+        }
+        task(task const&) = delete;
+        virtual ~task()
+        {
+            m_state.reset();
         }
 
+        void process() final
+        {
+            auto next_state = m_state->get_next_state();
+            m_state = std::move(next_state);
+
+            update_time_remaining(m_state->get_time_remaining().value_or(0ms));
+            update_task_status(m_state->get_task_status());
+        }
+        [[nodiscard]] bool equals(task const& other)
+        {
+            return
+                m_state.get() == other.m_state.get() || 
+                m_state != nullptr && *m_state == *other.m_state;
+        }
+
+        void swap(task& other) noexcept
+        {
+            std::swap(m_state, other.m_state);
+        }
+
+        task& operator=(task&& other) noexcept
+        {
+            std::swap(m_state, other.m_state); 
+            return *this;
+        }
+        task& operator=(task const&) = delete;
+        [[nodiscard]] bool operator==(task const& other) const
+        {
+            return equals(other);
+        }
+        [[nodiscard]] bool operator!=(task const& other) const
+        {
+            return !(*this == other);
+        }
+        friend bool operator==(task const& left, task const& right);
+        friend bool operator!=(task const& left, task const& right);
     private:
-        TASK_ACTION m_action{};
-        std::optional<future_state> m_pending_state{};
-
-        [[nodiscard]] static bool has_pending_state(std::optional<future_state> const& state)
-        {
-            return state != std::nullopt;
-        }
-        std::pair<std::optional<task_state>, std::chrono::milliseconds> process_pending_state()
-        {
-            return extension::is_ready(m_pending_state.value()
-                ? std::make_pair(std::optional(m_pending_state.value().get()), 0ms)
-                : std::make_pair(std::nullopt, m_action.get_time_remiaining()));
-        }
+        unique_task_state m_state;
     };
+
+    template <class TASK_STATE_BASE>
+    [[nodiscard]] bool operator==(task<TASK_STATE_BASE> const& left, task<TASK_STATE_BASE> const& right)
+    {
+        return left.equals(right);
+    }
+
+    template <class TASK_STATE_BASE>
+    [[nodiscard]] bool operator!=(task<TASK_STATE_BASE> const& left, task<TASK_STATE_BASE> const& right)
+    {
+        return !left.equals(right);
+    }
+
+    template <class TASK_STATE_BASE>
+    void swap(task<TASK_STATE_BASE>& left, task<TASK_STATE_BASE>& right) noexcept
+    {
+        left.swap(right);
+    }
+
 
 }

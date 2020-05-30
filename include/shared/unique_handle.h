@@ -17,67 +17,78 @@
 
 namespace shared::infrastructure
 {
-
     template <typename TRAITS>
     class unique_handle final
     {
-        using Pointer = typename TRAITS::Pointer;
+        using pointer = typename TRAITS::pointer;
     public:
-        [[nodiscard]] Pointer Get() const noexcept {
+        [[nodiscard]] pointer get() const noexcept
+        {
             return value;
         }
-        [[maybe_unused]] Pointer Release() noexcept {
-            auto oldValue = value;
-            value = TRAITS::Invalid();
-            return oldValue;
+        [[maybe_unused]] pointer release() noexcept
+        {
+            auto old_value = value;
+            value = TRAITS::invalid();
+            return old_value;
         }
-        [[maybe_unused]] bool Reset(Pointer newValue = TRAITS::Invalid()) noexcept {
-            if (value == newValue)
+        [[maybe_unused]] bool Reset(pointer new_value = TRAITS::invalid()) noexcept
+        {
+            if (value == new_value)
                 return static_cast<bool>(*this);
 
-            Close();
-            value = newValue;
+            close();
+            value = new_value;
             return static_cast<bool>(*this);
         }
-        explicit operator bool() const noexcept {
-            return value != TRAITS::Invalid();
+        explicit operator bool() const noexcept
+        {
+            return value != TRAITS::invalid();
         }
 
-        explicit unique_handle(Pointer value = TRAITS::Invalid()) noexcept
-            : value{value} {
+        explicit unique_handle(pointer value = TRAITS::invalid()) noexcept
+            : value{value}
+        {
         }
         unique_handle(const unique_handle&) = delete;
         unique_handle& operator=(const unique_handle&) = delete;
         unique_handle(unique_handle&& other) noexcept
-            : value{std::move(other.Release())} {
+            : value{std::move(other.release())}
+        {
         }
-        unique_handle& operator=(unique_handle&& other) noexcept {
+        unique_handle& operator=(unique_handle&& other) noexcept
+        {
             if (this != &other)
-                Reset(other.Release());
+                Reset(other.release());
             return *this;
         }
-        ~unique_handle() {
-            Close();
+        ~unique_handle()
+        {
+            close();
         }
-        void swap(unique_handle<TRAITS>& other) noexcept {
+        void swap(unique_handle<TRAITS>& other) noexcept
+        {
             std::swap(value, other.value);
         }
 
     private:
-        Pointer value;
+        pointer value;
 
-        void Close() noexcept {
+        void close() noexcept
+        {
             if (*this)
-                TRAITS::Close(value);
+                TRAITS::close(value);
         }
     };
 
-    template <typename TRAITS> void swap(unique_handle<TRAITS>& left, unique_handle<TRAITS>& right) noexcept {
+    template <typename TRAITS> void swap(unique_handle<TRAITS>& left, unique_handle<TRAITS>& right) noexcept
+    {
         left.swap(right);
     }
 
-    template <typename TRAITS> bool operator<=>(unique_handle<TRAITS> const& left, unique_handle<TRAITS> const& right) {
-        return left.Get() <=> right.Get();
+    template <typename TRAITS> bool operator<=>(unique_handle<TRAITS> const& left, unique_handle<TRAITS> const& right)
+    {
+        return left.get() <=> right.get();
     }
 
 

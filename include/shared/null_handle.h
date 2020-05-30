@@ -21,13 +21,13 @@ namespace shared::infrastructure
 
     struct null_handle_traits
     {
-        using Pointer = HANDLE;
+        using pointer = HANDLE;
 
-        static Pointer Invalid() noexcept
+        static pointer invalid() noexcept
         {
             return nullptr;
         }
-        static void Close(Pointer const value) noexcept
+        static void close(pointer const value) noexcept
         {
             CloseHandle(value);
         }

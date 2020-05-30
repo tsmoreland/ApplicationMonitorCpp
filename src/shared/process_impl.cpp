@@ -91,7 +91,7 @@ bool process_impl::is_running() const noexcept
 
     try {
         bool isRunning{};
-        tie(isRunning, ignore) = get_running_details(m_process_handle.Get());;
+        tie(isRunning, ignore) = get_running_details(m_process_handle.get());;
         return isRunning;
 
     } catch (std::exception const&) {
@@ -107,7 +107,7 @@ std::optional<unsigned long> process_impl::exit_code() const noexcept
 
         bool isRunning{};
         unsigned long exitCode{};
-        tie(isRunning, exitCode) = get_running_details(m_process_handle.Get());
+        tie(isRunning, exitCode) = get_running_details(m_process_handle.get());
 
         return !isRunning
             ? optional<unsigned long>(exitCode)
@@ -119,7 +119,7 @@ std::optional<unsigned long> process_impl::exit_code() const noexcept
 }
 void process_impl::wait_for_exit() const noexcept {
     if (is_running())
-        WaitForSingleObject(m_process_handle.Get(), INFINITE);
+        WaitForSingleObject(m_process_handle.get(), INFINITE);
 }
 
 optional<std::filesystem::path> process_impl::get_path_to_running_process(string_view const& process_name) const noexcept
@@ -193,8 +193,8 @@ bool process_impl::equals(process_impl const& other) const noexcept
 {
     return m_process_id == other.m_process_id &&
         m_process_thread_id == other.m_process_thread_id &&
-        m_process_handle.Get() == other.m_process_handle.Get() &&
-        m_process_thread_handle.Get() == other.m_process_thread_handle.Get();
+        m_process_handle.get() == other.m_process_handle.get() &&
+        m_process_thread_handle.get() == other.m_process_thread_handle.get();
 }
 
 tuple<bool, unsigned long> process_impl::get_running_details(HANDLE process_handle)
@@ -231,14 +231,14 @@ vector<PROCESSENTRY32> process_impl::get_process_entries()
 
     PROCESSENTRY32 entry{};
     entry.dwSize = sizeof(PROCESSENTRY32);
-    if (!Process32First(processSnapshot.Get(), &entry))
+    if (!Process32First(processSnapshot.get(), &entry))
         return vector<PROCESSENTRY32>();
 
     vector<PROCESSENTRY32> processes;
     do {
         processes.push_back(entry);
 
-    } while (Process32Next(processSnapshot.Get(), &entry));
+    } while (Process32Next(processSnapshot.get(), &entry));
 
     return processes;
 }
@@ -263,14 +263,14 @@ std::vector<MODULEENTRY32> process_impl::get_module_entries(unsigned long const 
     MODULEENTRY32 entry{};
     entry.dwSize = sizeof(MODULEENTRY32);
 
-    if (!Module32First(snapshot.Get(), &entry))
+    if (!Module32First(snapshot.get(), &entry))
         return vector<MODULEENTRY32>();
 
     vector<MODULEENTRY32> modules;
     do {
         modules.push_back(entry);
 
-    } while (Module32Next(snapshot.Get(), &entry));
+    } while (Module32Next(snapshot.get(), &entry));
 
     return modules;
 }

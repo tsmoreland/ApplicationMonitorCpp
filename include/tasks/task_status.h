@@ -13,17 +13,20 @@
 
 #pragma once
 
-#include <tasks/task.h>
-
-namespace task_tests
+namespace tasks
 {
-    class sample_task_action final 
+    /// <summary>Current task_status, used to task state machine</summary>
+    enum class task_status
     {
-    public:
-        std::pair<tasks::future_state, std::chrono::milliseconds> process_async(tasks::task_state state);
-        std::chrono::milliseconds get_time_remaining();
-    };
-
-    using sample_task = tasks::task<sample_task_action>;
-
+        /// <summary>initializing or not yet ready to run</summary>
+        PENDING,
+        /// <summary>Ready for execution but hasn't been started</summary>
+        READY,
+        /// <summary>Currently running</summary>
+        RUNNING,
+        /// <summary>Completed with success</summary>
+        COMPLETE,
+        /// <summary>Completed with error</summary>
+        FAILED,
+    }; 
 }

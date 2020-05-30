@@ -14,39 +14,44 @@
 #pragma once
 
 #include <chrono>
-#include <tasks/task_state.h>
+#include <tasks/task_status.h>
 #include <tasks/tasks_export.h>
 #include <optional>
 
 namespace tasks
 {
+    using optional_remaining_milliseconds = std::optional<std::chrono::milliseconds>;
 
     /// <summary>Represents a repeatble asynchronous operation with state that determines whether the operation can be run</summary>
     /// <remarks>not intended for direct use but serving as a base class and basis for a task_base concept</remarks>s
     class task_base  
     {
     public:
-        TASKS_DLL task_base(task_base const&) = default;
+        TASKS_DLL task_base(task_base const&)  = delete;
         TASKS_DLL task_base(task_base&&) noexcept = default;
         TASKS_DLL virtual ~task_base() = default;
 
-        TASKS_DLL task_base& operator=(task_base const&) = default;
+        TASKS_DLL task_base& operator=(task_base const&) = delete;
         TASKS_DLL task_base& operator=(task_base&&) noexcept = default;
 
-        TASKS_DLL virtual std::optional<std::chrono::milliseconds> process() = 0;
+        /// <summary>
+        /// process current state
+        /// </summary>
+        virtual void process() = 0;
 
-        [[nodiscard]] TASKS_DLL task_state get_current_state() const noexcept;
-        [[nodiscard]] TASKS_DLL std::chrono::milliseconds get_estimated_time_remaining() const noexcept;
+        [[nodiscard]] TASKS_DLL bool is_complete() const;
+        [[nodiscard]] TASKS_DLL task_status get_current_state() const noexcept;
+        [[nodiscard]] TASKS_DLL optional_remaining_milliseconds get_estimated_time_remaining() const noexcept;
 
     protected:
         TASKS_DLL explicit task_base() = default;
 
-        TASKS_DLL void update_task_state(task_state const value);
-        TASKS_DLL void update_time_remaining(task_state const value);
+        TASKS_DLL void update_task_status(task_status const value);
+        TASKS_DLL void update_time_remaining(optional_remaining_milliseconds const value);
 
     private:
-        task_state m_current_state{task_state::PENDING};
-        std::chrono::milliseconds m_time_remaining{};
+        task_status m_current_state{task_status::PENDING};
+        optional_remaining_milliseconds m_time_remaining{};
     };
     
     template <typename TASK>
