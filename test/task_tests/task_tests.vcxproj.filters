@@ -8,5 +8,6 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="task.cpp" />
+    <ClCompile Include="task_manager.cpp" />
   </ItemGroup>
 </Project>

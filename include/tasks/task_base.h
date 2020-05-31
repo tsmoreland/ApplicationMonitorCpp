@@ -14,9 +14,10 @@
 #pragma once
 
 #include <chrono>
-#include <tasks/task_status.h>
-#include <tasks/tasks_export.h>
+#include <memory>
 #include <optional>
+#include <tasks/tasks_export.h>
+#include <tasks/task_status.h>
 
 namespace tasks
 {
@@ -63,5 +64,8 @@ namespace tasks
         task_status m_current_state{task_status::PENDING};
         optional_remaining_milliseconds m_time_remaining{};
     };
+
+    using unique_task_base = std::unique_ptr<task_base>;
+
 
 }
