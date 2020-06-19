@@ -1,0 +1,3 @@
+[submodule "modern_win32"]
+	path = modern_win32
+	url = https://github.com/tsmoreland/modern_win32
