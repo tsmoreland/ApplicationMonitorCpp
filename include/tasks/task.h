@@ -108,8 +108,11 @@ namespace tasks
         left.swap(right);
     }
 
+    template <typename TASK_STATE_BASE>
+    using unique_task = std::unique_ptr<task<TASK_STATE_BASE>>;
+
     template <class TASK_STATE_BASE, class... ARGUMENTS>
-    unique_task_state<TASK_STATE_BASE> make_unique_task(ARGUMENTS&&... args)
+    unique_task_base make_unique_task(ARGUMENTS&&... args)
     {
         return std::make_unique<task<TASK_STATE_BASE>>(std::forward<ARGUMENTS>(args)...);
     }

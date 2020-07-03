@@ -14,6 +14,7 @@
 #pragma once
 
 #include <memory>
+#include <tasks/task.h>
 
 namespace tasks
 {
@@ -22,14 +23,30 @@ namespace tasks
     class task_manager final
     {
     public:
-        explicit task_manager();
+        TASKS_DLL explicit task_manager();
+        task_manager(task_manager const&) = delete;
+        TASKS_DLL task_manager(task_manager&& other) noexcept;
+        TASKS_DLL ~task_manager();
 
-        void swap(task_manager& other) noexcept;
+        TASKS_DLL void start();
+        TASKS_DLL void stop();
+        TASKS_DLL [[nodiscard]] bool is_running() const noexcept;
+        TASKS_DLL void add(std::initializer_list<unique_task_base>&& tasks);
+
+        template <typename... TASKS>
+        void add(TASKS&&... args)
+        {
+            add(std::initializer_list<unique_task_base>{std::forward<unique_task_base>(args)...});
+        }
+
+        task_manager& operator=(task_manager const&) = delete;
+        TASKS_DLL task_manager& operator=(task_manager&& other) noexcept;
+        TASKS_DLL void swap(task_manager& other) noexcept;
 
     private:
         std::unique_ptr<task_manager_impl> m_pImpl;
     };
 
-    void swap(task_manager& left, task_manager& right) noexcept;
+    TASKS_DLL void swap(task_manager& left, task_manager& right) noexcept;
 
 }
