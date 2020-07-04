@@ -77,6 +77,7 @@ if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
         "_CONSOLE;"
         "UNICODE;"
         "_UNICODE"
+        "SYMBOL_MANAGER_DLL_EXPORT"
     )
 elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
     target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -90,6 +91,7 @@ elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
         "_CONSOLE;"
         "UNICODE;"
         "_UNICODE"
+        "SYMBOL_MANAGER_DLL_EXPORT"
     )
 endif()
 
