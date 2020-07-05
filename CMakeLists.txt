@@ -72,3 +72,5 @@ add_subdirectory(src/shared)
 add_subdirectory(src/symbol_manager)
 add_subdirectory(console)
 
+add_subdirectory(test/shared_google_tests)
+

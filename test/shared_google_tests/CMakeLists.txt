@@ -17,15 +17,13 @@ add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES}
 set_target_properties(${TEST_PROJECT_NAME} PROPERTIES
     VS_GLOBAL_KEYWORD "Win32Proj"
 )
-add_precompiled_header(${PROJECT_NAME} "pch.h" "pch.cpp")
+add_precompiled_header(${TEST_PROJECT_NAME} "pch.h" "pch.cpp")
 
 # target_link_libraries(${TEST_PROJECT_NAME} PUBLIC ${CMAKE_PROJECT_NAME}_lib GTest::GTest GTest::Main)
 target_link_libraries(${TEST_PROJECT_NAME} PUBLIC shared GTest::GTest GTest::Main)
 
 # Target
 ################################################################################
-set_target_properties(${TEST_PROJECT_NAME} PROPERTIES FOLDER "shared")
-
 set_target_properties(${TEST_PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION_RELEASE "TRUE")
 
 target_include_directories(${TEST_PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
