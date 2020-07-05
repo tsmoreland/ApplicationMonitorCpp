@@ -1,79 +1,50 @@
-project(shared_google_tests CXX)
+set(TEST_PROJECT_NAME shared_google_tests)
 
-################################################################################
+find_package(GTest REQUIRED)
+file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
+
 # Source groups
-################################################################################
-set(no_group_source_files
-    "common.h"
+set(SOURCES ${TEST_SOURCES})
+
+add_executable(${TEST_PROJECT_NAME} ${TEST_SOURCES} 
     "environment_repository.cpp"
     "file_service.cpp"
     "pch.cpp"
-    "pch.h"
-    "process_service.cpp"
-    "string_extensions_common.h"
     "string_extentions.cpp"
     "wstring_extensions.cpp"
 )
-source_group("" FILES ${no_group_source_files})
-
-set(ALL_FILES
-    ${no_group_source_files}
-)
-
-################################################################################
-# Target
-################################################################################
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "shared")
-
-add_precompiled_header(${PROJECT_NAME} "pch.h" "pch.cpp")
-
-use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
-set_target_properties(${PROJECT_NAME} PROPERTIES
+    
+set_target_properties(${TEST_PROJECT_NAME} PROPERTIES
     VS_GLOBAL_KEYWORD "Win32Proj"
 )
-################################################################################
-# Output directory
-################################################################################
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        OUTPUT_DIRECTORY_DEBUG   "${CMAKE_SOURCE_DIR}/${CMAKE_VS_PLATFORM_NAME}/$<CONFIG>/"
-    )
-endif()
-################################################################################
-# Include directories
-################################################################################
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    target_include_directories(${PROJECT_NAME} PUBLIC
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../ApplicationMonitorCppinclude;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../src/shared"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    target_include_directories(${PROJECT_NAME} PUBLIC
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../../ApplicationMonitorCppinclude;"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../src/shared"
-    )
-endif()
+add_precompiled_header(${PROJECT_NAME} "pch.h" "pch.cpp")
 
+# target_link_libraries(${TEST_PROJECT_NAME} PUBLIC ${CMAKE_PROJECT_NAME}_lib GTest::GTest GTest::Main)
+target_link_libraries(${TEST_PROJECT_NAME} PUBLIC shared GTest::GTest GTest::Main)
+
+# Target
 ################################################################################
+set_target_properties(${TEST_PROJECT_NAME} PROPERTIES FOLDER "shared")
+
+set_target_properties(${TEST_PROJECT_NAME} PROPERTIES INTERPROCEDURAL_OPTIMIZATION_RELEASE "TRUE")
+
+target_include_directories(${TEST_PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
 # Compile definitions
-################################################################################
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    "UNICODE;"
-    "_UNICODE"
-)
 if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
+    target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE
         "$<$<CONFIG:Debug>:"
             "_DEBUG"
         ">"
         "$<$<CONFIG:Release>:"
             "NDEBUG"
         ">"
-        "X64;"
-        "_CONSOLE"
+        "_CONSOLE;"
+        "UNICODE;"
+        "_UNICODE"
     )
 elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    target_compile_definitions(${PROJECT_NAME} PRIVATE
+    target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE
         "$<$<CONFIG:Debug>:"
             "_DEBUG"
         ">"
@@ -81,78 +52,60 @@ elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
             "NDEBUG"
         ">"
         "WIN32;"
-        "_CONSOLE"
+        "_CONSOLE;"
+        "UNICODE;"
+        "_UNICODE"
     )
 endif()
 
-################################################################################
 # Compile and link options
-################################################################################
 if(MSVC)
     if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-        target_compile_options(${PROJECT_NAME} PRIVATE
+        target_compile_options(${TEST_PROJECT_NAME} PRIVATE
             $<$<CONFIG:Debug>:
-                /Od;
-                /RTC1;
-                /MDd;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+                ${DEFAULT_CXX_DEBUG_RUNTIME_LIBRARY}
             >
             $<$<CONFIG:Release>:
-                /MD;
-                /Zi
+                /Oi;
+                ${DEFAULT_CXX_RUNTIME_LIBRARY};
+                /Gy
             >
+            /permissive-;
             /std:c++latest;
-            /W3;
+            /sdl;
+            /W4;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
             ${DEFAULT_CXX_EXCEPTION_HANDLING}
         )
     elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-        target_compile_options(${PROJECT_NAME} PRIVATE
+        target_compile_options(${TEST_PROJECT_NAME} PRIVATE
             $<$<CONFIG:Debug>:
-                /Od;
-                /RTC1;
-                /MDd;
-                ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT}
+                ${DEFAULT_CXX_DEBUG_RUNTIME_LIBRARY}
             >
             $<$<CONFIG:Release>:
-                /MD;
-                /Zi
+                /Oi;
+                ${DEFAULT_CXX_RUNTIME_LIBRARY};
+                /Gy
             >
+            /permissive-;
             /std:c++latest;
-            /W3;
+            /sdl;
+            /W4;
+            ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
             ${DEFAULT_CXX_EXCEPTION_HANDLING}
         )
     endif()
-    if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-        target_link_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Release>:
-                /OPT:REF;
-                /OPT:ICF
-            >
-            /DEBUG;
-            /SUBSYSTEM:CONSOLE
-        )
-    elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-        target_link_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Release>:
-                /OPT:REF;
-                /OPT:ICF
-            >
-            /DEBUG;
-            /SUBSYSTEM:CONSOLE
-        )
-    endif()
+
+	target_link_options(${TEST_PROJECT_NAME} PRIVATE
+		$<$<CONFIG:Debug>:
+			/INCREMENTAL
+		>
+		$<$<CONFIG:Release>:
+			/OPT:REF;
+			/OPT:ICF;
+			/INCREMENTAL:NO
+		>
+		/DEBUG;
+		/SUBSYSTEM:CONSOLE
+	)
 endif()
-
-################################################################################
-# Dependencies
-################################################################################
-add_dependencies(${PROJECT_NAME}
-    shared
-)
-
-# Link with other targets.
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    shared
-)
-
-use_package(${PROJECT_NAME} Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn 1.8.1.3)
