@@ -26,6 +26,6 @@
 #include <tasks/task_status.h>
 #include <shared/collection.h>
 
-#include "simple_task_state.h"
+#include "simple_task.h"
 
 

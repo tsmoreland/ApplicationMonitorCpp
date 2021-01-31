@@ -13,3 +13,39 @@
 
 #include "pch.h"
 #include "task_manager_impl.h"
+
+namespace tasks
+{
+
+task_manager_impl::task_manager_impl(task_manager_impl&& other) noexcept
+{
+}
+task_manager_impl& task_manager_impl::operator=(task_manager_impl&& other) noexcept
+{
+    return *this;
+}
+
+void task_manager_impl::start()
+{
+    if (is_running())
+        throw std::domain_error("Already running");
+}
+
+void task_manager_impl::stop()
+{
+    if (!is_running())
+        return;
+}
+
+bool task_manager_impl::is_running() const noexcept
+{
+    return static_cast<bool>(m_is_running);
+}
+
+void task_manager_impl::add(std::initializer_list<unique_task_base>&& tasks)
+{
+    std::lock_guard<std::mutex> guard(m_lock);
+    std::move(begin(tasks), end(tasks), std::back_inserter(m_tasks));
+}
+
+}

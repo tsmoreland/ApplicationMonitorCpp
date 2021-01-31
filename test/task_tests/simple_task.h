@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "simple_task_state_base.h"
+#include "simple_task_base.h"
 
 namespace task_test
 {

@@ -22,6 +22,47 @@ task_manager::task_manager()
 {
 }
 
+task_manager::task_manager(task_manager&& other) noexcept
+    : m_pImpl(other.m_pImpl.release())
+{
+}
+
+task_manager::~task_manager()
+{
+    m_pImpl.reset();
+}
+
+void task_manager::start()
+{
+    if (m_pImpl == nullptr)
+        return;
+
+    m_pImpl->start();
+}
+
+void task_manager::stop()
+{
+    m_pImpl->stop();
+}
+
+bool task_manager::is_running() const noexcept
+{
+    return m_pImpl->is_running();
+}
+
+void task_manager::add(std::initializer_list<unique_task_base>&& tasks)
+{
+    if (m_pImpl == nullptr)
+        return;
+    //m_pImpl->add(tasks);
+}
+
+task_manager& task_manager::operator=(task_manager&& other) noexcept
+{
+    swap(other);
+    return *this;
+}
+
 void task_manager::swap(task_manager& other) noexcept
 {
     std::swap(m_pImpl, other.m_pImpl);

@@ -20,8 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="simple_task_state_base.h" />
-    <ClInclude Include="simple_task_state.h" />
+    <ClInclude Include="simple_task_base.h" />
+    <ClInclude Include="simple_task.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

@@ -18,8 +18,15 @@
 
 #include <tasks/task_manager.h>
 #include <tasks/task_base.h>
+#include "simple_task.h"
 
 using tasks::task_manager;
+using tasks::task;
+using tasks::task_status;
+using tasks::make_unique_task;
+using task_test::simple_task;
+using task_test::simple_task_state;
+using task_test::simple_task_state_base;
 
 template <typename EXPR>
 void assert(EXPR const&expr) {
@@ -28,7 +35,7 @@ void assert(EXPR const&expr) {
 
 void take_manager_workflow()
 {
-    /* what we're aiming for, maybe
+    /* what we're aiming for, maybe */
     task_manager manager{};
 
     manager.start();
@@ -41,13 +48,18 @@ void take_manager_workflow()
 
     assert(manager.is_running()); // returns true when running
 
-    manager.add<example_task>(1, 2, "argument"); // example_task is the spec
+    //manager.add<example_task>(1, 2, "argument"); // example_task is the spec
 
-    // -or-
-    manager.add(1, 2, "argument"); // where task_manager<T>? in both cases use perfect forwarding
+    manager.add(
+        make_unique_task<simple_task_state_base>(),
+        make_unique_task<simple_task_state_base>(),
+        make_unique_task<simple_task_state_base>()
+    );
 
+    manager.add({ make_unique_task<simple_task_state_base>(), make_unique_task<simple_task_state_base>() });
 
     std::this_thread::sleep_for(std::chrono::seconds(5));
+    /*
 
     manager.stop(); // this should be optional, if not called
     */
